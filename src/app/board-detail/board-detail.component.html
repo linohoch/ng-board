@@ -1,0 +1,87 @@
+<div class="container">
+  <div class="">
+    <div class="">article detail page</div>
+    <div class="contents-wrapper">
+
+      <div class="article-container" *ngIf="article">
+        <div class="title-area">
+          <div>{{article.no}}</div>
+          <div class="title">{{article.title}}</div>
+          <div>작성일:{{article.no}}</div>
+        </div>
+        <div class="sub-area">
+          <div>작성자{{article.userEmail}}</div>
+          <div>
+            <div>hit_cnt: {{article.hitCnt}}</div>
+            <div class="like-cnt">like_cnt: {{article.likeCnt}}</div>
+          </div>
+        </div>
+        <div class="article-area">
+          <div id="contents">내용 :{{article.no}}</div>
+        </div>
+        <div class="bottom-area">
+          <div>shop_no {{article.no}}</div>
+        </div>
+        <div class="photo-container" *ngIf="article.photo">
+            <div class="photo-block"
+                 *ngFor="let url of article.photo" >
+              <img src="{{url}}" alt="photo"/>
+            </div>
+        </div>
+      </div>
+
+      <div class="comment-container" *ngIf="commentList">
+        <div class="comment-textarea-wrapper">
+            <textarea class="comment-textarea" placeholder="댓글을 작성하려면 로그인하세요"></textarea>
+          <div>
+            <textarea class="comment-textarea"></textarea>
+          </div>
+          <button class="lv1-comment-btn">comment</button>
+
+          <button class="like-btn"></button>
+
+          <button class="article-edit-btn">edit</button>
+        </div>
+
+        <div>
+          <div class="comment-list-container" >
+            <div>
+              <div>댓글_개</div>
+            </div>
+            <div class="comment unselected"
+                 *ngFor="let comment of commentList">
+              <div class="comment-contents">
+                <div>No</div>
+                <div>user_no</div>
+                <div>contents</div>
+                <div>test now</div>
+                <div>ins_date</div>
+                <div>likeCnt</div>
+                <div>likeYn</div>
+              </div>
+              <div class="comment-textarea-wrapper">
+                  <textarea class="comment-textarea" placeholder="댓글을 작성하려면 로그인하세요"></textarea>
+                  <textarea class="comment-textarea"></textarea>
+
+  <!--              <button th:data-article-no="${vo.no}"-->
+  <!--                      th:data-grp="${vo.grp}"-->
+  <!--                      th:data-seq="${vo.seq}"-->
+  <!--                      th:data-lv="${vo.lv}"-->
+  <!--                      th:data-comment-no="${vo.commentNo}"-->
+  <!--                      th:data-parent-no="${vo.parentNo}"-->
+  <!--                      class="comment_btn">comment</button>-->
+  <!--              <button class="comment_like_btn"-->
+  <!--                      th:data-likeYn="${vo.likeYn}"-->
+  <!--                      th:data-article-no="${vo.no}"-->
+  <!--                      th:data-comment-no="${vo.commentNo}">likeBtn</button>-->
+              </div>
+            </div>
+          </div>
+          <div class="comment-list-container">
+            댓글이 없다
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

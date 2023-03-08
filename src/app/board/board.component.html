@@ -1,0 +1,17 @@
+<p>board works!</p>
+<div *ngIf="articleList">
+<div *ngFor="let article of articleList">
+  <div>
+    <a [title]="article.no+'details'"
+       [routerLink]="['/board',article.no]">
+    {{article.no}}
+    {{article.title}}
+    </a>
+  <p *ngIf="article.photo">
+    url: {{article.photo}}
+  </p>
+  </div>
+</div>
+</div>
+
+
