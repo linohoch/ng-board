@@ -16,6 +16,19 @@
       placeholder="search"/>
     <mat-icon>close</mat-icon>
   </div>
+  <button class="mat-icon-button" *ngIf="!isSignedIn()">
+    <a class="mat-icon-button" href="/login">
+      <span class="mat-button-wrapper">
+          <mat-icon>login</mat-icon>
+      </span>
+    </a>
+  </button>
+  <button class="mat-icon-button" *ngIf="isSignedIn()"
+          (click)="signOut()">
+      <span class="mat-button-wrapper">
+          <mat-icon>logout</mat-icon>
+      </span>
+  </button>
   <button class="mat-icon-button">
     <span class="mat-button-wrapper">
       <mat-icon>dark_mode</mat-icon>

@@ -1,6 +1,9 @@
 .logo {
   width:37px;
   height:40px;
+  @media (max-width: 450px) {
+    width: 0;
+  }
 }
 .mat-toolbar {
   padding: 0;

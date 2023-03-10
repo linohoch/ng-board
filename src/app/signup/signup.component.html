@@ -1,0 +1,90 @@
+<div class="signup-container">
+  <div class="card">
+    <div class="card-wrapper">
+
+      <div class="card-header">
+        <mat-card-title>SignUp</mat-card-title>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="signUpForm" class="signup-form" (ngSubmit)="onSubmit()">
+          <mat-form-field>
+            <mat-label>email</mat-label>
+            <input id="email"
+                   matInput
+                   formControlName="id"
+                   [errorStateMatcher]="matcher"
+                   type="email"
+                   placeholder="email">
+            <mat-hint></mat-hint>
+            <mat-error *ngIf="signUpForm.get('id')?.hasError('alreadyExist')">
+              Already registered email
+            </mat-error>
+            <mat-error *ngIf="signUpForm.get('id')?.hasError('email')">
+              Please enter a valid email address
+            </mat-error>
+            <mat-error *ngIf="signUpForm.get('id')?.hasError('required')">
+              Email is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>password</mat-label>
+            <input id="password"
+                   matInput
+                   formControlName="pw"
+                   [errorStateMatcher]="matcher"
+                   type="password"
+                   placeholder="password">
+            <mat-hint>A-Za-z 0~9 min length 5 </mat-hint>
+            <mat-error *ngIf="signUpForm.get('pw')?.hasError('pattern')">
+              Please enter a valid password ( min length 5 ... )
+            </mat-error>
+            <mat-error *ngIf="signUpForm.get('pw')?.hasError('required')">
+              Password is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>confirmPassword</mat-label>
+            <input id="confirmPassword"
+                   matInput
+                   formControlName="confirmPassword"
+                   [errorStateMatcher]="matcher"
+                   type="password"
+                   placeholder="confirmPassword">
+            <mat-error *ngIf="signUpForm.get('confirmPassword')?.hasError('mismatch')">
+              Please check again
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>firstName</mat-label>
+            <input id="firstName"
+                   matInput
+                   formControlName="firstName"
+                   [errorStateMatcher]="matcher"
+                   type="text"
+                   placeholder="firstName">
+            <mat-error *ngIf="signUpForm.get('firstName')?.hasError('required')">
+              Name is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>lastName</mat-label>
+            <input id="lastName"
+                   matInput
+                   formControlName="lastName"
+                   [errorStateMatcher]="matcher"
+                   type="text"
+                   placeholder="lastName">
+            <mat-error *ngIf="signUpForm.get('lastName')?.hasError('required')">
+              Name is required
+            </mat-error>
+          </mat-form-field>
+          <button mat-button
+                  type="submit"
+                  [disabled]="signUpForm.invalid">
+            submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

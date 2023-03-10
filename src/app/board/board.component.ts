@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Article} from "../data";
 import {HttpService} from "../services/http.service";
-import {Observable} from "rxjs";
+
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.scss']
+  styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements OnInit {
   articleList: Article[] | undefined

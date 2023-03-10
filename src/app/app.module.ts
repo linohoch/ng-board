@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {SearchBarComponent} from './search-bar/search-bar.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HomeComponent} from './home/home.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatInputModule} from "@angular/material/input";
@@ -15,6 +15,11 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
 import {HttpClientModule} from "@angular/common/http";
 import {HttpService} from "./services/http.service";
+import { AuthComponent } from './auth/auth.component';
+import {MatCardModule} from "@angular/material/card";
+import {MatButtonModule} from "@angular/material/button";
+import {MatTableModule} from "@angular/material/table";
+import { SignupComponent } from './signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +27,9 @@ import {HttpService} from "./services/http.service";
     SearchBarComponent,
     HomeComponent,
     BoardComponent,
-    BoardDetailComponent
+    BoardDetailComponent,
+    AuthComponent,
+    SignupComponent,
   ],
   imports: [
     HttpClientModule,
@@ -33,7 +40,11 @@ import {HttpService} from "./services/http.service";
     MatInputModule,
     MatSelectModule,
     MatToolbarModule,
-    MatIconModule
+    MatIconModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatTableModule
   ],
   providers: [HttpService],
   bootstrap: [AppComponent]
