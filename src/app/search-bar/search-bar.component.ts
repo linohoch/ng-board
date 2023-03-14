@@ -14,6 +14,11 @@ export class SearchBarComponent {
   }
 
   signOut() {
-    return this.service.signOut()
+    // const user = localStorage.getItem('user')
+    this.service.signOut().subscribe(() => {
+        localStorage.removeItem('user')
+        window.location.reload()
+      }
+    )
   }
 }

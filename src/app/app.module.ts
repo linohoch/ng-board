@@ -13,13 +13,14 @@ import {BoardComponent} from './board/board.component';
 import {BoardDetailComponent} from './board-detail/board-detail.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient} from "@angular/common/http";
 import {HttpService} from "./services/http.service";
 import { AuthComponent } from './auth/auth.component';
 import {MatCardModule} from "@angular/material/card";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from "@angular/material/table";
 import { SignupComponent } from './signup/signup.component';
+import {AuthInterceptor} from "./interceptor/auth.interceptor";
 
 @NgModule({
   declarations: [
@@ -46,7 +47,14 @@ import { SignupComponent } from './signup/signup.component';
     MatButtonModule,
     MatTableModule
   ],
-  providers: [HttpService],
-  bootstrap: [AppComponent]
+  providers: [
+    HttpService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    }
+  ],
+  bootstrap: [AppComponent,]
 })
 export class AppModule { }

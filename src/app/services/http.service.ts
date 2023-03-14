@@ -19,16 +19,18 @@ export class HttpService {
     alert(e.message)
     return of([])
   }
-  setHeaders(){
-   const user = localStorage.getItem('user');
-    if(user){
-      this.httpOptions.headers.set("Authorization", JSON.parse(user).access_token)
-    }
-  }
+  // setHeaders(){
+  //  const user = localStorage.getItem('user');
+  //   if(user){
+  //     this.httpOptions.headers.set("Authorization", JSON.parse(user).access_token)
+  //   }
+  // }
 //board-service
   getArticleList(){
     return this.http.get<Article[]>(`${this.baseUrl}/api/v1/board?page=1`)
-
+  }
+  getArticleDetail(no: number){
+    return this.http.get<Article>(`${this.baseUrl}/api/v1/board/${no}`)
   }
 
 //user-service
@@ -36,17 +38,19 @@ export class HttpService {
     return !!localStorage.getItem('user')
   }
   signOut(){
-    localStorage.removeItem('user')
-    window.location.reload()
+    //TODO 리프래시읽는데 실패할 경우를 대비해 유저이름 보냄
+    return this.http.delete(`${this.baseUrl}/api/v1/auth/logout`).pipe(
+      map((e)=>{return e})
+    )
   }
   signIn(data: Partial<{ email: string | null; password: string | null; }>)
     : Observable<any> {
-    return this.http.post(`${this.baseUrl}/auth/login`, data, this.httpOptions).pipe(
+    return this.http.post(`${this.baseUrl}/api/v1/auth/login`, data, this.httpOptions).pipe(
       map((user: any) => {
         if (user && user.access_token) {
           localStorage.setItem('user', JSON.stringify(user))
         } else {
-          return new Error('로그인 오류')
+          throw new Error('로그인 오류')
         }
         return user
       }),

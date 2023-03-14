@@ -5,8 +5,6 @@ export interface Article {
   // contents:string;
   userNo:number;
   userEmail:string;
-  // firstName:string;
-  // lastName:string
   hitCnt:number;
   likeCnt:number;
   likeYn:number;

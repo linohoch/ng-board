@@ -23,7 +23,9 @@ export class BoardDetailComponent implements OnInit{
     const articleNoFromRoute = Number(routeParams.get('articleNo'));
 
     // this.article=articleList.find(article=> article.articleNo===articleNoFromRoute);
-    // this.article=this.service.getArticleDetail(articleNoFromRoute)
+    this.service.getArticleDetail(articleNoFromRoute).subscribe((article)=> {
+      this.article=article;
+    })
   }
 
 }

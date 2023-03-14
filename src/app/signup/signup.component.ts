@@ -29,7 +29,7 @@ export class SignupComponent {
   matcher = new MyErrorStateMatcher();
 // /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}/
   signUpForm = this.formBuilder.group({
-    id: new FormControl('', {
+    email: new FormControl('', {
       validators: [Validators.required, Validators.email],
       asyncValidators: this.uniqueEmailValidator.validate.bind(this.uniqueEmailValidator),
       updateOn: 'blur'
