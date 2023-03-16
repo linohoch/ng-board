@@ -6,9 +6,11 @@
     .card {
       width: 100%;
       height: 100%;
+      display: contents;
       &-wrapper {
         padding: 50px 50px 50px 50px;
         justify-content: center;
+        width: 220px;
       }
       &-header {
         text-align: center;
@@ -20,6 +22,10 @@
           display: grid;
           justify-items: center;
           text-align: center;
+        }
+        button {
+          width: 100%;
+          margin: 5px 0 5px 0;
         }
       }
     }

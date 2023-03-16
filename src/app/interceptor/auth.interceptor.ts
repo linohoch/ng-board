@@ -14,7 +14,6 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    request = request.clone({withCredentials: true})
 
     const user = localStorage.getItem('user');
     console.log(user)
@@ -22,7 +21,6 @@ export class AuthInterceptor implements HttpInterceptor {
       request = request.clone(
         {
           setHeaders: {"Authorization": `Bearer ${JSON.parse(user).access_token}`,},
-          withCredentials: true
         })
     }
 

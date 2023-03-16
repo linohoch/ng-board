@@ -37,14 +37,29 @@
 <!--            Password is <strong>required</strong>-->
 <!--          </mat-error>-->
         </mat-form-field>
-        <button mat-button
+        <button mat-button mat-flat-button
                 type="submit"
                 [disabled]="signInForm.invalid">
           submit
         </button>
       </form>
+      <div id="google-sign-in"></div>
+<!--      <div id="g_id_onload"-->
+<!--           data-client_id="904288510274-tvtfor6hsjrktmp1anbq60cahoj8ohds.apps.googleusercontent.com"-->
+<!--           data-login_uri="http://localhost:3000/api/v1/auth/google"-->
+<!--           data-callback="handleCredentialResponse"-->
+<!--           data-auto_prompt="true">-->
+<!--      </div>-->
+<!--      <div class="g_id_signin"-->
+<!--           data-type="standard"-->
+<!--           data-size="large"-->
+<!--           data-theme="outline"-->
+<!--           data-text="sign_in_with"-->
+<!--           data-shape="rectangular"-->
+<!--           data-logo_alignment="left">-->
+<!--      </div>-->
         <a href="/signup">
-          <button mat-button>
+          <button mat-button mat-flat-button>
             sign up
           </button>
         </a>

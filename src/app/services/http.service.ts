@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, map, Observable, of} from "rxjs";
 import {Article} from "../data";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class HttpService {
       'Content-Type':  'application/json',
     })
   };
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private router: Router) {
   }
   errorHandler(e:any){
     alert(e.message)
@@ -56,7 +58,29 @@ export class HttpService {
       }),
       catchError(async (err) => this.errorHandler(err.error)))
   }
-
+  signInWithGoogle(credential: any) {
+    return this.http.post(`${this.baseUrl}/api/v1/auth/google/callback2`, {'credential':credential}, this.httpOptions).pipe(
+      map((res: any) => {
+        if(res.statusCode===202) {
+          switch (res.message){
+            case 'need signup first':
+              console.log('회원가입')
+              this.router.navigate(['signup'])
+              break
+            case 'need link':
+              console.log('계정연동')
+              break
+          }
+        } else if (res && res.access_token) {
+          console.log('로그인완료')
+          localStorage.setItem('user', JSON.stringify(res))
+        } else {
+          throw new Error('로그인 오류')
+        }
+        return res
+      }),
+    )
+  }
   /**
    *
    * @param email
