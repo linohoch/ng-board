@@ -3,6 +3,8 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, map, Observable, of} from "rxjs";
 import {Article} from "../data";
 import {Router} from "@angular/router";
+import {DialogControl} from "../dialog/dialog.component";
+import {TransferService} from "./transfer.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,8 @@ export class HttpService {
     })
   };
   constructor(private http: HttpClient,
-              private router: Router) {
+              private router: Router,
+              public dialog: DialogControl,) {
   }
   errorHandler(e:any){
     alert(e.message)
@@ -36,6 +39,10 @@ export class HttpService {
   }
 
 //user-service
+  getUserInfo() {
+    return this.http.get(``)
+  }
+
   isSignedIn(){
     return !!localStorage.getItem('user')
   }
@@ -58,25 +65,51 @@ export class HttpService {
       }),
       catchError(async (err) => this.errorHandler(err.error)))
   }
-  signInWithGoogle(credential: any) {
-    return this.http.post(`${this.baseUrl}/api/v1/auth/google/callback2`, {'credential':credential}, this.httpOptions).pipe(
-      map((res: any) => {
-        if(res.statusCode===202) {
-          switch (res.message){
-            case 'need signup first':
-              console.log('회원가입')
-              this.router.navigate(['signup'])
-              break
-            case 'need link':
-              console.log('계정연동')
-              break
-          }
-        } else if (res && res.access_token) {
-          console.log('로그인완료')
+
+
+  linkWithGoogle(credential: any){
+    return this.http.post(`${this.baseUrl}/api/v1/auth/google/link`,{'credential':credential}, this.httpOptions).pipe(
+      map((res:any)=> {
+        if (res && res.access_token) {
           localStorage.setItem('user', JSON.stringify(res))
         } else {
           throw new Error('로그인 오류')
         }
+        return res
+      }),
+      catchError(async (err) => this.errorHandler(err.error)))
+  }
+  dialogActionForLink (credential:any) {
+    const result = this.dialog.openDialog({
+      title:'계정연동',
+      contents:'email로 가입된 회원정보가 존재합니다.',
+      btn:{
+        okBtnText:'연결합니다.',
+        noBtnText:'취소.',
+      },
+    })
+    result.afterClosed().subscribe((result: any)=>{
+      console.log('after->', result)
+      if(result){
+        this.linkWithGoogle(credential).subscribe(()=>{
+          this.router.navigateByUrl('/')
+        })
+      }else {
+        this.router.navigate(['signup'])
+      }
+
+    })
+ }
+  signInWithGoogle(credential: any) {
+    return this.http.post(`${this.baseUrl}/api/v1/auth/google/callback2`, {'credential':credential}, this.httpOptions).pipe(
+      map((res: any) => {
+        if (res && res.access_token) {
+          console.log('로그인완료')
+          localStorage.setItem('user', JSON.stringify(res))
+        }
+        // else {
+        //   throw new Error('로그인 오류')
+        // }
         return res
       }),
     )

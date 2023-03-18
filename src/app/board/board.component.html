@@ -1,16 +1,17 @@
-<div *ngIf="articleList">
-<div *ngFor="let article of articleList">
-  <div>
-    <a [title]="article.no+'details'"
-       [routerLink]="['/board',article.no]">
-    {{article.no}}
-    {{article.title}}
-    </a>
-  <p *ngIf="article.photo">
-    url: {{article.photo}}
-  </p>
+<div *ngIf="isLoading$ | async">Loading...</div>
+<div *ngIf="articles$">
+  <div *ngFor="let article of articles$ | async">
+    <div>
+      <a [title]="article.no+'details'"
+         [routerLink]="['/board/article',article.no]">
+      {{article.no}}
+      {{article.title}}
+      </a>
+    <p *ngIf="article.photo">
+      url: {{article.photo}}
+    </p>
+    </div>
   </div>
-</div>
 </div>
 
 

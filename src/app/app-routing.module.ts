@@ -5,6 +5,7 @@ import {BoardComponent} from "./board/board.component";
 import {BoardDetailComponent} from "./board-detail/board-detail.component";
 import {AuthComponent} from "./auth/auth.component";
 import {SignupComponent} from "./signup/signup.component";
+import {BoardEditComponent} from "./board-edit/board-edit.component";
 
 const routes: Routes = [
   {
@@ -17,11 +18,19 @@ const routes: Routes = [
   },
   {
     path: 'board',
+    redirectTo: 'board/1',
+  },
+  {
+    path: 'board/:page',
     component: BoardComponent,
   },
   {
-    path: 'board/:articleNo',
+    path: 'board/article/:articleNo',
     component: BoardDetailComponent,
+  },
+  {
+    path: 'board/article/:articleNo/edit',
+    component: BoardEditComponent,
   },
   {
     path: 'login',

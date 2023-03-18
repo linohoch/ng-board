@@ -12,6 +12,9 @@ import {HttpService} from "../services/http.service";
 import {MyErrorStateMatcher} from "../auth/auth.component";
 import {catchError, map, Observable, of} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
+import {TransferService} from "../services/transfer.service";
+import {select, Store} from "@ngrx/store";
+import {Google, selectTemp} from "../core/user";
 
 @Component({
   selector: 'app-signup',
@@ -23,9 +26,11 @@ export class SignupComponent {
               private service: HttpService,
               private uniqueEmailValidator: UniqueEmailValidator,
               private router: Router,
-              private activatedRouter: ActivatedRoute) {
+              private activatedRouter: ActivatedRoute,
+              private transfer: TransferService,
+              private store: Store) {
   }
-
+  tempUser: Observable<Google|null> | undefined
   matcher = new MyErrorStateMatcher();
 // /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}/
   signUpForm = this.formBuilder.group({
@@ -42,7 +47,17 @@ export class SignupComponent {
     lastName: new FormControl('', Validators.required),
     provider: 'credential'
   })
-
+  ngOnInit(){
+    this.tempUser=this.store.pipe(select(selectTemp))
+    this.tempUser.subscribe(r=>{
+      if(r){
+        this.signUpForm.get('email')?.setValue(r.email);
+        this.signUpForm.get('firstName')?.setValue(r.given_name);
+        this.signUpForm.get('lastName')?.setValue(r.family_name);
+        this.signUpForm.get('provider')?.setValue('google');
+      }
+    })
+  }
 
   matchPassword(targetControl: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {

@@ -1,0 +1,14 @@
+<div class="dialog-wrapper" *ngIf="data">
+
+  <h1 mat-dialog-title>Hi {{data.title}}</h1>
+  <div mat-dialog-content>
+    <p>{{data.contents}}</p>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button
+            (click)="onClick(false)">{{data.btn ? data.btn.noBtnText : "cancel"}}</button>
+    <button mat-button
+            (click)="onClick(true)">{{data.btn ? data.btn.okBtnText : "approve"}}</button>
+  </div>
+
+</div>

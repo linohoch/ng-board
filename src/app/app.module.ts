@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -13,14 +13,23 @@ import {BoardComponent} from './board/board.component';
 import {BoardDetailComponent} from './board-detail/board-detail.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
-import {HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {HttpService} from "./services/http.service";
-import { AuthComponent } from './auth/auth.component';
+import {AuthComponent} from './auth/auth.component';
 import {MatCardModule} from "@angular/material/card";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from "@angular/material/table";
-import { SignupComponent } from './signup/signup.component';
+import {SignupComponent} from './signup/signup.component';
 import {AuthInterceptor} from "./interceptor/auth.interceptor";
+import {DialogComponent} from './dialog/dialog.component';
+import {MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
+import {TransferService} from "./services/transfer.service";
+import {StoreDevtoolsModule} from "@ngrx/store-devtools";
+import {StoreModule} from '@ngrx/store';
+import {EffectsModule} from '@ngrx/effects';
+import {reducers, metaReducers} from './core'
+import {BoardEditComponent} from "./board-edit/board-edit.component";
+import {BoardEffects} from "./core/board";
 
 @NgModule({
   declarations: [
@@ -31,8 +40,18 @@ import {AuthInterceptor} from "./interceptor/auth.interceptor";
     BoardDetailComponent,
     AuthComponent,
     SignupComponent,
+    DialogComponent,
+    BoardEditComponent,
   ],
   imports: [
+    EffectsModule.forRoot([BoardEffects]),
+    StoreModule.forRoot(reducers, {
+      metaReducers,
+    }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      autoPause: true
+    }),
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,
@@ -45,16 +64,26 @@ import {AuthInterceptor} from "./interceptor/auth.interceptor";
     MatCardModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    MatDialogModule,
   ],
+  // exports: [
+  //   MatDialogModule
+  // ],
   providers: [
     HttpService,
+    TransferService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
-    }
+    },
+    {
+      provide: MatDialogRef,
+      useValue: {}
+    },
   ],
   bootstrap: [AppComponent,]
 })
-export class AppModule { }
+export class AppModule {
+}

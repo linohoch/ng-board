@@ -21,6 +21,7 @@ export class AuthInterceptor implements HttpInterceptor {
       request = request.clone(
         {
           setHeaders: {"Authorization": `Bearer ${JSON.parse(user).access_token}`,},
+          withCredentials: true
         })
     }
 

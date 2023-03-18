@@ -5,7 +5,7 @@
       <div class="card-header">
         <mat-card-title>SignUp</mat-card-title>
       </div>
-      <div class="card-body">
+      <div class="card-body" *ngIf="tempUser | async as temp">
         <form [formGroup]="signUpForm" class="signup-form" (ngSubmit)="onSubmit()">
           <mat-form-field>
             <mat-label>email</mat-label>
