@@ -1,0 +1,18 @@
+
+.edit-form {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  width: 100%;
+  .title-input {
+    width: 500px;
+    height: 75px;
+  }
+  .contents-input {
+    width: 500px;
+    height: 300px;
+    textarea {
+      height: 300px;
+    }
+  }
+}

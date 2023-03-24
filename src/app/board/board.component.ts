@@ -1,11 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Injectable, OnInit} from '@angular/core';
 import {Article} from "../data";
 import {HttpService} from "../services/http.service";
 import {select, Store} from "@ngrx/store";
 import * as BoardActions from '../core/board/board.actions';
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {selectArticles, selectError, selectIsLoading} from "../core/board";
 import {ActivatedRoute} from "@angular/router";
+import {MatPaginatorIntl} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-board',
@@ -13,17 +14,19 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements OnInit {
-  page:number = 1;
+  page: number = 1;
   isLoading$: Observable<boolean>;
   error$: Observable<string | null>;
   articles$: Observable<Article[]>;
 
-  // articleList: Article[] | undefined
+  pageIndex: number | undefined;
+  pageLength: number | undefined;
+
 
   constructor(private service: HttpService,
               private store: Store,
               private activatedRoute: ActivatedRoute) {
-    this.activatedRoute.snapshot.paramMap.get('page')
+    this.activatedRoute.snapshot.queryParamMap.get('page')
     this.isLoading$ = this.store.pipe(select(selectIsLoading))
     this.error$ = this.store.pipe(select(selectError))
     this.articles$ = this.store.pipe(select(selectArticles))
@@ -35,6 +38,26 @@ export class BoardComponent implements OnInit {
     // })
     this.store.dispatch(BoardActions.getArticles())
   }
+  getPage(e: { pageIndex: any; }){
+    console.log(e.pageIndex)
+  }
 
+}
+@Injectable()
+export class MyCustomPaginatorIntl implements MatPaginatorIntl {
+  changes = new Subject<void>();
+  firstPageLabel = $localize`First page`;
+  itemsPerPageLabel = $localize`Items per page:`;
+  lastPageLabel = $localize`Last page`;
 
+  nextPageLabel = $localize`Next page`;
+  previousPageLabel = $localize`Previous page`;
+
+  getRangeLabel(page: number, pageSize: number, length: number): string {
+    if (length === 0) {
+      return $localize`Page 1 of 1`;
+    }
+    const amountPages = Math.ceil(length / pageSize);
+    return $localize`Page ${page + 1} of ${amountPages}`;
+  }
 }

@@ -1,0 +1,13 @@
+.container {
+  display: grid;
+  justify-content: center;
+}
+.card-wrapper {
+  width: 80vw;
+  margin: 5px;
+  text-align: center;
+
+  .title>a {
+    text-decoration-line: none;
+  }
+}

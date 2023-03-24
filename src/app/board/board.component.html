@@ -1,16 +1,31 @@
 <div *ngIf="isLoading$ | async">Loading...</div>
-<div *ngIf="articles$">
-  <div *ngFor="let article of articles$ | async">
-    <div>
-      <a [title]="article.no+'details'"
-         [routerLink]="['/board/article',article.no]">
-      {{article.no}}
-      {{article.title}}
-      </a>
-    <p *ngIf="article.photo">
-      url: {{article.photo}}
-    </p>
-    </div>
+<div class="container" *ngIf="articles$">
+  <mat-paginator [pageIndex]="1"
+                 (page)="getPage($event)"
+                 [length]="100"
+                 [pageSize]="10"
+                 [pageSizeOptions]="[5, 10]"
+                 aria-label="Select page">
+  </mat-paginator>
+  <div class="card-wrapper" *ngFor="let article of articles$ | async">
+    <mat-card>
+      <mat-card-header>
+        {{article.no}}
+        <mat-card-subtitle>{{article.userEmail}}</mat-card-subtitle>
+        <mat-card-title class="title">
+          <a [title]="article.no+'details'"
+             [routerLink]="['/article',article.no]">
+            {{article.title}}
+          </a>
+        </mat-card-title>
+        <p *ngIf="article.photo">
+          <img src="/" alt="photo">
+          url: {{article.photo}}
+        </p>
+      </mat-card-header>
+      <mat-card-content></mat-card-content>
+      <mat-card-actions></mat-card-actions>
+    </mat-card>
   </div>
 </div>
 

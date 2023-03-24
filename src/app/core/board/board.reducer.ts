@@ -1,6 +1,7 @@
 import {Action, createReducer, on} from "@ngrx/store";
 import * as BoardActions from './board.actions'
 import {BoardState, initialState} from "./board.state";
+import {state} from "@angular/animations";
 
 export function reducer(state: BoardState | undefined, action: Action) {
   return BoardReducer(state, action)
@@ -29,6 +30,38 @@ const BoardReducer = createReducer(
     isLoading: true,
     error: action.error
   })),
+  on(BoardActions.getComments, (state) => ({...state, isLoading: true})),
+  on(BoardActions.getCommentsSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    commentList: action.commentList
+  })),
+  on(BoardActions.getCommentsFailed, (state, action) => ({
+    ...state,
+    isLoading: true,
+    error: action.error
+  })),
+  
+  on(BoardActions.setComment, (state, action)=>({
+    ...state,
+    comment: action.comment
+  })),
+  on(BoardActions.createComment, (state, action)=>({
+    ...state,
+    isLoading: true,
+  })),
+  on(BoardActions.createCommentSuccess, (state, action)=> ({
+    ...state,
+    isLoading: false,
+    comment: action.comment
+  })),
+  on(BoardActions.createCommentFailed, (state, action)=> ({
+    ...state,
+    isLoading: true,
+    error: action.error
+  }))
+
+
 )
 
 

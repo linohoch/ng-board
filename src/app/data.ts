@@ -2,7 +2,7 @@ export interface Article {
   shopNo:number|null;
   no:number;
   title:string;
-  // contents:string;
+  contents:string;
   userNo:number;
   userEmail:string;
   hitCnt:number;

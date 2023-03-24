@@ -5,16 +5,54 @@ export interface BoardState {
   error: string | null
   articles: Article[]
   detail: Article | null
-  temp: Article |null
+  temp: Article | null
+  comment: Comment | null
+  commentList: Comment[] | null
+
 }
 export const initialState: BoardState = {
   isLoading: false,
   error: null,
   articles: [],
   detail: null,
-  temp: null
+  temp: null,
+  comment: null,
+  commentList: []
 }
 
+export class rootComment implements Comment {
+  no: number | null | undefined
+
+  parent: number = 0
+  grp: number = 0
+  seq: number = 0
+  lv: number = 0
+
+  articleNo: number | undefined = 0;
+  userEmail: string | undefined = '';
+  contents: string | undefined = '';
+
+  likeCnt: number | null = 0;
+  insDate: Date | null | undefined
+  upDate: Date | null | undefined
+}
+
+export interface Comment {
+  no: number | null | undefined
+
+  parent: number
+  grp: number
+  seq: number
+  lv: number
+
+  articleNo: number | undefined
+  userEmail: string | undefined
+  contents: string | undefined
+
+  likeCnt: number | null
+  insDate: Date | null | undefined
+  upDate: Date | null | undefined
+}
 // export interface Board {
 //   shopNo:number|null;
 //   no:number;
@@ -28,3 +66,4 @@ export const initialState: BoardState = {
 //   // upDate:string|null;
 //   photo:string|null;
 // }
+

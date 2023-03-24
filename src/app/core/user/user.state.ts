@@ -3,7 +3,7 @@ import {Article} from "../../data";
 export interface User {
   no: number,
   email: string,
-  pw: String
+  pw: String | null
   pwLastChange: Date
   articles: Article[]
   // shop:         Shop[]
@@ -14,6 +14,8 @@ export interface User {
   provider: String
   token?: String
   roles: String[]
+  likeComment: number[]
+  likeArticle: number[]
 }
 export interface Google {
   iss: string,

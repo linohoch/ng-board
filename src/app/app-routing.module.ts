@@ -6,6 +6,7 @@ import {BoardDetailComponent} from "./board-detail/board-detail.component";
 import {AuthComponent} from "./auth/auth.component";
 import {SignupComponent} from "./signup/signup.component";
 import {BoardEditComponent} from "./board-edit/board-edit.component";
+import {BoardCreateComponent} from "./board-create/board-create.component";
 
 const routes: Routes = [
   {
@@ -18,18 +19,22 @@ const routes: Routes = [
   },
   {
     path: 'board',
-    redirectTo: 'board/1',
+    redirectTo: 'board?page=1',
   },
   {
-    path: 'board/:page',
+    path: 'board',
     component: BoardComponent,
   },
   {
-    path: 'board/article/:articleNo',
+    path: 'board/new',
+    component: BoardCreateComponent,
+  },
+  {
+    path: 'article/:articleNo',
     component: BoardDetailComponent,
   },
   {
-    path: 'board/article/:articleNo/edit',
+    path: 'article/:articleNo/edit',
     component: BoardEditComponent,
   },
   {

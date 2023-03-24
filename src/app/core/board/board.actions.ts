@@ -1,5 +1,6 @@
 import {createAction, props} from "@ngrx/store";
 import {Article} from "../../data";
+import {Comment} from "./board.state";
 
 export const appLoaded = createAction("[APP] App Loaded")
 
@@ -25,7 +26,7 @@ export const getArticlesFailed = createAction(
  */
 export const getDetail = createAction(
   "[Board-detail page] get article detail",
-  props<{ no: number }>()
+  props<{ no: any }>()
 )
 
 export const getDetailSuccess = createAction(
@@ -37,6 +38,40 @@ export const getDetailFailed = createAction(
   "[Board API] Fetch Article Failed",
   props<{ error: any }>()
 )
+
+export const getComments = createAction(
+  "[Board-detail page] get article comments",
+  props<{ no: any }>()
+)
+export const getCommentsSuccess = createAction(
+  "[Board API] Fetch Article comments Success",
+  props<{ commentList: Comment[] }>()
+)
+export const getCommentsFailed = createAction(
+  "[Board API] Fetch Article comments Failed",
+  props<{ error: any }>()
+)
+
+export const setComment = createAction(
+  "[Board-detail page] set temp state",
+  props<{ comment: Comment}>()
+)
+
+export const createComment = createAction(
+  "[Board-detail page] create new comment",
+  props<{ comment: Comment }>()
+)
+
+export const createCommentSuccess = createAction(
+  "[Board-detail page] create new comment",
+  props<{ comment: Comment }>()
+)
+
+export const createCommentFailed = createAction(
+  "[Board-detail page] create new comment",
+  props<{ error: any }>()
+)
+
 
 /**
  *  board-edit edit
@@ -84,7 +119,7 @@ export const createFailed = createAction(
  */
 export const deleteArticle = createAction(
   "[Board-edit page] send delete Article",
-  props<{ detail: Article }>()
+  props<{ articleNo: any }>()
 )
 
 export const deleteSuccess = createAction(

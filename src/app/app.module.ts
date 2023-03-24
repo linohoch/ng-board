@@ -30,6 +30,9 @@ import {EffectsModule} from '@ngrx/effects';
 import {reducers, metaReducers} from './core'
 import {BoardEditComponent} from "./board-edit/board-edit.component";
 import {BoardEffects} from "./core/board";
+import { BoardCreateComponent } from './board-create/board-create.component';
+import {MatDividerModule} from "@angular/material/divider";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
@@ -42,6 +45,7 @@ import {BoardEffects} from "./core/board";
     SignupComponent,
     DialogComponent,
     BoardEditComponent,
+    BoardCreateComponent,
   ],
   imports: [
     EffectsModule.forRoot([BoardEffects]),
@@ -66,6 +70,8 @@ import {BoardEffects} from "./core/board";
     MatButtonModule,
     MatTableModule,
     MatDialogModule,
+    MatDividerModule,
+    MatPaginatorModule,
   ],
   // exports: [
   //   MatDialogModule

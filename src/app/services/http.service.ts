@@ -14,7 +14,8 @@ export class HttpService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type':  'application/json',
-    })
+    }),
+    withCredentials: true
   };
   constructor(private http: HttpClient,
               private router: Router,
@@ -48,8 +49,12 @@ export class HttpService {
   }
   signOut(){
     //TODO 리프래시읽는데 실패할 경우를 대비해 유저이름 보냄
+    localStorage.removeItem('user')
+    window.location.reload()
     return this.http.delete(`${this.baseUrl}/api/v1/auth/logout`).pipe(
-      map((e)=>{return e})
+      map((e) => {
+        return e
+      })
     )
   }
   signIn(data: Partial<{ email: string | null; password: string | null; }>)
@@ -139,6 +144,20 @@ export class HttpService {
         console.log(err.error.statusCode)
         // throw new Error(err.error.message)
         this.errorHandler(err.error)
+      })
+    )
+  }
+  refreshToken(){
+    return this.http.get(`${this.baseUrl}/api/v1/auth/refresh`).pipe(
+      map((res: any) => {
+        if (res && res.access_token) {
+          localStorage.setItem('user', JSON.stringify(res))
+          console.log('receive token success')
+        }
+        return res
+      }),
+      catchError((err)=>{
+        return this.errorHandler(err.error);
       })
     )
   }
