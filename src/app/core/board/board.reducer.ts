@@ -41,7 +41,7 @@ const BoardReducer = createReducer(
     isLoading: true,
     error: action.error
   })),
-  
+
   on(BoardActions.setComment, (state, action)=>({
     ...state,
     comment: action.comment
@@ -59,7 +59,14 @@ const BoardReducer = createReducer(
     ...state,
     isLoading: true,
     error: action.error
-  }))
+  })),
+  // on(BoardActions.getCommentBy, (state, action)=> {
+  //   const find = state.comment?.filter((comment)=>comment.no===action.no)
+  //     return {
+  //       ...state,
+  //       comment: find
+  //     }
+  // })
 
 
 )

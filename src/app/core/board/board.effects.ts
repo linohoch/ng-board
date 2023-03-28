@@ -1,16 +1,18 @@
 import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import * as BoardActions from './board.actions'
-import {catchError, map, mergeMap, of} from "rxjs";
+import {catchError, map, mergeMap, of, tap} from "rxjs";
 import {BoardService} from "../../services/board.service";
 import {select, Store} from "@ngrx/store";
 import {selectComment} from "./board.selector";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class BoardEffects {
   constructor(private actions$: Actions,
               private service: BoardService,
-              private store: Store) {
+              private store: Store,
+              private router: Router) {
   }
 
   getArticles = createEffect(() =>
@@ -85,7 +87,10 @@ export class BoardEffects {
           }
         )
         return this.service.createComment(comment).pipe(
-          map((comment) => BoardActions.createCommentSuccess({comment: comment})),
+          map((comment) => {
+            return BoardActions.createCommentSuccess({comment: comment})
+          }),
+          tap(() => this.router.navigateByUrl(this.router.url)),
           catchError(err => of(BoardActions.createCommentFailed({error: err.message})))
         )
       })

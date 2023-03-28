@@ -1,14 +1,15 @@
 <div *ngIf="isLoading$ | async">Loading...</div>
 <div class="container" *ngIf="articles$">
-  <mat-paginator [pageIndex]="1"
-                 (page)="getPage($event)"
-                 [length]="100"
-                 [pageSize]="10"
-                 [pageSizeOptions]="[5, 10]"
+  <mat-paginator #paginator
+                 [pageIndex]="pageIndex"
+                 (page)="getPageEvent($event)"
+                 [length]="totalCnt"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="pageSizeOptions"
                  aria-label="Select page">
   </mat-paginator>
-  <div class="card-wrapper" *ngFor="let article of articles$ | async">
-    <mat-card>
+  <div class="card-wrapper" *ngFor="let article of articles$ | async ; let i = index">
+    <mat-card *ngIf="(pageIndex*pageSize)<=i && i<(pageIndex+1)*pageSize">
       <mat-card-header>
         {{article.no}}
         <mat-card-subtitle>{{article.userEmail}}</mat-card-subtitle>

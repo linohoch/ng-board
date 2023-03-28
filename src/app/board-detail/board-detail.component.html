@@ -7,7 +7,7 @@
         <div class="title-area">
           <div>{{article.no}}</div>
           <div class="title">{{article.title}}</div>
-          <div>작성일:{{article.no}}</div>
+          <div>작성: {{calDate(article.insDate)}}</div>
         </div>
         <div class="sub-area">
           <div>{{article.userEmail}}</div>
@@ -28,47 +28,89 @@
               <img src="{{url}}" alt="photo"/>
             </div>
         </div>
-        <div *ngIf="article.userEmail===me">
-          <button (click)="goToEdit()">edit</button>
-          <button (click)="delete()">delete</button>
-        </div>
-      </div>
-
-      <div class="comment-container">
-        <div class="comment-textarea-wrapper">
-            <textarea class="comment-textarea"
-                      placeholder="{{me?'':'댓글을 작성하려면 로그인하세요'}}"
-                      #commentText
-                      [attr.data-grp]="0"
-                      [attr.data-seq]="0"
-                      [attr.data-lv]="0"
-                      [attr.data-parent]="0"
-                      ></textarea>
+<!--        <div *ngIf="article.userEmail===me">-->
+          <button (click)="goToEdit()"
+                  [disabled]="article.userEmail!==me">edit</button>
+          <button (click)="delete()"
+                  [disabled]="article.userEmail!==me">delete</button>
+<!--        </div>-->
+        <div class="comment-area">
+          <div class="comment-textarea-wrapper">
+              <textarea class="comment-textarea"
+                        placeholder="{{me?'':'댓글을 작성하려면 로그인하세요'}}"
+                        #commentText
+                        [attr.data-grp]="0"
+                        [attr.data-seq]="0"
+                        [attr.data-lv]="0"
+                        [attr.data-parent]="0"
+              ></textarea>
             <button class="lv1-comment-btn"
                     (click)="commentBtn(commentText)">comment</button>
             <button class="like-btn"
                     [disabled]="me===article.userEmail"
-                    >like</button>
+            >like</button>
             <button class="del-btn"
                     [disabled]="me!==article.userEmail"
-                    >delete</button>
+                    (click)="delete()"
+            >delete</button>
+          </div>
         </div>
+      </div>
 
+      <div class="comment-container">
         <div>
+          <div class="comment-list-container" *ngIf="!commentList$">
+            댓글없다
+          </div>
           <div class="comment-list-container" *ngIf="commentList$">
             <div>
               <div>댓글 {{(commentList$|async)?.length}}개</div>
             </div>
-            <div class="comment unselected lv{{comment.lv}}"
-                 *ngFor="let comment of commentList$ | async">
-              <div class="comment-contents">
-                <div>{{comment.no}}</div>
-                <div>{{comment.userEmail}}<div *ngIf="article.userEmail===comment.userEmail">[]</div></div>
-                <div>{{comment.contents}}</div>
-                <div>ins: {{comment.insDate}}</div>
-                <div>like: {{comment.likeCnt}}</div>
+
+            <div class="comment lv"
+                 id="c-{{comment.no}}"
+                 style="--lv: {{comment.lv-1}}"
+                 *ngFor="let comment of commentList$ | async; let index = index">
+              <div class="indent-wrapper">
+                <div class="line" *ngFor="let th of comment.thread; let i = index;"
+                     (mouseover)="focusThread(th)"
+                     (mouseout)="focusThread(0)"
+                     (click)="foldThread(th)">
+                  <i class="threadline{{focusedThread===th?'-hover':''}}"
+                     [attr.data-no]="th"></i>
+                </div>
               </div>
-              <div class="comment-textarea-wrapper">
+              <div class="comment-wrapper">
+                <div class="comment-left">
+                  <div class="unfold-button">
+                    <button (click)="unfoldThread(comment.no)"> + </button>
+                  </div>
+                  <div class="profile-image">
+                    <div>{{comment.userEmail?.charAt(0)}}</div>
+                  </div>
+                </div>
+                <div class="comment-contents">
+                  <div class="comment-header">
+                    <div>{{comment.userEmail}}<div *ngIf="article.userEmail===comment.userEmail">[]</div></div>
+                    <div>  ∙ {{calDate(comment.insDate)}}</div>
+                    <div>[ {{comment.no}} ]</div>
+                  </div>
+                  <div class="comment-content">{{comment.contents}}</div>
+                  <div class="button-wrapper">
+                    <div>like: {{comment.likeCnt}}</div>
+                    <button class="like-btn"
+                            [attr.data-no]="comment.no"
+                            [disabled]="me===comment.userEmail"
+                            type="button"
+                            (click)="likeCommentBtn()">like</button>
+                    <button (click)="showTextareaBtn(inputComment)">comment</button>
+                    <button class="delete-btn"
+                            [attr.data-no]="comment.no"
+                            [disabled]="me!==comment.userEmail"
+                            type="button"
+                            (click)="delCommentBtn(comment.no)">delete</button>
+                  </div>
+                  <div class="comment-textarea-wrapper">
                   <textarea class="comment-textarea"
                             placeholder="{{me?'':'댓글을 작성하려면 로그인하세요'}}"
                             #inputComment
@@ -76,40 +118,25 @@
                             [attr.data-seq]="comment.seq"
                             [attr.data-lv]="comment.lv"
                             [attr.data-parent]="comment.no"></textarea>
-                  <button class="comment-btn"
-                          [disabled]="!me"
-                          type="button"
-                          (click)="commentBtn(inputComment)">comment</button>
-                  <button class="like-btn"
-                          [attr.data-no]="comment.no"
-                          [disabled]="me===comment.userEmail"
-                          type="button"
-                          (click)="likeCommentBtn()">like</button>
-                  <button class="delete-btn"
-                          [attr.data-no]="comment.no"
-                          [disabled]="me!==comment.userEmail"
-                          type="button"
-                          (click)="delCommentBtn()"
-                          >delete</button>
-  <!--              <button th:data-article-no="${vo.no}"-->
-  <!--                      th:data-grp="${vo.grp}"-->
-  <!--                      th:data-seq="${vo.seq}"-->
-  <!--                      th:data-lv="${vo.lv}"-->
-  <!--                      th:data-comment-no="${vo.commentNo}"-->
-  <!--                      th:data-parent-no="${vo.parentNo}"-->
-  <!--                      class="comment_btn">comment</button>-->
-  <!--              <button class="comment_like_btn"-->
-  <!--                      th:data-likeYn="${vo.likeYn}"-->
-  <!--                      th:data-article-no="${vo.no}"-->
-  <!--                      th:data-comment-no="${vo.commentNo}">likeBtn</button>-->
+                    <button class="comment-btn"
+                            [disabled]="!me"
+                            type="button"
+                            (click)="commentBtn(inputComment)">comment</button>
+                  </div>
+                </div>
               </div>
             </div>
+
           </div>
-          <div class="comment-list-container">
-            댓글이 없다
-          </div>
+
         </div>
+
       </div>
+      <div>
+          bottom
+
+      </div>
+
     </div>
   </div>
 </div>

@@ -52,6 +52,10 @@ export const getCommentsFailed = createAction(
   props<{ error: any }>()
 )
 
+export const getCommentBy = createAction(
+  "[Board-detail page] get comment by no",
+  props<{no: any}>()
+)
 export const setComment = createAction(
   "[Board-detail page] set temp state",
   props<{ comment: Comment}>()

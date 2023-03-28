@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import articleList, {Article} from "../data";
 import {HttpService} from "../services/http.service";
 import {select, Store} from "@ngrx/store";
@@ -7,7 +7,7 @@ import {Location} from "@angular/common";
 import {
   appLoaded,
   Comment,
-  rootComment, selectComment,
+  rootComment,
   selectCommentList,
   selectDetail,
   selectError,
@@ -31,6 +31,8 @@ export class BoardDetailComponent implements OnInit {
   commentList$: Observable<Comment[] | null>;
   me: string | undefined;
   newComment: rootComment = new rootComment()
+  now: any
+  focusedThread: number =0;
 
   constructor(private service: HttpService,
               private store: Store,
@@ -51,7 +53,29 @@ export class BoardDetailComponent implements OnInit {
     this.me = logUser && JSON.parse(logUser).username
     this.newComment.userEmail = this.me
     this.newComment.articleNo = Number(this.articleNo)
+    this.now= new Date
   }
+  initialiseInvites() {
+
+  }
+  numbers(num: any){
+    return Array(Number(num)).fill(1).map((x,i)=>i+1);
+  }
+  calDate(date: any){
+    let time = this.now - Number(new Date(date))
+    let result;
+    if( time <1000 * 60) {
+      result = Math.trunc(time / (1000 )) + '초전'
+    } else if (time < 1000 * 60 * 60) {
+      result = Math.trunc(time / (1000 * 60)) + '분전'
+    } else if (time < 1000 * 60 * 60 * 24) {
+      result = Math.trunc(time / (1000 * 60 * 60)) + '시간전'
+    } else {
+      result = Math.trunc(time / (1000 * 60 * 60 * 24)) + '일전'
+    }
+    return result
+  }
+
   goToEdit(){
     this.router.navigate([`article`,this.articleNo,'edit'])
   }
@@ -63,14 +87,56 @@ export class BoardDetailComponent implements OnInit {
       this.newComment.contents = textarea.value
       this.newComment = {...this.newComment, ...textarea.dataset}
       this.store.dispatch(BoardActions.setComment({comment: this.newComment}))
-      // this.store.dispatch(BoardActions.createComment({comment: this.newComment}))
     }
-    // this.boardService.createComment(this.newComment).subscribe()
   }
-  likeCommentBtn():void {
+  likeCommentBtn(): void {
 
   }
-  delCommentBtn():void {
 
+  delCommentBtn(commentNo:any): void {
+    this.boardService.deleteComment(this.articleNo, commentNo).subscribe()
+  }
+
+  showTextareaBtn(textarea: any): void {
+    console.log(textarea.dataset)
+    let display = textarea.parentElement.style.display
+    textarea.parentElement.style.display = display === 'flex' ? 'none' : 'flex'
+  }
+
+  focusThread(num: any): void {
+    this.focusedThread = num
+  }
+
+  foldThread(no: any): void {
+    let group: Comment[] | undefined = [];
+    this.commentList$.subscribe({
+      next(com) {
+        group = com?.filter(c => {
+          return c.thread?.includes(no)
+        })
+      }
+    })
+    if (group !== undefined) {
+      group.forEach((comment, i) => {
+        document.getElementById(`c-${comment.no}`)?.classList.add(i === 0 ? 'fold' : 'fold-tail')
+      })
+    }
+  }
+
+  unfoldThread(no: any): void {
+    let group: Comment[] | undefined = [];
+    this.commentList$.subscribe({
+      next(com) {
+        group = com?.filter(c => {
+          return c.thread?.includes(no)
+        })
+      }
+    })
+    if (group !== undefined) {
+      group.forEach((comment, i) => {
+        document.getElementById(`c-${comment.no}`)?.classList.remove(i === 0 ? 'fold' : 'fold-tail')
+      })
+
+    }
   }
 }

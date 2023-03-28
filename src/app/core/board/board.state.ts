@@ -23,6 +23,7 @@ export const initialState: BoardState = {
 export class rootComment implements Comment {
   no: number | null | undefined
 
+  thread: number[] = []
   parent: number = 0
   grp: number = 0
   seq: number = 0
@@ -40,6 +41,7 @@ export class rootComment implements Comment {
 export interface Comment {
   no: number | null | undefined
 
+  thread: number[] | null
   parent: number
   grp: number
   seq: number

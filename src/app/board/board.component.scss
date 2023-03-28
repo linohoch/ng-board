@@ -4,9 +4,11 @@
 }
 .card-wrapper {
   width: 80vw;
-  margin: 5px;
   text-align: center;
 
+  mat-card {
+    margin: 5px;
+  }
   .title>a {
     text-decoration-line: none;
   }

@@ -19,9 +19,10 @@ export class BoardComponent implements OnInit {
   error$: Observable<string | null>;
   articles$: Observable<Article[]>;
 
-  pageIndex: number | undefined;
-  pageLength: number | undefined;
-
+  totalCnt: number | undefined;
+  pageIndex: number = 0;
+  pageSize: number  = 5
+  pageSizeOptions: number[] = [5, 10]
 
   constructor(private service: HttpService,
               private store: Store,
@@ -30,6 +31,9 @@ export class BoardComponent implements OnInit {
     this.isLoading$ = this.store.pipe(select(selectIsLoading))
     this.error$ = this.store.pipe(select(selectError))
     this.articles$ = this.store.pipe(select(selectArticles))
+    this.articles$.subscribe(l=> {
+      this.totalCnt = l.length
+    })
   }
 
   ngOnInit(): void {
@@ -38,8 +42,9 @@ export class BoardComponent implements OnInit {
     // })
     this.store.dispatch(BoardActions.getArticles())
   }
-  getPage(e: { pageIndex: any; }){
-    console.log(e.pageIndex)
+  getPageEvent(e: { pageIndex: any; pageSize: any}){
+    this.pageIndex=e.pageIndex
+    this.pageSize=e.pageSize
   }
 
 }

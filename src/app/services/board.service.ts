@@ -29,4 +29,7 @@ export class BoardService {
     console.log('state: ',res))
     return this.http.post<any>(`${this.baseUrl}/article/${comment.articleNo}/comment`,comment)
   }
+  deleteComment(articleNo: any, commentNo: any){
+    return this.http.delete<any>(`${this.baseUrl}/article/${articleNo}/comment/${commentNo}`)
+  }
 }
