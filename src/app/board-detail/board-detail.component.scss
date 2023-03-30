@@ -1,12 +1,15 @@
 :root{
 
 }
+#back-btn {
+  background-color: #dadada;
+}
 .container {
   display: flex;
   justify-content: center;
 }
 .contents-wrapper {
-  margin-top: 50px;
+  margin-top: 10px;
   display: grid;
   width: 90vw;
 
@@ -56,6 +59,10 @@
   }
 
   .comment-container {
+    .author {
+      font-size: xx-small;
+      color: #1976d2;
+    }
     .indent-wrapper {
       position: absolute;
       left: 0;

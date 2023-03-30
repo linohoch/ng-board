@@ -4,7 +4,7 @@ import * as BoardActions from './board.actions'
 import {catchError, map, mergeMap, of, tap} from "rxjs";
 import {BoardService} from "../../services/board.service";
 import {select, Store} from "@ngrx/store";
-import {selectComment} from "./board.selector";
+import {selectComment, selectDetail} from "./board.selector";
 import {Router} from "@angular/router";
 
 @Injectable()
@@ -94,6 +94,40 @@ export class BoardEffects {
           catchError(err => of(BoardActions.createCommentFailed({error: err.message})))
         )
       })
+    )
+  )
+  setArticle = createEffect(()=>
+    this.actions$.pipe(
+      ofType(BoardActions.setArticle),
+      map(action => action.detail),
+      mergeMap((data) => {
+        let detail = data
+        this.store.pipe(select(selectDetail)).subscribe(temp=> {
+          if (temp !== null) {
+            detail = temp
+          }
+        })
+        return this.service.createArticle(detail).pipe(
+          map((detail) => {
+            return BoardActions.createSuccess({detail: detail})
+          }),
+          tap(() => this.router.navigate(['/board'])),
+          catchError(err => of(BoardActions.createFailed({error: err.message})))
+        )
+      })
+    )
+  )
+  deleteArticle = createEffect(()=>
+    this.actions$.pipe(
+      ofType(BoardActions.deleteArticle),
+      map(action => action.articleNo),
+      mergeMap((articleNo) => this.service.deleteArticle(articleNo).pipe(
+        map(() => {
+          return BoardActions.deleteSuccess()
+        }),
+        tap(() => this.router.navigate(['/board'])),
+        catchError(err => of(BoardActions.deleteFailed({error: err.message})))
+      )),
     )
   )
 }

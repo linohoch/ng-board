@@ -1,10 +1,9 @@
 import {Component, Injectable, OnInit} from '@angular/core';
-import {Article} from "../data";
 import {HttpService} from "../services/http.service";
 import {select, Store} from "@ngrx/store";
 import * as BoardActions from '../core/board/board.actions';
 import {Observable, Subject} from "rxjs";
-import {selectArticles, selectError, selectIsLoading} from "../core/board";
+import {Article, selectArticles, selectError, selectIsLoading} from "../core/board";
 import {ActivatedRoute} from "@angular/router";
 import {MatPaginatorIntl} from "@angular/material/paginator";
 

@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {select, Store} from "@ngrx/store";
-import {appLoaded, selectDetail} from "../core/board";
-import {Article} from "../data";
+import {appLoaded, Article, selectDetail, selectTemp} from "../core/board";
 import {Location} from "@angular/common";
 import {ActivatedRoute, NavigationEnd, Router, RoutesRecognized} from "@angular/router";
 import * as BoardActions from './../core/board/board.actions'
@@ -12,12 +11,9 @@ import {FormBuilder, FormControl, Validators} from "@angular/forms";
   templateUrl: './board-edit.component.html',
   styleUrls: ['./board-edit.component.scss']
 })
-export class BoardEditComponent {
+export class BoardEditComponent implements OnInit{
   articleNo = this.activatedRoute.snapshot.paramMap.get('articleNo')
-  // isLoading$: Observable<boolean>;
-  // error$: Observable<string | null>;
-  // detail$: Observable<Article | null>;
-  detail: Article | null | undefined;
+  detail: Article | undefined;
   me: string | undefined;
   editForm = this.formBuilder.group({
     title: new FormControl('', Validators.required),
@@ -29,32 +25,51 @@ export class BoardEditComponent {
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private formBuilder: FormBuilder) {
-    this.store.pipe(select(selectDetail))
-              .subscribe(next => {
-                if (next) {
-                  this.detail = Object.assign({}, next)
-                }
-              })
+    this.store.dispatch(BoardActions.getDetail({no:this.articleNo}))
   }
 
   ngOnInit() {
+    this.store.pipe(select(selectDetail))
+      .subscribe(next => {
+        if (next) {
+          console.log(next)
+          this.detail = Object.assign({}, next)
+          this.editForm.get('title')?.setValue(this.detail?.title)
+          this.editForm.get('contents')?.setValue(this.detail?.contents)
+        }
+      })
     const localUser = localStorage.getItem('user')
-    if(localUser) {
+    if (localUser) {
       this.me = JSON.parse(localUser).username
     }
-    this.detail && this.editForm.get('title')?.setValue(this.detail?.title)
-    this.detail && this.editForm.get('contents')?.setValue(this.detail?.contents)
   }
 
-  onSubmit(): void {
+  submit(): void {
     const title = this.editForm.get('title')?.value
-    if (title != null && this.detail) {
-      this.detail.title = title
+    const contents = this.editForm.get('contents')?.value
+    if (title != null && contents !=null) {
+      console.log(title, contents)
+      this.store.dispatch(BoardActions.setArticle({detail: {title: title, contents: contents}}))
     }
-    this.detail && this.store.dispatch(BoardActions.editArticle({detail: this.detail}))
   }
-  deleteBtn() {
-    this.detail && this.store.dispatch(BoardActions.deleteArticle({articleNo: Number(this.articleNo)}))
+  save() {
+    let title = this.editForm.get('title')?.value
+    let contents = this.editForm.get('contents')?.value
+    if (title != null && contents !=null && this.detail!==undefined) {
+      this.detail.title = title
+      this.detail.contents = contents
+      console.log(this.detail)
+      this.store.dispatch(BoardActions.setEditedArticle({temp: this.detail}))
+    }
+  }
+  getTemp() {
+    this.store.pipe(select(selectTemp)).subscribe(next=> {
+      if(next) {
+        this.detail = next
+        this.editForm.get('title')?.setValue(this.detail?.title)
+        this.editForm.get('contents')?.setValue(this.detail?.contents)
+      }
+    })
   }
   cancel(){
     this.location.back()

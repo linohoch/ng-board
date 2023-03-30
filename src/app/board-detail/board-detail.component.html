@@ -1,8 +1,14 @@
 <div class="container">
   <div class="">
     <div *ngIf="isLoading$ | async">Loading...</div>
+      <div>
+        <button id="back-btn"
+                mat-button
+                type="button"
+                (click)="back()"
+        >back</button>
+      </div>
     <div class="contents-wrapper" *ngIf="detail$ | async as article">
-
       <div class="article-container">
         <div class="title-area">
           <div>{{article.no}}</div>
@@ -17,7 +23,7 @@
           </div>
         </div>
         <div class="article-area">
-          <div id="contents">{{article.contents}}</div>
+          <div id="contents" [innerHTML]="article.contents"></div>
         </div>
         <div class="bottom-area">
           <div>shop_no {{article.no}}</div>
@@ -28,12 +34,12 @@
               <img src="{{url}}" alt="photo"/>
             </div>
         </div>
-<!--        <div *ngIf="article.userEmail===me">-->
+          <button class="like-btn"
+                  [disabled]="article.userEmail===me">like</button>
           <button (click)="goToEdit()"
                   [disabled]="article.userEmail!==me">edit</button>
           <button (click)="delete()"
                   [disabled]="article.userEmail!==me">delete</button>
-<!--        </div>-->
         <div class="comment-area">
           <div class="comment-textarea-wrapper">
               <textarea class="comment-textarea"
@@ -46,13 +52,13 @@
               ></textarea>
             <button class="lv1-comment-btn"
                     (click)="commentBtn(commentText)">comment</button>
-            <button class="like-btn"
-                    [disabled]="me===article.userEmail"
-            >like</button>
-            <button class="del-btn"
-                    [disabled]="me!==article.userEmail"
-                    (click)="delete()"
-            >delete</button>
+<!--            <button class="like-btn"-->
+<!--                    [disabled]="me===article.userEmail"-->
+<!--            >like</button>-->
+<!--            <button class="del-btn"-->
+<!--                    [disabled]="me!==article.userEmail"-->
+<!--                    (click)="delete()"-->
+<!--            >delete</button>-->
           </div>
         </div>
       </div>
@@ -91,7 +97,7 @@
                 </div>
                 <div class="comment-contents">
                   <div class="comment-header">
-                    <div>{{comment.userEmail}}<div *ngIf="article.userEmail===comment.userEmail">[]</div></div>
+                    <div>{{comment.userEmail}}<div class="author" *ngIf="article.userEmail===comment.userEmail">author</div></div>
                     <div>  ∙ {{calDate(comment.insDate)}}</div>
                     <div>[ {{comment.no}} ]</div>
                   </div>

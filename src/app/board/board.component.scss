@@ -1,9 +1,13 @@
 .container {
   display: grid;
   justify-content: center;
+  .create-btn {
+    justify-self: start;
+  }
 }
 .card-wrapper {
-  width: 80vw;
+  width: 60vw;
+  min-width: 400px;
   text-align: center;
 
   mat-card {

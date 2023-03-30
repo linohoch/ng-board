@@ -33,6 +33,7 @@ import {BoardEffects} from "./core/board";
 import { BoardCreateComponent } from './board-create/board-create.component';
 import {MatDividerModule} from "@angular/material/divider";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {QuillModule} from "ngx-quill";
 
 @NgModule({
   declarations: [
@@ -48,6 +49,17 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     BoardCreateComponent,
   ],
   imports: [
+    QuillModule.forRoot({
+      modules: {
+        syntax:false,
+        toolbar: [
+          [{ 'header': [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          // ['blockquote', 'code-block'],
+          ['clean'],
+        ],
+      }
+    }),
     EffectsModule.forRoot([BoardEffects]),
     StoreModule.forRoot(reducers, {
       metaReducers,

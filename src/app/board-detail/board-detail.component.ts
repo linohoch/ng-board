@@ -1,11 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import articleList, {Article} from "../data";
 import {HttpService} from "../services/http.service";
 import {select, Store} from "@ngrx/store";
 import {Location} from "@angular/common";
 import {
-  appLoaded,
+  appLoaded, Article,
   Comment,
   rootComment,
   selectCommentList,
@@ -57,9 +56,6 @@ export class BoardDetailComponent implements OnInit {
   }
   initialiseInvites() {
 
-  }
-  numbers(num: any){
-    return Array(Number(num)).fill(1).map((x,i)=>i+1);
   }
   calDate(date: any){
     let time = this.now - Number(new Date(date))
@@ -138,5 +134,8 @@ export class BoardDetailComponent implements OnInit {
       })
 
     }
+  }
+  back(){
+    this.location.back()
   }
 }

@@ -1,4 +1,4 @@
-import {Article} from "../../data";
+import {Article} from "../board";
 
 export interface User {
   no: number,

@@ -1,5 +1,12 @@
 <div *ngIf="isLoading$ | async">Loading...</div>
 <div class="container" *ngIf="articles$">
+  <div class="create-btn">
+    <a [routerLink]="['/board/new']">
+      <button>
+        create article
+      </button>
+    </a>
+  </div>
   <mat-paginator #paginator
                  [pageIndex]="pageIndex"
                  (page)="getPageEvent($event)"

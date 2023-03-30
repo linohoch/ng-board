@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Article} from "../data";
-import {Comment, selectComment} from "../core/board";
+import {Article, Comment, selectComment} from "../core/board";
 import {select, Store} from "@ngrx/store";
 
 @Injectable({
@@ -32,4 +31,12 @@ export class BoardService {
   deleteComment(articleNo: any, commentNo: any){
     return this.http.delete<any>(`${this.baseUrl}/article/${articleNo}/comment/${commentNo}`)
   }
+
+  createArticle(detail: Article) {
+    return this.http.post<any>(`${this.baseUrl}/article/`, detail)
+  }
+  deleteArticle(no: number) {
+    return this.http.delete<any>(`${this.baseUrl}/article/${no}`)
+  }
+
 }

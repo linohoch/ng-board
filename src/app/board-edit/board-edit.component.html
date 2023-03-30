@@ -1,21 +1,50 @@
+<div class="container">
 
-<div class="form-wrapper">
-  <form [formGroup]="editForm" class="edit-form" (ngSubmit)="onSubmit()">
-    <mat-form-field class="title-input">
-      <input matInput
-             id="title"
-             formControlName="title">
-    </mat-form-field>
-    <mat-form-field class="contents-input">
-      <textarea matInput
-                id="contents"
-                formControlName="contents"></textarea>
-    </mat-form-field>
-    <button mat-button
-            type="submit"
-            [disabled]="editForm.invalid">submit</button>
-  </form>
-  <button mat-button
-          type="button"
-          (click)="deleteBtn">delete</button>
+  <div class="">
+    <div class="top-area">
+      <h1>Edit</h1>
+      <button id="temp-btn"
+              mat-button
+              type="button"
+              (click)="getTemp()"
+      >getLastSave</button>
+    </div>
+  <div class="form-wrapper">
+    <form [formGroup]="editForm" class="edit-form" (ngSubmit)="submit()">
+      <div class="title-wrapper">
+        <textarea
+          placeholder="title"
+          maxlength="300"
+          id="title"
+          formControlName="title"></textarea>
+      </div>
+      <div class="editor-wrapper">
+        <quill-editor #editor
+                      [sanitize]="true"
+                      formControlName="contents"
+                      [styles]="{ 'min-height': '10rem' }">
+        </quill-editor>
+      </div>
+      <div class="button-wrapper">
+        <button id="save-btn"
+                mat-button
+                type="button"
+                (click)="save()"
+        >save</button>
+        <button id="submit-btn"
+                mat-button
+                type="button"
+                (click)="submit()"
+        >submit</button>
+      </div>
+    </form>
+  </div>
+  <div>
+    <button id="cancel-btn"
+            mat-button
+            type="button"
+            (click)="cancel()"
+    >cancel</button>
+  </div>
+  </div>
 </div>

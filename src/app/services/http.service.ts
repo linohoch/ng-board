@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, map, Observable, of} from "rxjs";
-import {Article} from "../data";
 import {Router} from "@angular/router";
 import {DialogControl} from "../dialog/dialog.component";
-import {TransferService} from "./transfer.service";
+import {Article} from "../core/board";
 
 @Injectable({
   providedIn: 'root'
@@ -41,14 +40,13 @@ export class HttpService {
 
 //user-service
   getUserInfo() {
-    return this.http.get(``)
+    return this.http.get(`${this.baseUrl}/api/v1/user/me`)
   }
 
   isSignedIn(){
     return !!localStorage.getItem('user')
   }
   signOut(){
-    //TODO 리프래시읽는데 실패할 경우를 대비해 유저이름 보냄
     localStorage.removeItem('user')
     window.location.reload()
     return this.http.delete(`${this.baseUrl}/api/v1/auth/logout`).pipe(
@@ -70,7 +68,6 @@ export class HttpService {
       }),
       catchError(async (err) => this.errorHandler(err.error)))
   }
-
 
   linkWithGoogle(credential: any){
     return this.http.post(`${this.baseUrl}/api/v1/auth/google/link`,{'credential':credential}, this.httpOptions).pipe(

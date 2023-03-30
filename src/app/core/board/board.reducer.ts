@@ -2,6 +2,7 @@ import {Action, createReducer, on} from "@ngrx/store";
 import * as BoardActions from './board.actions'
 import {BoardState, initialState} from "./board.state";
 import {state} from "@angular/animations";
+import {act} from "@ngrx/effects";
 
 export function reducer(state: BoardState | undefined, action: Action) {
   return BoardReducer(state, action)
@@ -60,13 +61,38 @@ const BoardReducer = createReducer(
     isLoading: true,
     error: action.error
   })),
-  // on(BoardActions.getCommentBy, (state, action)=> {
-  //   const find = state.comment?.filter((comment)=>comment.no===action.no)
-  //     return {
-  //       ...state,
-  //       comment: find
-  //     }
-  // })
+  on(BoardActions.setArticle, (state, action)=>({
+    ...state,
+    detail: action.detail
+  })),
+  on(BoardActions.createSuccess, (state, action)=> ({
+    ...state,
+    isLoading: false,
+    detail: action.detail
+  })),
+  on(BoardActions.createFailed, (state, action)=> ({
+    ...state,
+    isLoading: true,
+    error: action.error
+  })),
+
+  on(BoardActions.deleteArticle, (state)=>({
+    ...state,
+    isLoading: true
+  })),
+  on(BoardActions.deleteSuccess, (state)=> ({
+    ...state,
+    isLoading: false,
+  })),
+  on(BoardActions.deleteFailed, (state, action)=> ({
+    ...state,
+    isLoading: true,
+    error: action.error
+  })),
+  on(BoardActions.setEditedArticle, (state, action)=>({
+    ...state,
+    temp: action.temp
+  }))
 
 
 )

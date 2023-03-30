@@ -29,6 +29,11 @@ export const selectComment = createSelector(
   selectBoard,
   (state: BoardState) => state.comment
 )
+
+export const selectTemp = createSelector(
+  selectBoard,
+  (state: BoardState) => state.temp
+)
 // export const selectDetailFromStore =(no:number)=> { createSelector(
 //     selectBoard,
 //     (state) => state.articles.find((detail) => detail.no === no))

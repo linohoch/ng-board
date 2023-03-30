@@ -1,4 +1,3 @@
-import {Article} from "../../data";
 
 export interface BoardState {
   isLoading: boolean
@@ -18,6 +17,21 @@ export const initialState: BoardState = {
   temp: null,
   comment: null,
   commentList: []
+}
+
+export interface Article {
+  shopNo: number | null;
+  no: number | null;
+  title: string;
+  contents: string;
+  userNo: number | null;
+  userEmail: string | null;
+  hitCnt: number | null;
+  likeCnt: number | null;
+  likeYn: number | null;
+  insDate: Date | null;
+  upDate: Date | null;
+  photo: string | null;
 }
 
 export class rootComment implements Comment {

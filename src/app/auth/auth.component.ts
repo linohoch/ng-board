@@ -50,14 +50,13 @@ export class AuthComponent {
   public handleCredentialResponse(response: any) {
     const credential = response.credential
     const decodedCredential = this.decodeJwtResponse(credential)
-    console.log(decodedCredential);
+    // console.log(decodedCredential);
     this.service.signInWithGoogle(credential).subscribe(res => {
-      console.log(res)
+      // console.log(res)
       if (res.statusCode === 202) {
         switch (res.message) {
           case 'need signup first':
             console.log('회원가입')
-            // this.transfer.sendItem(decodedCredential)
             this.store.dispatch(UserActions.tempGoogleUser({userInfo: decodedCredential}))
             this.router.navigate(['signup', {provider: 'google'}])
             break

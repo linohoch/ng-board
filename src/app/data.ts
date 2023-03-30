@@ -1,17 +1,17 @@
-export interface Article {
-  shopNo: number | null;
-  no: number;
-  title: string;
-  contents: string;
-  userNo: number;
-  userEmail: string;
-  hitCnt: number;
-  likeCnt: number;
-  likeYn: number;
-  insDate: Date
-  upDate: Date | null;
-  photo: string | null;
-}
+// export interface Article {
+//   shopNo: number | null;
+//   no: number;
+//   title: string;
+//   contents: string;
+//   userNo: number;
+//   userEmail: string;
+//   hitCnt: number;
+//   likeCnt: number;
+//   likeYn: number;
+//   insDate: Date
+//   upDate: Date | null;
+//   photo: string | null;
+// }
 export const articleList = [
   {
     "articleNo": 0,
