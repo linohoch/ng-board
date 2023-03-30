@@ -29,7 +29,7 @@ export class BoardComponent implements OnInit {
   pageSize: number  = 5
   pageSizeOptions: number[] = [5, 10]
 
-  isDeleteFilter = false
+  isDeleteFilter:string = 'all'
 
   constructor(private service: HttpService,
               private store: Store,
@@ -51,19 +51,16 @@ export class BoardComponent implements OnInit {
     this.pageSize=e.pageSize
   }
   exceptDeleted(){
-    if(!this.isDeleteFilter){
+    console.log(this.isDeleteFilter)
+    if(this.isDeleteFilter==='except'){
       this.articles$ = this.store.pipe(select(selectArticlesExceptDeleted))
-      this.articles$.subscribe(l=> {
-        this.totalCnt = l.length
-      })
-      this.isDeleteFilter=true
-    } else {
-      this.articles$ = this.store.pipe(select(selectArticles))
-      this.articles$.subscribe(l=> {
-        this.totalCnt = l.length
-      })
-      this.isDeleteFilter=false
     }
+    if(this.isDeleteFilter==='all'){
+      this.articles$ = this.store.pipe(select(selectArticles))
+    }
+      this.articles$.subscribe(l=> {
+        this.totalCnt = l.length
+      })
   }
 
 }

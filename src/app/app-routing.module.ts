@@ -11,16 +11,18 @@ import {BoardCreateComponent} from "./board-create/board-create.component";
 const routes: Routes = [
   {
     path:'',
-    component: HomeComponent,
+    // component: HomeComponent,
+    redirectTo: '/board',
+    pathMatch: 'full',
   },
   {
     path: 'search/:game-search',
     component: HomeComponent,
   },
-  {
-    path: 'board',
-    redirectTo: 'board?page=1',
-  },
+  // {
+  //   path: 'board',
+  //   redirectTo: 'board?page=1',
+  // },
   {
     path: 'board',
     component: BoardComponent,

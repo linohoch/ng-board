@@ -1,13 +1,23 @@
 <div *ngIf="isLoading$ | async">Loading...</div>
 <div class="container" *ngIf="articles$">
-  <div class="create-btn">
-    <a [routerLink]="['/board/new']">
-      <button>
-        create article
-      </button>
-    </a>
-    <button (click)="exceptDeleted()"
-            type="button">{{isDeleteFilter?'show all articles':'show except deleted'}}</button>
+  <div class="top-btn-set">
+    <button [routerLink]="['/board/new']"
+            mat-button
+    mat-raised-button>
+      create article
+    </button>
+    <div class="filter">
+      <mat-form-field>
+        <mat-label>필터</mat-label>
+        <mat-select
+          panelClass="sort-select"
+          (selectionChange)="exceptDeleted()"
+          [(ngModel)]="isDeleteFilter">
+          <mat-option value="all">show all articles</mat-option>
+          <mat-option value="except">except deleted</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
   <mat-paginator #paginator
                  [pageIndex]="pageIndex"
@@ -20,9 +30,8 @@
   <div class="card-wrapper" *ngFor="let article of articles$ | async ; let i = index">
     <mat-card *ngIf="(pageIndex*pageSize)<=i && i<(pageIndex+1)*pageSize">
       <mat-card-header>
-        {{article.no}}
-        <mat-card-subtitle>{{article.userEmail}}</mat-card-subtitle>
-        <mat-card-title class="title">
+        <mat-card-subtitle>{{article.no}} ∙ {{article.userEmail}}</mat-card-subtitle>
+        <mat-card-title class="title {{article.isDelete?'deleted':''}}">
           <a [title]="article.no+'details'"
              [routerLink]="['/article',article.no]">
             {{article.title}}
@@ -34,7 +43,7 @@
         </p>
       </mat-card-header>
       <mat-card-content></mat-card-content>
-      <mat-card-actions></mat-card-actions>
+<!--      <mat-card-actions></mat-card-actions>-->
     </mat-card>
   </div>
 </div>

@@ -14,7 +14,8 @@ import {
 } from "../core/board";
 import * as BoardActions from './../core/board/board.actions'
 import {Observable} from "rxjs";
-import {BoardService} from "../services/board.service";
+import {BoardService, isRead} from "../services/board.service";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-board-detail',
@@ -31,7 +32,15 @@ export class BoardDetailComponent implements OnInit {
   me: string | undefined;
   newComment: rootComment = new rootComment()
   now: any
-  focusedThread: number =0;
+  focusedThread: number = 0;
+  userInfo: any | undefined;
+  readTF: boolean = false;
+  likeTF: undefined | boolean = false;
+  likeCnt: number | null | undefined;
+  likeArticle: number[] | undefined;
+  // likeComment: number[] | undefined;
+
+  //TODO store
 
   constructor(private service: HttpService,
               private store: Store,
@@ -43,25 +52,39 @@ export class BoardDetailComponent implements OnInit {
     this.error$ = this.store.pipe(select(selectError))
     this.detail$ = this.store.pipe(select(selectDetail))
     this.commentList$ = this.store.pipe(select(selectCommentList))
+    this.detail$.subscribe(next => {
+      this.likeCnt = next?.likeCnt
+    })
+    this.userInfo = localStorage.getItem('userInfo')
+    this.likeArticle = this.userInfo && JSON.parse(this.userInfo).likeArticle
+    // this.likeComment = this.userInfo && JSON.parse(this.userInfo).likeComment
+    if (this.articleNo !== null) {
+      this.readTF = isRead(Number(this.articleNo))
+      this.likeTF = this.likeArticle && this.likeArticle.includes(Number(this.articleNo))
+    }
   }
+
   ngOnInit(): void {
-    this.store.dispatch(appLoaded())
-    this.store.dispatch(BoardActions.getDetail({no:this.articleNo}))
-    this.store.dispatch(BoardActions.getComments({no:this.articleNo}))
-    const logUser= localStorage.getItem('user')
+    this.store.dispatch(BoardActions.getDetail({no: this.articleNo, isRead: this.readTF}))
+    this.store.dispatch(BoardActions.getComments({no: this.articleNo}))
+
+    const logUser = localStorage.getItem('user')
     this.me = logUser && JSON.parse(logUser).username
     this.newComment.userEmail = this.me
     this.newComment.articleNo = Number(this.articleNo)
-    this.now= new Date
+    this.now = new Date
+
   }
+
   initialiseInvites() {
 
   }
-  calDate(date: any){
+
+  calDate(date: any) {
     let time = this.now - Number(new Date(date))
     let result;
-    if( time <1000 * 60) {
-      result = Math.trunc(time / (1000 )) + '초전'
+    if (time < 1000 * 60) {
+      result = Math.trunc(time / (1000)) + '초전'
     } else if (time < 1000 * 60 * 60) {
       result = Math.trunc(time / (1000 * 60)) + '분전'
     } else if (time < 1000 * 60 * 60 * 24) {
@@ -72,33 +95,94 @@ export class BoardDetailComponent implements OnInit {
     return result
   }
 
-  goToEdit(){
-    this.router.navigate([`article`,this.articleNo,'edit'])
+  goToEdit() {
+    this.router.navigate([`article`, this.articleNo, 'edit'])
   }
-  delete(){
+
+  delete() {
     this.store.dispatch(BoardActions.deleteArticle({articleNo: this.articleNo}))
   }
-  commentBtn(textarea:any):void {
-    if(textarea.value.trim()!==''){
+
+  commentBtn(textarea: any): void {
+    if (textarea.value.trim() !== '') {
       this.newComment.contents = textarea.value
       this.newComment = {...this.newComment, ...textarea.dataset}
       this.store.dispatch(BoardActions.setComment({comment: this.newComment}))
     }
   }
-  likeCommentBtn(): void {
 
+  likeArticleBtn(): void {
+    // this.store.dispatch(BoardActions.likeArticle({articleNo: this.articleNo}))
+    if (!this.likeTF && this.articleNo) {
+      this.boardService.addLikeArticle(Number(this.articleNo)).pipe(
+        map((res) => {
+          this.likeTF = true
+          this.likeCnt = res.likeCnt
+          this.service.getUserInfo().subscribe(next => {
+            if (next) {
+              localStorage.setItem('userInfo', JSON.stringify(next))
+            }
+          })
+        })
+      ).subscribe()
+    } else if (this.likeTF && this.articleNo) {
+      this.boardService.cancelLikeArticle(Number(this.articleNo)).pipe(
+        map((res) => {
+          this.likeTF = false
+          this.likeCnt = res.likeCnt
+          this.service.getUserInfo().subscribe(next => {
+            if (next) {
+              localStorage.setItem('userInfo', JSON.stringify(next))
+            }
+          })
+        })
+      ).subscribe()
+    }
   }
 
-  delCommentBtn(commentNo:any): void {
+  likeCommentBtn(commentNo: any, isLike: boolean): void {
+    // const isLike = this.likeComment?.includes(Number(commentNo))
+    if (isLike) {
+      this.boardService.cancelLikeComment(Number(this.articleNo), Number(commentNo)).pipe(
+        map(() => {
+          this.service.getUserInfo().subscribe(next => {
+            if (next) {
+              localStorage.setItem('userInfo', JSON.stringify(next))
+            }
+          })
+
+        })
+      ).subscribe(next => {
+        this.store.dispatch(BoardActions.getComments({no: this.articleNo}))
+        this.commentList$ = this.store.pipe(select(selectCommentList))
+
+      })
+    } else {
+      this.boardService.addLikeComment(Number(this.articleNo), Number(commentNo)).pipe(
+        map(() => {
+          this.service.getUserInfo().subscribe(next => {
+            if (next) {
+              localStorage.setItem('userInfo', JSON.stringify(next))
+            }
+          })
+        })
+      ).subscribe(next => {
+        this.store.dispatch(BoardActions.getComments({no: this.articleNo}))
+        this.commentList$ = this.store.pipe(select(selectCommentList))
+
+      })
+    }
+  }
+
+  delCommentBtn(commentNo: any): void {
     this.boardService.deleteComment(this.articleNo, commentNo).subscribe(
-      ()=>{
+      () => {
         location.reload()
       }
     )
   }
 
   showTextareaBtn(textarea: any): void {
-    console.log(textarea.dataset)
     let display = textarea.parentElement.style.display
     textarea.parentElement.style.display = display === 'flex' ? 'none' : 'flex'
   }
@@ -139,7 +223,8 @@ export class BoardDetailComponent implements OnInit {
 
     }
   }
-  back(){
+
+  back() {
     this.location.back()
   }
 }

@@ -1,19 +1,32 @@
+a:link {text-decoration: none; color: black;}
+a:visited {text-decoration: none; color: #9d9d9d;}
+a:active {text-decoration: none; color: black;}
+a:hover {text-decoration: none; color: #017cdc;}
+
 .container {
   display: grid;
   justify-content: center;
-  .create-btn {
-    justify-self: start;
+  .top-btn-set {
+    display: flex;
+    justify-content: space-between;
   }
 }
 .card-wrapper {
   width: 60vw;
-  min-width: 400px;
+  min-width: 420px;
   text-align: center;
 
   mat-card {
     margin: 5px;
-  }
-  .title>a {
-    text-decoration-line: none;
+    mat-card-subtitle {
+      display: flex;
+    }
+    mat-card-title {
+      display: flex;
+      &.deleted {
+        a {color: #9d9d9d;}
+        a:hover {color: #017cdc;}
+      }
+    }
   }
 }

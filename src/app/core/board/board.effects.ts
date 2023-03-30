@@ -2,17 +2,18 @@ import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import * as BoardActions from './board.actions'
 import {catchError, map, mergeMap, of, tap} from "rxjs";
-import {BoardService} from "../../services/board.service";
+import {BoardService, isRead} from "../../services/board.service";
 import {select, Store} from "@ngrx/store";
 import {selectComment, selectDetail} from "./board.selector";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Injectable()
 export class BoardEffects {
   constructor(private actions$: Actions,
               private service: BoardService,
               private store: Store,
-              private router: Router) {
+              private router: Router,
+              private activatedRoute: ActivatedRoute) {
   }
 
   getArticles = createEffect(() =>
@@ -29,9 +30,11 @@ export class BoardEffects {
   getDetail = createEffect(() =>
     this.actions$.pipe(
       ofType(BoardActions.getDetail),
-      map(action => action.no),
-      mergeMap((page) => {
-        return this.service.getArticleDetail(page).pipe(
+      mergeMap(({no, isRead}) => {
+        if (isRead === null || isRead === undefined) {
+          isRead = true
+        }
+        return this.service.getArticleDetail(no, isRead).pipe(
           map((detail) => BoardActions.getDetailSuccess({detail})),
           catchError(err => of(BoardActions.getDetailFailed({error: err.message})))
         )
@@ -42,45 +45,30 @@ export class BoardEffects {
     this.actions$.pipe(
       ofType(BoardActions.getComments),
       map(action => action.no),
-      mergeMap((page) => {
-        return this.service.getComments(page).pipe(
-          map((comments) => BoardActions.getCommentsSuccess({commentList: comments})),
+      mergeMap((no) => {
+        return this.service.getComments(no).pipe(
+          map((list) => {
+            const userInfo = localStorage.getItem('userInfo')
+            const likeComment = userInfo && JSON.parse(userInfo).likeComment
+            const modifiedList = list.map(comment => {
+              comment.likeYn = likeComment.includes(Number(comment.no))
+              return comment
+            })
+            return BoardActions.getCommentsSuccess({commentList: modifiedList})
+          }),
           catchError(err => of(BoardActions.getCommentsFailed({error: err.message})))
         )
       })
     )
   )
 
-  // createComment = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(BoardActions.createComment),
-  //     map(action => action.comment),
-  //     mergeMap((data) => {
-  //       // console.log('in effect')
-  //       // console.log('data', data)
-  //       let comment = data
-  //       this.store.pipe(select(selectComment)).subscribe(temp=> {
-  //           if (temp !== null) {
-  //             comment = temp
-  //           }
-  //         }
-  //       )
-  //       return this.service.createComment(comment).pipe(
-  //         map((comment) => BoardActions.createCommentSuccess({comment: comment})),
-  //         catchError(err => of(BoardActions.createCommentFailed({error: err.message})))
-  //       )
-  //     })
-  //   )
-  // )
   setComment = createEffect(() =>
     this.actions$.pipe(
       ofType(BoardActions.setComment),
       map(action => action.comment),
       mergeMap((data) => {
-        // console.log('in effect')
-        // console.log('data', data)
         let comment = data
-        this.store.pipe(select(selectComment)).subscribe(temp=> {
+        this.store.pipe(select(selectComment)).subscribe(temp => {
             if (temp !== null) {
               comment = temp
             }
@@ -97,13 +85,13 @@ export class BoardEffects {
       })
     )
   )
-  setArticle = createEffect(()=>
+  setArticle = createEffect(() =>
     this.actions$.pipe(
       ofType(BoardActions.setArticle),
       map(action => action.detail),
       mergeMap((data) => {
         let detail = data
-        this.store.pipe(select(selectDetail)).subscribe(temp=> {
+        this.store.pipe(select(selectDetail)).subscribe(temp => {
           if (temp !== null) {
             detail = temp
           }
@@ -112,13 +100,38 @@ export class BoardEffects {
           map((detail) => {
             return BoardActions.createSuccess({detail: detail})
           }),
-          tap(() => this.router.navigate(['/board'])),
+          tap(() => {
+            this.router.navigate(['/board'])
+          }),
           catchError(err => of(BoardActions.createFailed({error: err.message})))
         )
       })
     )
   )
-  deleteArticle = createEffect(()=>
+  editArticle = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BoardActions.editArticle),
+      map(action => action.detail),
+      mergeMap((data) => {
+        let detail = data
+        this.store.pipe(select(selectDetail)).subscribe(temp => {
+          if (temp !== null) {
+            detail = temp
+          }
+        })
+        return this.service.updateArticle(detail).pipe(
+          map((detail) => {
+            return BoardActions.createSuccess({detail: detail})
+          }),
+          tap(() => {
+            this.router.navigateByUrl(this.router.url.replace('/edit',''))
+          }),
+          catchError(err => of(BoardActions.createFailed({error: err.message})))
+        )
+      })
+    )
+  )
+  deleteArticle = createEffect(() =>
     this.actions$.pipe(
       ofType(BoardActions.deleteArticle),
       map(action => action.articleNo),

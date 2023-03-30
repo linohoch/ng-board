@@ -21,7 +21,7 @@ export const initialState: BoardState = {
 
 export interface Article {
   shopNo: number | null;
-  no: number | null;
+  no: number;
   title: string;
   contents: string;
   userNo: number | null;
@@ -52,6 +52,7 @@ export class rootComment implements Comment {
   insDate: Date | null | undefined
   upDate: Date | null | undefined
   isDelete: boolean = false
+  likeYn: boolean = false
 }
 
 export interface Comment {
@@ -71,6 +72,7 @@ export interface Comment {
   insDate: Date | null | undefined
   upDate: Date | null | undefined
   isDelete: boolean
+  likeYn: boolean
 }
 // export interface Board {
 //   shopNo:number|null;

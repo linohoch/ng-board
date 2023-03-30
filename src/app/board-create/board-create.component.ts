@@ -43,7 +43,6 @@ export class BoardCreateComponent implements OnInit{
     const title = this.editForm.get('title')?.value
     const contents = this.editForm.get('contents')?.value
     if (title != null && contents !=null) {
-      console.log(title, contents)
       this.store.dispatch(BoardActions.setArticle({detail: {title: title, contents: contents}}))
     }
   }
@@ -53,7 +52,6 @@ export class BoardCreateComponent implements OnInit{
     if (title != null && contents !=null) {
       this.detail.title = title
       this.detail.contents = contents
-      console.log(this.detail)
       this.store.dispatch(BoardActions.setEditedArticle({temp: this.detail}))
     }
   }

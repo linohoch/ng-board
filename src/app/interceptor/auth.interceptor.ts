@@ -63,6 +63,8 @@ export class AuthInterceptor implements HttpInterceptor {
                 }
               ),
             )
+        }else {
+          alert('['+err.status+'] '+err.error.message)
         }
         throw new Error(err.error)
       })

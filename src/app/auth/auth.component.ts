@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {FormBuilder, FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {HttpService} from "../services/http.service";
@@ -14,7 +14,7 @@ declare let google: any;
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss']
 })
-export class AuthComponent {
+export class AuthComponent implements AfterViewInit{
   constructor(private formBuilder: FormBuilder,
               private service: HttpService,
               private router: Router,
@@ -62,9 +62,12 @@ export class AuthComponent {
             break
           case 'need link':
             console.log('계정연동')
-            this.service.dialogActionForLink(credential)
+            this.service.dialogActionForLink(credential) //TODO
             break
         }
+      } else {
+        const returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/';
+        this.router.navigateByUrl(returnUrl)
       }
     })
   }

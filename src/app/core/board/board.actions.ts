@@ -25,7 +25,7 @@ export const getArticlesFailed = createAction(
  */
 export const getDetail = createAction(
   "[Board-detail page] get article detail",
-  props<{ no: any }>()
+  props<{ no: any, isRead?: boolean }>()
 )
 
 export const getDetailSuccess = createAction(
@@ -39,15 +39,15 @@ export const getDetailFailed = createAction(
 )
 
 export const getComments = createAction(
-  "[Board-detail page] get article comments",
+  "[Board-detail page] get comments",
   props<{ no: any }>()
 )
 export const getCommentsSuccess = createAction(
-  "[Board API] Fetch Article comments Success",
+  "[Board API] Fetch comments Success",
   props<{ commentList: Comment[] }>()
 )
 export const getCommentsFailed = createAction(
-  "[Board API] Fetch Article comments Failed",
+  "[Board API] Fetch comments Failed",
   props<{ error: any }>()
 )
 
@@ -66,14 +66,27 @@ export const createComment = createAction(
 )
 
 export const createCommentSuccess = createAction(
-  "[Board-detail page] create new comment",
+  "[Board API] create new comment",
   props<{ comment: Comment }>()
 )
 
 export const createCommentFailed = createAction(
-  "[Board-detail page] create new comment",
+  "[Board API] create new comment",
   props<{ error: any }>()
 )
+// export const likeArticle = createAction(
+//   "[Board-detail page] like article",
+//   props<{ no: any }>()
+// )
+// export const likeArticleSuccess = createAction(
+//   "[Board API] like article success",
+//   props<{ no: any }>()
+// )
+// export const likeArticleFailed = createAction(
+//   "[Board API] like article failed",
+//   props<{ error: any }>()
+// )
+
 
 
 /**
@@ -86,7 +99,7 @@ export const setEditedArticle = createAction(
 
 export const editArticle = createAction(
   "[Board-edit page] send Edited Article Form",
-  props<{ detail: Article }>()
+  props<{ detail: any }>()
 )
 
 export const editSuccess = createAction(
@@ -100,7 +113,7 @@ export const editFailed = createAction(
 )
 
 /**
- *  board-edit create
+ *  board-create
  */
 export const setArticle = createAction(
   "[Board-create page] send create Article Form",

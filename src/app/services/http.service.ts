@@ -21,7 +21,7 @@ export class HttpService {
               public dialog: DialogControl,) {
   }
   errorHandler(e:any){
-    alert(e.message)
+    alert(e.error.message)
     return of([])
   }
   // setHeaders(){
@@ -48,6 +48,7 @@ export class HttpService {
   }
   signOut(){
     localStorage.removeItem('user')
+    localStorage.removeItem('userInfo')
     window.location.reload()
     return this.http.delete(`${this.baseUrl}/api/v1/auth/logout`).pipe(
       map((e) => {
@@ -61,6 +62,11 @@ export class HttpService {
       map((user: any) => {
         if (user && user.access_token) {
           localStorage.setItem('user', JSON.stringify(user))
+          this.getUserInfo().subscribe(next=> {
+            if(next){
+              localStorage.setItem('userInfo', JSON.stringify(next) )
+            }
+          })
         } else {
           throw new Error('로그인 오류')
         }
@@ -74,6 +80,11 @@ export class HttpService {
       map((res:any)=> {
         if (res && res.access_token) {
           localStorage.setItem('user', JSON.stringify(res))
+          this.getUserInfo().subscribe(next=> {
+            if(next){
+              localStorage.setItem('userInfo', JSON.stringify(next) )
+            }
+          })
         } else {
           throw new Error('로그인 오류')
         }
@@ -108,6 +119,11 @@ export class HttpService {
         if (res && res.access_token) {
           console.log('로그인완료')
           localStorage.setItem('user', JSON.stringify(res))
+          this.getUserInfo().subscribe(next=> {
+            if(next){
+              localStorage.setItem('userInfo', JSON.stringify(next) )
+            }
+          })
         }
         // else {
         //   throw new Error('로그인 오류')

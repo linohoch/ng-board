@@ -5,7 +5,8 @@
       <div class="card-header">
         <mat-card-title>SignUp</mat-card-title>
       </div>
-      <div class="card-body" *ngIf="tempUser | async as temp">
+      <!--      <div class="card-body" *ngIf="tempUser | async as temp">-->
+      <div class="card-body">
         <form [formGroup]="signUpForm" class="signup-form" (ngSubmit)="onSubmit()">
           <mat-form-field>
             <mat-label>email</mat-label>
@@ -34,7 +35,7 @@
                    [errorStateMatcher]="matcher"
                    type="password"
                    placeholder="password">
-            <mat-hint>A-Za-z 0~9 min length 5 </mat-hint>
+            <mat-hint>A-Za-z 0~9 min length 6</mat-hint>
             <mat-error *ngIf="signUpForm.get('pw')?.hasError('pattern')">
               Please enter a valid password ( min length 5 ... )
             </mat-error>

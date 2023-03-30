@@ -1,6 +1,6 @@
 :root{
-
 }
+
 #back-btn {
   background-color: #dadada;
 }
@@ -12,22 +12,33 @@
   margin-top: 10px;
   display: grid;
   width: 90vw;
-
+  max-width: 500px;
 
   .article-container {
+    padding: 10px;
+    background-color: #f7f7f7;
+
     .title-area {
       display: flex;
       justify-content: space-between;
-      font-size: large;
+      .title {
+        font-weight: bolder;
+      }
+
     }
     .sub-area {
       display: flex;
       justify-content: space-between;
+      div {
+        display: flex;
+      }
     }
     .article-area {
-      border: 1px solid;
-      min-height: 300px;
-      padding: 10px
+      min-height: 100px;
+      padding: 10px;
+      background-color: white;
+      border-radius: 5px;
+      box-shadow: 1px 1px 3px 0 #9d9d9d;
     }
     .bottom-area {
 
@@ -43,7 +54,7 @@
     border-left: 2px solid gray;
     display: flex;
     textarea {
-      width: 300px; height: 100px;
+      width: 300px; height: 80px;
       resize: none; overflow-y: scroll;
     }
   }
@@ -53,7 +64,7 @@
     border-left: 2px solid #cbcbcb;
     display: none;
     textarea {
-      width: 300px; height: 100px;
+      width: 300px; height: 80px;
       resize: none; overflow-y: scroll;
     }
   }
@@ -98,7 +109,7 @@
     .comment-wrapper { display: flex}
     .comment{ padding-top: 10px; display: flex; position: relative;
       &.fold {
-        .indent-wrapper{display: none;}
+        //.indent-wrapper{display: none;}
         .comment-header {color: #9d9d9d}
         .comment-content{display: none;}
         .button-wrapper{display: none;}
@@ -108,7 +119,13 @@
         display: none;
       }
       .unfold-button {display: none;}
+      .comment-contents {
+        &.deleted {
+          color: #9d9d9d;
+        }
+      }
       .comment-header {display: flex;margin: 5px;}
+      .comment-content {margin-bottom: 10px;}
     }
     .lv {
       padding-left: calc(15px * var(--lv));

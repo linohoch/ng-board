@@ -13,19 +13,20 @@
         <div class="title-area">
           <div>{{article.no}}</div>
           <div class="title">{{article.title}}</div>
-          <div>작성: {{calDate(article.insDate)}}</div>
+          <div>{{calDate(article.insDate)}}</div>
         </div>
         <div class="sub-area">
           <div>{{article.userEmail}}</div>
           <div>
-            <div>view: {{article.hitCnt}}</div>
+            <img src="../../assets/svg/eye-open.svg" alt="view" width="20px" height="20px"/>
+            {{article.hitCnt}}
           </div>
         </div>
         <div class="article-area">
           <div id="contents" [innerHTML]="article.contents"></div>
         </div>
         <div class="bottom-area">
-          <div>shop_no {{article.no}}</div>
+<!--          <div>shop_no {{article.no}}</div>-->
         </div>
         <div class="photo-container" *ngIf="article.photo">
             <div class="photo-block"
@@ -35,7 +36,8 @@
         </div>
         <div class="btn-set">
           <button class="like-btn"
-                  [disabled]="article.userEmail===me || article.isDelete">{{article.likeCnt}} like</button>
+                  (click)="likeArticleBtn()"
+                  [disabled]="article.userEmail===me || article.isDelete">{{likeCnt}} {{likeTF?'unlike':'like'}}</button>
           <button (click)="goToEdit()"
                   [disabled]="article.userEmail!==me || article.isDelete">edit</button>
           <button (click)="delete()"
@@ -52,6 +54,7 @@
                         [attr.data-parent]="0"
               ></textarea>
             <button class="lv1-comment-btn"
+                    [disabled]="!me"
                     (click)="commentBtn(commentText)">comment</button>
           </div>
         </div>
@@ -89,7 +92,7 @@
                     <div>{{comment.userEmail?.charAt(0)}}</div>
                   </div>
                 </div>
-                <div class="comment-contents">
+                <div class="comment-contents {{comment.isDelete?'deleted':''}}">
                   <div class="comment-header">
                     <div>{{comment.userEmail}}<div class="author" *ngIf="article.userEmail===comment.userEmail">author</div></div>
                     <div>  ∙ {{calDate(comment.insDate)}}</div>
@@ -97,11 +100,12 @@
                   </div>
                   <div class="comment-content">{{comment.contents}}</div>
                   <div class="button-wrapper">
-                    <button class="like-btn"
+                    <button
+                            class="like-btn"
                             [attr.data-no]="comment.no"
-                            [disabled]="comment.userEmail===me || comment.isDelete"
+                            [disabled]="!me || comment.userEmail===me || comment.isDelete"
                             type="button"
-                            (click)="likeCommentBtn()">{{comment.likeCnt}} like</button>
+                            (click)="likeCommentBtn(comment.no, comment.likeYn)">{{comment.likeCnt}} {{comment.likeYn?'cancel':'like'}}</button>
                     <button (click)="showTextareaBtn(inputComment)">comment</button>
                     <button *ngIf="comment.userEmail===me"
                             class="delete-btn"

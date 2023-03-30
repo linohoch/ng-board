@@ -17,4 +17,5 @@ export class SearchBarComponent {
     // const user = localStorage.getItem('user')
     this.service.signOut().subscribe(() => {})
   }
+  //TODO search
 }

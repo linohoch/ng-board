@@ -40,7 +40,7 @@ export class SignupComponent {
       updateOn: 'blur'
     }),
     pw: new FormControl('', [Validators.required, Validators.pattern(
-      /(?=.*\d)[A-Za-z\d]{5,}/
+      /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}/
     )]),
     confirmPassword: new FormControl('', [Validators.required, this.matchPassword('pw')]),
     firstName: new FormControl('', Validators.required),
