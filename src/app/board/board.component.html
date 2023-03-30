@@ -6,6 +6,8 @@
         create article
       </button>
     </a>
+    <button (click)="exceptDeleted()"
+            type="button">{{isDeleteFilter?'show all articles':'show except deleted'}}</button>
   </div>
   <mat-paginator #paginator
                  [pageIndex]="pageIndex"

@@ -90,7 +90,8 @@ export class BoardEffects {
           map((comment) => {
             return BoardActions.createCommentSuccess({comment: comment})
           }),
-          tap(() => this.router.navigateByUrl(this.router.url)),
+          tap(() => location.reload()),
+          // tap(() => this.router.navigate([this.router.url],{skipLocationChange: true})),
           catchError(err => of(BoardActions.createCommentFailed({error: err.message})))
         )
       })

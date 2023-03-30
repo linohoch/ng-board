@@ -3,7 +3,13 @@ import {HttpService} from "../services/http.service";
 import {select, Store} from "@ngrx/store";
 import * as BoardActions from '../core/board/board.actions';
 import {Observable, Subject} from "rxjs";
-import {Article, selectArticles, selectError, selectIsLoading} from "../core/board";
+import {
+  Article,
+  selectArticles,
+  selectArticlesExceptDeleted,
+  selectError,
+  selectIsLoading
+} from "../core/board";
 import {ActivatedRoute} from "@angular/router";
 import {MatPaginatorIntl} from "@angular/material/paginator";
 
@@ -23,6 +29,8 @@ export class BoardComponent implements OnInit {
   pageSize: number  = 5
   pageSizeOptions: number[] = [5, 10]
 
+  isDeleteFilter = false
+
   constructor(private service: HttpService,
               private store: Store,
               private activatedRoute: ActivatedRoute) {
@@ -36,14 +44,26 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.service.getArticleList().subscribe((articles:Article[])=>{
-    //   this.articleList=articles;
-    // })
     this.store.dispatch(BoardActions.getArticles())
   }
   getPageEvent(e: { pageIndex: any; pageSize: any}){
     this.pageIndex=e.pageIndex
     this.pageSize=e.pageSize
+  }
+  exceptDeleted(){
+    if(!this.isDeleteFilter){
+      this.articles$ = this.store.pipe(select(selectArticlesExceptDeleted))
+      this.articles$.subscribe(l=> {
+        this.totalCnt = l.length
+      })
+      this.isDeleteFilter=true
+    } else {
+      this.articles$ = this.store.pipe(select(selectArticles))
+      this.articles$.subscribe(l=> {
+        this.totalCnt = l.length
+      })
+      this.isDeleteFilter=false
+    }
   }
 
 }

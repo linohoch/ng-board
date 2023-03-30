@@ -90,7 +90,11 @@ export class BoardDetailComponent implements OnInit {
   }
 
   delCommentBtn(commentNo:any): void {
-    this.boardService.deleteComment(this.articleNo, commentNo).subscribe()
+    this.boardService.deleteComment(this.articleNo, commentNo).subscribe(
+      ()=>{
+        location.reload()
+      }
+    )
   }
 
   showTextareaBtn(textarea: any): void {

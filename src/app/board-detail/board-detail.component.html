@@ -18,8 +18,7 @@
         <div class="sub-area">
           <div>{{article.userEmail}}</div>
           <div>
-            <div>hit_cnt: {{article.hitCnt}}</div>
-            <div class="like-cnt">like_cnt: {{article.likeCnt}}</div>
+            <div>view: {{article.hitCnt}}</div>
           </div>
         </div>
         <div class="article-area">
@@ -34,12 +33,14 @@
               <img src="{{url}}" alt="photo"/>
             </div>
         </div>
+        <div class="btn-set">
           <button class="like-btn"
-                  [disabled]="article.userEmail===me">like</button>
+                  [disabled]="article.userEmail===me || article.isDelete">{{article.likeCnt}} like</button>
           <button (click)="goToEdit()"
-                  [disabled]="article.userEmail!==me">edit</button>
+                  [disabled]="article.userEmail!==me || article.isDelete">edit</button>
           <button (click)="delete()"
-                  [disabled]="article.userEmail!==me">delete</button>
+                  [disabled]="article.userEmail!==me || article.isDelete">{{article.isDelete?'deleted':'delete'}}</button>
+        </div>
         <div class="comment-area">
           <div class="comment-textarea-wrapper">
               <textarea class="comment-textarea"
@@ -52,13 +53,6 @@
               ></textarea>
             <button class="lv1-comment-btn"
                     (click)="commentBtn(commentText)">comment</button>
-<!--            <button class="like-btn"-->
-<!--                    [disabled]="me===article.userEmail"-->
-<!--            >like</button>-->
-<!--            <button class="del-btn"-->
-<!--                    [disabled]="me!==article.userEmail"-->
-<!--                    (click)="delete()"-->
-<!--            >delete</button>-->
           </div>
         </div>
       </div>
@@ -103,18 +97,18 @@
                   </div>
                   <div class="comment-content">{{comment.contents}}</div>
                   <div class="button-wrapper">
-                    <div>like: {{comment.likeCnt}}</div>
                     <button class="like-btn"
                             [attr.data-no]="comment.no"
-                            [disabled]="me===comment.userEmail"
+                            [disabled]="comment.userEmail===me || comment.isDelete"
                             type="button"
-                            (click)="likeCommentBtn()">like</button>
+                            (click)="likeCommentBtn()">{{comment.likeCnt}} like</button>
                     <button (click)="showTextareaBtn(inputComment)">comment</button>
-                    <button class="delete-btn"
+                    <button *ngIf="comment.userEmail===me"
+                            class="delete-btn"
                             [attr.data-no]="comment.no"
-                            [disabled]="me!==comment.userEmail"
+                            [disabled]="comment.isDelete"
                             type="button"
-                            (click)="delCommentBtn(comment.no)">delete</button>
+                            (click)="delCommentBtn(comment.no)">{{comment.isDelete?'deleted':'delete'}}</button>
                   </div>
                   <div class="comment-textarea-wrapper">
                   <textarea class="comment-textarea"

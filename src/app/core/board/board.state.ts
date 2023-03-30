@@ -32,6 +32,7 @@ export interface Article {
   insDate: Date | null;
   upDate: Date | null;
   photo: string | null;
+  isDelete: boolean;
 }
 
 export class rootComment implements Comment {
@@ -50,6 +51,7 @@ export class rootComment implements Comment {
   likeCnt: number | null = 0;
   insDate: Date | null | undefined
   upDate: Date | null | undefined
+  isDelete: boolean = false
 }
 
 export interface Comment {
@@ -68,6 +70,7 @@ export interface Comment {
   likeCnt: number | null
   insDate: Date | null | undefined
   upDate: Date | null | undefined
+  isDelete: boolean
 }
 // export interface Board {
 //   shopNo:number|null;

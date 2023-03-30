@@ -16,6 +16,10 @@ export const selectArticles = createSelector(
   selectBoard,
   (state: BoardState) => state.articles
 )
+export const selectArticlesExceptDeleted = createSelector(
+  selectBoard,
+  (state:BoardState) => state.articles.filter(article=>{return !article.isDelete})
+)
 
 export const selectDetail = createSelector(
   selectBoard,
