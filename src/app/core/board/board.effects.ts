@@ -51,7 +51,9 @@ export class BoardEffects {
             const userInfo = localStorage.getItem('userInfo')
             const likeComment = userInfo && JSON.parse(userInfo).likeComment
             const modifiedList = list.map(comment => {
-              comment.likeYn = likeComment.includes(Number(comment.no))
+              if(comment && likeComment){
+                comment.likeYn = likeComment.includes(Number(comment.no))
+              }
               return comment
             })
             return BoardActions.getCommentsSuccess({commentList: modifiedList})
