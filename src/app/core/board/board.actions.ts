@@ -147,3 +147,18 @@ export const deleteFailed = createAction(
   props<{ error: any }>()
 )
 
+
+/**
+ *
+ * edit-page 입장처리
+ */
+export const getPermissionToEdit = createAction(
+  "[Board-edit page] access to edit page",
+  props<{ detail:Article, me: string, pw?: string }>()
+)
+export const matchSuccess = createAction(
+  "[Board-edit page] set permission",
+)
+export const matchFailed = createAction(
+  "[Board-edit page] remove permission",
+)

@@ -34,15 +34,29 @@
               <img src="{{url}}" alt="photo"/>
             </div>
         </div>
-        <div class="btn-set">
+        <div class="btn-set" *ngIf="article.userEmail!=='anonymous'">
           <button class="like-btn"
                   (click)="likeArticleBtn()"
                   [disabled]="article.userEmail===me || article.isDelete">{{likeCnt}} {{likeTF?'unlike':'like'}}</button>
-          <button (click)="goToEdit()"
+          <button (click)="goToEditBtn()"
                   [disabled]="article.userEmail!==me || article.isDelete">edit</button>
-          <button (click)="delete()"
+          <button (click)="delArticleBtn()"
                   [disabled]="article.userEmail!==me || article.isDelete">{{article.isDelete?'deleted':'delete'}}</button>
         </div>
+        <div class="btn-set" *ngIf="article.userEmail==='anonymous'">
+          <button class="like-btn"
+                  (click)="likeArticleBtn()"
+                  [disabled]="article.isDelete">{{likeCnt}} {{likeTF?'unlike':'like'}}</button>
+          <input  [(ngModel)]="pw"
+                  placeholder="password">
+          <button (click)="goToEditBtn()"
+                  [disabled]="article.isDelete">edit</button>
+          <button (click)="delArticleBtn()"
+                  [disabled]="article.isDelete">{{article.isDelete?'deleted':'delete'}}</button>
+        </div>
+
+
+
         <div class="comment-area">
           <div class="comment-textarea-wrapper">
               <textarea class="comment-textarea"
@@ -55,7 +69,7 @@
               ></textarea>
             <button class="lv1-comment-btn"
                     [disabled]="!me"
-                    (click)="commentBtn(commentText)">comment</button>
+                    (click)="submitCommentBtn(commentText)">comment</button>
           </div>
         </div>
       </div>
@@ -92,7 +106,7 @@
                     <div>{{comment.userEmail?.charAt(0)}}</div>
                   </div>
                 </div>
-                <div class="comment-contents {{comment.isDelete?'deleted':''}}">
+                <div class="comment-contents {{comment.isDelete?'deleted':''}} {{comment.userEmail===me?'me':''}}">
                   <div class="comment-header">
                     <div>{{comment.userEmail}}<div class="author" *ngIf="article.userEmail===comment.userEmail">author</div></div>
                     <div>  ∙ {{calDate(comment.insDate)}}</div>
@@ -125,7 +139,7 @@
                     <button class="comment-btn"
                             [disabled]="!me"
                             type="button"
-                            (click)="commentBtn(inputComment)">comment</button>
+                            (click)="submitCommentBtn(inputComment)">comment</button>
                   </div>
                 </div>
               </div>

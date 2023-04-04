@@ -16,9 +16,10 @@ export class BoardCreateComponent implements OnInit{
   articleNo = this.activatedRoute.snapshot.paramMap.get('articleNo')
   detail = {title:'',contents:''}
   me: string | undefined;
-  editForm = this.formBuilder.group({
+  createForm = this.formBuilder.group({
     title: new FormControl('', Validators.required),
-    contents: new FormControl('', Validators.required)
+    contents: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required)
   })
   changedText: string = ''
   @ViewChild('editor') editor: QuillEditorComponent | undefined;
@@ -34,21 +35,25 @@ export class BoardCreateComponent implements OnInit{
     const localUser = localStorage.getItem('user')
     if(localUser) {
       this.me = JSON.parse(localUser).username
+    } else {
+      this.me = 'anonymous'
     }
   }
   changeContent(event: { editor: { getText: () => any; }; }){
     this.changedText = event.editor.getText();
   }
   submit(): void {
-    const title = this.editForm.get('title')?.value
-    const contents = this.editForm.get('contents')?.value
+    const title = this.createForm.get('title')?.value
+    const contents = this.createForm.get('contents')?.value
+    const pw = this.createForm.get('password')?.value
     if (title != null && contents !=null) {
-      this.store.dispatch(BoardActions.setArticle({detail: {title: title, contents: contents}}))
+      let data = {title: title, contents: contents, userEmail: this.me, pw: pw}
+      this.store.dispatch(BoardActions.setArticle({detail: data}))
     }
   }
   save(){
-    let title = this.editForm.get('title')?.value
-    let contents = this.editForm.get('contents')?.value
+    let title = this.createForm.get('title')?.value
+    let contents = this.createForm.get('contents')?.value
     if (title != null && contents !=null) {
       this.detail.title = title
       this.detail.contents = contents
@@ -59,8 +64,8 @@ export class BoardCreateComponent implements OnInit{
     this.store.pipe(select(selectTemp)).subscribe(next=> {
       if(next) {
         this.detail = next
-        this.editForm.get('title')?.setValue(this.detail?.title)
-        this.editForm.get('contents')?.setValue(this.detail?.contents)
+        this.createForm.get('title')?.setValue(this.detail?.title)
+        this.createForm.get('contents')?.setValue(this.detail?.contents)
       }
     })
   }

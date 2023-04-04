@@ -4,7 +4,7 @@ import * as BoardActions from './board.actions'
 import {catchError, map, mergeMap, of, tap} from "rxjs";
 import {BoardService, isRead} from "../../services/board.service";
 import {select, Store} from "@ngrx/store";
-import {selectComment, selectDetail} from "./board.selector";
+import {selectComment, selectDetail, selectIsPermit} from "./board.selector";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Injectable()
@@ -80,7 +80,7 @@ export class BoardEffects {
           map((comment) => {
             return BoardActions.createCommentSuccess({comment: comment})
           }),
-          tap(() => location.reload()),
+          tap(() => { location.reload()}),
           // tap(() => this.router.navigate([this.router.url],{skipLocationChange: true})),
           catchError(err => of(BoardActions.createCommentFailed({error: err.message})))
         )
@@ -103,10 +103,34 @@ export class BoardEffects {
             return BoardActions.createSuccess({detail: detail})
           }),
           tap(() => {
-            this.router.navigate(['/board'])
+
+            this.router.navigate(['/board'], { skipLocationChange: true })
           }),
           catchError(err => of(BoardActions.createFailed({error: err.message})))
         )
+      })
+    )
+  )
+  getPermissionToEdit = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BoardActions.getPermissionToEdit),
+      map(({detail, me, pw}) => {
+        let isMatch = false;
+        if (detail.userEmail === 'anonymous' && detail.pw === pw) {
+          isMatch = true
+          // this.service.matchAnnyPassword(String(detail.no), pw).subscribe(res => {
+          //   isMatch=Boolean(res)
+          // })
+        }
+        if (detail.userEmail !== 'anonymous' && detail.userEmail === me) {
+          isMatch = true
+        }
+        console.log('isMatch',isMatch)
+        if (isMatch) {
+          return BoardActions.matchSuccess()
+        } else {
+          return BoardActions.matchFailed()
+        }
       })
     )
   )
@@ -137,13 +161,15 @@ export class BoardEffects {
     this.actions$.pipe(
       ofType(BoardActions.deleteArticle),
       map(action => action.articleNo),
-      mergeMap((articleNo) => this.service.deleteArticle(articleNo).pipe(
-        map(() => {
-          return BoardActions.deleteSuccess()
+      mergeMap((articleNo) => {
+          return this.service.deleteArticle(articleNo).pipe(
+            map(() => {
+              return BoardActions.deleteSuccess()
+            }),
+            tap(() => this.router.navigate(['/board'])),
+            catchError(err => of(BoardActions.deleteFailed({error: err.message})))
+          )
         }),
-        tap(() => this.router.navigate(['/board'])),
-        catchError(err => of(BoardActions.deleteFailed({error: err.message})))
-      )),
     )
   )
 }

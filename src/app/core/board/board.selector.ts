@@ -38,6 +38,10 @@ export const selectTemp = createSelector(
   selectBoard,
   (state: BoardState) => state.temp
 )
+export const selectIsPermit = createSelector(
+  selectBoard,
+  (state: BoardState) => state.isPermit
+)
 // export const selectDetailFromStore =(no:number)=> { createSelector(
 //     selectBoard,
 //     (state) => state.articles.find((detail) => detail.no === no))

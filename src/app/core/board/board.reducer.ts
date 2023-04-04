@@ -114,6 +114,21 @@ const BoardReducer = createReducer(
     isLoading: true,
     error: action.error
   })),
+  on(BoardActions.getPermissionToEdit, (state, action)=>({
+    ...state,
+    isLoading: true,
+    isPermit: false
+  })),
+  on(BoardActions.matchSuccess, (state, action)=>({
+    ...state,
+    isLoading: false,
+    isPermit: true,
+  })),
+  on(BoardActions.matchFailed, (state, action)=>({
+    ...state,
+    isLoading: true,
+    isPermit: false,
+  })),
 
 
 

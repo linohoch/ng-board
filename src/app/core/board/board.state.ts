@@ -1,6 +1,7 @@
 
 export interface BoardState {
   isLoading: boolean
+  isPermit: boolean
   error: string | null
   articles: Article[]
   detail: Article | null
@@ -11,6 +12,7 @@ export interface BoardState {
 }
 export const initialState: BoardState = {
   isLoading: false,
+  isPermit: false,
   error: null,
   articles: [],
   detail: null,
@@ -33,6 +35,7 @@ export interface Article {
   upDate: Date | null;
   photo: string | null;
   isDelete: boolean;
+  pw: string | null;
 }
 
 export class rootComment implements Comment {

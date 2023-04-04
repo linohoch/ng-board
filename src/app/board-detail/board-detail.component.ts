@@ -10,7 +10,7 @@ import {
   selectCommentList,
   selectDetail,
   selectError,
-  selectIsLoading
+  selectIsLoading, selectIsPermit
 } from "../core/board";
 import * as BoardActions from './../core/board/board.actions'
 import {Observable} from "rxjs";
@@ -39,6 +39,8 @@ export class BoardDetailComponent implements OnInit {
   likeCnt: number | null | undefined;
   likeArticle: number[] | undefined;
   // likeComment: number[] | undefined;
+  pw: string | undefined;
+  detail: Article | null | undefined;
 
   //TODO store
 
@@ -51,6 +53,10 @@ export class BoardDetailComponent implements OnInit {
     this.isLoading$ = this.store.pipe(select(selectIsLoading))
     this.error$ = this.store.pipe(select(selectError))
     this.detail$ = this.store.pipe(select(selectDetail))
+    this.store.pipe(select(selectDetail)).subscribe(next => {
+      this.detail = next
+    })
+
     this.commentList$ = this.store.pipe(select(selectCommentList))
     this.detail$.subscribe(next => {
       this.likeCnt = next?.likeCnt
@@ -95,15 +101,31 @@ export class BoardDetailComponent implements OnInit {
     return result
   }
 
-  goToEdit() {
+  getPermit() {
+    this.detail && this.store.dispatch(BoardActions.getPermissionToEdit({
+      detail: this.detail,
+      me: this.me ? this.me : 'anonymous',
+      pw: this.pw
+    }))
+  }
+
+  goToEditBtn() {
+    this.getPermit()
     this.router.navigate([`article`, this.articleNo, 'edit'])
   }
 
-  delete() {
-    this.store.dispatch(BoardActions.deleteArticle({articleNo: this.articleNo}))
+  delArticleBtn() {
+    this.getPermit()
+    this.store.pipe(select(selectIsPermit)).subscribe(res => {
+      if (res) {
+        this.store.dispatch(BoardActions.deleteArticle({articleNo: this.articleNo}))
+      } else {
+        alert('틀린비밀번호')
+      }
+    }).unsubscribe()
   }
 
-  commentBtn(textarea: any): void {
+  submitCommentBtn(textarea: any): void {
     if (textarea.value.trim() !== '') {
       this.newComment.contents = textarea.value
       this.newComment = {...this.newComment, ...textarea.dataset}
