@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule, ViewContainerRef} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -21,8 +21,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from "@angular/material/table";
 import {SignupComponent} from './signup/signup.component';
 import {AuthInterceptor} from "./interceptor/auth.interceptor";
-import {DialogComponent} from './dialog/dialog.component';
-import {MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
+import {DialogComponent, DialogControl} from './dialog/dialog.component';
+import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
 import {TransferService} from "./services/transfer.service";
 import {StoreDevtoolsModule} from "@ngrx/store-devtools";
 import {StoreModule} from '@ngrx/store';
@@ -34,6 +34,7 @@ import { BoardCreateComponent } from './board-create/board-create.component';
 import {MatDividerModule} from "@angular/material/divider";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {QuillModule} from "ngx-quill";
+import { SelectorComponent } from './common/selector/selector.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import {QuillModule} from "ngx-quill";
     DialogComponent,
     BoardEditComponent,
     BoardCreateComponent,
+    SelectorComponent,
   ],
   imports: [
     QuillModule.forRoot({
@@ -85,9 +87,11 @@ import {QuillModule} from "ngx-quill";
     MatDividerModule,
     MatPaginatorModule,
   ],
-  // exports: [
-  //   MatDialogModule
-  // ],
+  exports: [
+    BrowserModule,
+    MatDialogModule,
+    BrowserAnimationsModule
+  ],
   providers: [
     HttpService,
     TransferService,
@@ -98,6 +102,10 @@ import {QuillModule} from "ngx-quill";
     },
     {
       provide: MatDialogRef,
+      useValue: {}
+    },
+    {
+      provide: MAT_DIALOG_DATA,
       useValue: {}
     },
   ],

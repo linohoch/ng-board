@@ -2,12 +2,16 @@
 <div>
 
   <div class="top-area">
-    <h1>Create</h1>
-    <button id="temp-btn"
-            mat-button
+    <button class="btn btn-top"
+            id="cancel-btn"
+            type="button"
+            (click)="cancel()"
+    >cancel</button>
+    <button class="btn btn-top"
+            id="temp-btn"
             type="button"
             (click)="getTemp()"
-    >getLastSave</button>
+    >load saved</button>
   </div>
   <div class="form-wrapper">
     <form [formGroup]="createForm" class="edit-form" (ngSubmit)="submit()">
@@ -16,13 +20,16 @@
                   placeholder="title"
                   maxlength="300"
                   id="title"
-                  formControlName="title"></textarea>
+                  formControlName="title">
+
+        </textarea>
         <input  *ngIf="me==='anonymous'"
                 class="{{createForm.get('password')?.hasError('required')?'required':''}}"
                 placeholder="password"
                 id="password"
                 type="password"
                 formControlName="password">
+        <div class="required-message" *ngIf="createForm.get('title')?.hasError('required')">title is required</div>
       </div>
       <div class="editor-wrapper">
         <quill-editor #editor
@@ -33,26 +40,23 @@
         </quill-editor>
       </div>
       <div class="button-wrapper">
-        <button id="save-btn"
-                mat-button
+        <button class="btn"
+                id="save-btn"
                 type="button"
                 (click)="save()"
                 >save</button>
-        <button id="submit-btn"
-                mat-button
-                type="button"
-                (click)="submit()"
-                [disabled]="me==='anonymous'?createForm.invalid:false"
+        <button class="btn"
+                id="submit-btn"
+                type="submit"
+                [disabled]="me==='anonymous'?createForm.invalid:0"
                 >submit</button>
       </div>
     </form>
   </div>
-  <div>
-    <button id="cancel-btn"
-            mat-button
-            type="button"
-            (click)="cancel()"
-    >cancel</button>
+  <div class="preview-area">
+    <div [innerHtml]="createForm.get('contents')?.value">
+    </div>
   </div>
+
 </div>
 </div>

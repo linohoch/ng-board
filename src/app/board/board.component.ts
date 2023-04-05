@@ -1,4 +1,4 @@
-import {Component, Injectable, OnInit} from '@angular/core';
+import {Component, Injectable, Input, OnInit} from '@angular/core';
 import {HttpService} from "../services/http.service";
 import {select, Store} from "@ngrx/store";
 import * as BoardActions from '../core/board/board.actions';
@@ -12,6 +12,7 @@ import {
 } from "../core/board";
 import {ActivatedRoute} from "@angular/router";
 import {MatPaginatorIntl} from "@angular/material/paginator";
+import {CommonService} from "../services/common.service";
 
 @Component({
   selector: 'app-board',
@@ -31,9 +32,22 @@ export class BoardComponent implements OnInit {
 
   isDeleteFilter:string = 'all'
 
+  now: any
+  me: string | null | undefined
+
+  selectData = {
+    title:'글 필터링',
+    options: [
+      { key:'all articles', value:'all',isSelected: true },
+      { key:'except deleted', value:'except', isSelected: false}
+    ]
+  }
+
+
   constructor(private service: HttpService,
               private store: Store,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private common: CommonService) {
     this.activatedRoute.snapshot.queryParamMap.get('page')
     this.isLoading$ = this.store.pipe(select(selectIsLoading))
     this.error$ = this.store.pipe(select(selectError))
@@ -43,8 +57,21 @@ export class BoardComponent implements OnInit {
     })
   }
 
+  receiveSelected(option: any) {
+    console.log(option)
+    this.isDeleteFilter=option.value
+    this.exceptDeleted()
+  }
   ngOnInit(): void {
+    const localUser = localStorage.getItem('user')
+    if(localUser) {
+      this.me = JSON.parse(localUser).username
+    }
     this.store.dispatch(BoardActions.getArticles())
+    this.now = new Date
+  }
+  getDate(d:any) {
+    return this.common.calDate(d)
   }
   getPageEvent(e: { pageIndex: any; pageSize: any}){
     this.pageIndex=e.pageIndex
@@ -82,3 +109,4 @@ export class MyCustomPaginatorIntl implements MatPaginatorIntl {
     return $localize`Page ${page + 1} of ${amountPages}`;
   }
 }
+

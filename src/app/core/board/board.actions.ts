@@ -135,7 +135,7 @@ export const createFailed = createAction(
  */
 export const deleteArticle = createAction(
   "[Board-detail page] send delete Article",
-  props<{ articleNo: any }>()
+  props<{ articleNo: any, userEmail?: any }>()
 )
 
 export const deleteSuccess = createAction(

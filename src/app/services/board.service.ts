@@ -36,9 +36,9 @@ export class BoardService {
 
   createArticle(detail: Article) {
     if(detail.userEmail==='anonymous'){
-      return this.http.post<any>(`${this.baseUrl}/anny/`, detail)
+      return this.http.post<any>(`${this.baseUrl}/article/anny`, detail)
     }
-    return this.http.post<any>(`${this.baseUrl}/article/`, detail)
+    return this.http.post<any>(`${this.baseUrl}/article`, detail)
   }
   deleteArticle(no: number) {
     return this.http.delete<any>(`${this.baseUrl}/article/${no}`)
@@ -59,6 +59,9 @@ export class BoardService {
 
   matchAnnyPassword(articleNo: string, pw: string) {
     return this.http.post(`${this.baseUrl}/anny/pw`, {no: articleNo, pw: pw})
+  }
+  deleteAnnyArticle(no: number) {
+    return this.http.delete<any>(`${this.baseUrl}/article/anny/${no}`)
   }
 
 

@@ -1,4 +1,3 @@
-
 export interface BoardState {
   isLoading: boolean
   isPermit: boolean
@@ -10,6 +9,7 @@ export interface BoardState {
   commentList: Comment[] | null
 
 }
+
 export const initialState: BoardState = {
   isLoading: false,
   isPermit: false,
@@ -21,6 +21,23 @@ export const initialState: BoardState = {
   commentList: []
 }
 
+export class ArticleVO implements Article {
+  shopNo: number = 0;
+  no: number = 0;
+  title: string = '';
+  contents: string = '';
+  userNo: number = 0;
+  userEmail: string | null = null;
+  hitCnt: number = 0;
+  likeCnt: number = 0;
+  likeYn: boolean | null = null;
+  insDate: Date | null = null;
+  upDate: Date | null = null;
+  photo: string | null = null;
+  isDelete: boolean = false;
+  pw: string | null = null;
+}
+
 export interface Article {
   shopNo: number | null;
   no: number;
@@ -30,7 +47,7 @@ export interface Article {
   userEmail: string | null;
   hitCnt: number | null;
   likeCnt: number | null;
-  likeYn: number | null;
+  likeYn: boolean | null;
   insDate: Date | null;
   upDate: Date | null;
   photo: string | null;
@@ -77,6 +94,7 @@ export interface Comment {
   isDelete: boolean
   likeYn: boolean
 }
+
 // export interface Board {
 //   shopNo:number|null;
 //   no:number;

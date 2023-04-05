@@ -1,25 +1,35 @@
+
 .container {
   width: 100%;
   height: 100%;
   background-color: #e7e7e7;
-  display: flex;
+  display: grid;
   justify-content: center;
-  .top-area {
+  padding-top: 10px;
+  .top-area{
     display: flex;
     justify-content: space-between;
-    height: 50px;
-    margin-top: 20px;
-    button {
-      background-color: white;
+    align-items: center;
+    margin: 0 0 10px 0;
+    height: 40px;
+  }
+  .preview-area {
+    display: flex;
+    justify-content: center;
+    background: white;
+    width: 500px;
+    min-height: 100px;
+    div {
+      width: 100%;
+      margin: 20px;
     }
   }
   .form-wrapper {
     display: flex;
     justify-content: center;
     background-color: white;
-    width: 70vw;
-    min-width: 400px;
-    min-height: 400px;
+    width: 500px;
+    min-height: 350px;
     .edit-form {
       align-content: baseline;
       justify-content: center;
@@ -29,15 +39,15 @@
       .title-wrapper {
         display: flex;
         justify-content: space-between;
-        width: 400px;
         height: 40px;
         margin-bottom: 20px;
+        position: relative;
         textarea {
           width: 100%;
           border: 1px solid #cbcbcb;
           resize: none;
           overflow-x: scroll;
-          padding: 10px
+          padding: 10px;
         }
         input {
           width: 80px;
@@ -45,13 +55,19 @@
           border: 1px solid #cbcbcb;
           padding: 10px;
           &.required {
-          border: 1px solid red;
+            border: 1px solid #FF4040FF;
+          }
         }
+        .required-message {
+          font-size: smaller;
+          bottom: -1rem;
+          position: absolute;
+          color: #FF4040FF;
         }
       }
       .editor-wrapper {
         display: grid;
-        width: 400px;
+        width: 480px;
       }
       .button-wrapper{
         display: flex;
@@ -62,7 +78,11 @@
           border-radius: 30px;
           width: 80px;
         }
+        #save-btn {
+          z-index: 99;
+        }
         #submit-btn {
+          z-index: 99;
           background-color: #464646;
           color: white;
           &:disabled {

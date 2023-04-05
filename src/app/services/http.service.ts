@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, map, Observable, of} from "rxjs";
 import {Router} from "@angular/router";
-import {DialogControl} from "../dialog/dialog.component";
+import {DialogComponent, DialogControl} from "../dialog/dialog.component";
 import {Article} from "../core/board";
+import {MatDialog} from "@angular/material/dialog";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class HttpService {
   };
   constructor(private http: HttpClient,
               private router: Router,
-              public dialog: DialogControl,) {
+              private dial: MatDialog,
+              private dialog: DialogControl,) {
   }
   errorHandler(e:any){
     alert(e.error.message)
@@ -93,25 +95,34 @@ export class HttpService {
       catchError(async (err) => this.errorHandler(err.error)))
   }
   dialogActionForLink (credential:any) {
-    const result = this.dialog.openDialog({
-      title:'계정연동',
-      contents:'email로 가입된 회원정보가 존재합니다.',
-      btn:{
-        okBtnText:'연결합니다.',
-        noBtnText:'취소.',
-      },
-    })
-    result.afterClosed().subscribe((result: any)=>{
-      console.log('after->', result)
-      if(result){
+      if(confirm('email로 가입된 회원정보가 존재합니다. 연동하고 계속하려면 확인')){
         this.linkWithGoogle(credential).subscribe(()=>{
           this.router.navigateByUrl('/')
         })
       }else {
-        this.router.navigate(['signup'])
+        this.router.navigate(['login'])
       }
 
-    })
+      //TODO 구글 로그인 콜백에서 문제
+    // const result = this.dialog.openDialog({
+    //   title:'계정연동',
+    //   contents:'email로 가입된 회원정보가 존재합니다.',
+    //   btn:{
+    //     okBtnText:'연결합니다.',
+    //     noBtnText:'취소.',
+    //   },
+    // })
+    // result.afterClosed().subscribe((result: any)=>{
+    //   console.log('after->', result)
+    //   if(result){
+    //     this.linkWithGoogle(credential).subscribe(()=>{
+    //       this.router.navigateByUrl('/')
+    //     })
+    //   }else {
+    //     this.router.navigate(['signup'])
+    //   }
+    //
+    // })
  }
   signInWithGoogle(credential: any) {
     return this.http.post(`${this.baseUrl}/api/v1/auth/google/callback2`, {'credential':credential}, this.httpOptions).pipe(

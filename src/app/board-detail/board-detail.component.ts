@@ -4,7 +4,7 @@ import {HttpService} from "../services/http.service";
 import {select, Store} from "@ngrx/store";
 import {Location} from "@angular/common";
 import {
-  appLoaded, Article,
+  appLoaded, Article, ArticleVO,
   Comment,
   rootComment,
   selectCommentList,
@@ -16,6 +16,7 @@ import * as BoardActions from './../core/board/board.actions'
 import {Observable} from "rxjs";
 import {BoardService, isRead} from "../services/board.service";
 import {map} from "rxjs/operators";
+import {DialogControl} from "../dialog/dialog.component";
 
 @Component({
   selector: 'app-board-detail',
@@ -24,7 +25,7 @@ import {map} from "rxjs/operators";
   // providers: [HttpService]
 })
 export class BoardDetailComponent implements OnInit {
-  articleNo = this.activatedRoute.snapshot.paramMap.get('articleNo')
+  articleNo: string | null
   isLoading$: Observable<boolean>;
   error$: Observable<string | null>;
   detail$: Observable<Article | null>;
@@ -34,56 +35,51 @@ export class BoardDetailComponent implements OnInit {
   now: any
   focusedThread: number = 0;
   userInfo: any | undefined;
-  readTF: boolean = false;
-  likeTF: undefined | boolean = false;
-  likeCnt: number | null | undefined;
-  likeArticle: number[] | undefined;
+  readYn: boolean = false;
+  isLike: boolean | undefined = false;
+  likeCnt: number | null | undefined = 0;
+  likeArticle: number[] | undefined = [];
   // likeComment: number[] | undefined;
   pw: string | undefined;
-  detail: Article | null | undefined;
+  detail: Article | undefined = new ArticleVO();
 
-  //TODO store
 
   constructor(private service: HttpService,
               private store: Store,
               private location: Location,
               private router: Router,
               private activatedRoute: ActivatedRoute,
-              private boardService: BoardService) {
+              private boardService: BoardService,
+              private dialog: DialogControl) {
     this.isLoading$ = this.store.pipe(select(selectIsLoading))
     this.error$ = this.store.pipe(select(selectError))
     this.detail$ = this.store.pipe(select(selectDetail))
-    this.store.pipe(select(selectDetail)).subscribe(next => {
-      this.detail = next
-    })
-
     this.commentList$ = this.store.pipe(select(selectCommentList))
+    this.articleNo = this.activatedRoute.snapshot.paramMap.get('articleNo')
     this.detail$.subscribe(next => {
-      this.likeCnt = next?.likeCnt
+      console.log(next)
+      if(next){
+        this.detail = next
+      }
+      this.likeCnt = this.detail?.likeCnt
     })
-    this.userInfo = localStorage.getItem('userInfo')
-    this.likeArticle = this.userInfo && JSON.parse(this.userInfo).likeArticle
-    // this.likeComment = this.userInfo && JSON.parse(this.userInfo).likeComment
-    if (this.articleNo !== null) {
-      this.readTF = isRead(Number(this.articleNo))
-      this.likeTF = this.likeArticle && this.likeArticle.includes(Number(this.articleNo))
-    }
   }
 
   ngOnInit(): void {
-    this.store.dispatch(BoardActions.getDetail({no: this.articleNo, isRead: this.readTF}))
+    this.store.dispatch(BoardActions.getDetail({no: this.articleNo, isRead: this.readYn}))
     this.store.dispatch(BoardActions.getComments({no: this.articleNo}))
 
+    if (this.articleNo !== null) {
+      this.readYn = isRead(Number(this.articleNo))
+      this.isLike = this.likeArticle && this.likeArticle.includes(Number(this.articleNo))
+    }
+    this.userInfo = localStorage.getItem('userInfo')
+    this.likeArticle = this.userInfo && JSON.parse(this.userInfo).likeArticle
     const logUser = localStorage.getItem('user')
     this.me = logUser && JSON.parse(logUser).username
     this.newComment.userEmail = this.me
     this.newComment.articleNo = Number(this.articleNo)
     this.now = new Date
-
-  }
-
-  initialiseInvites() {
-
   }
 
   calDate(date: any) {
@@ -103,42 +99,63 @@ export class BoardDetailComponent implements OnInit {
 
   getPermit() {
     this.detail && this.store.dispatch(BoardActions.getPermissionToEdit({
-      detail: this.detail,
+      detail: this.detail, //userEmail, pw
       me: this.me ? this.me : 'anonymous',
       pw: this.pw
     }))
+    let isPermit;
+    this.store.pipe(select(selectIsPermit)).subscribe(res => {
+      isPermit = res
+    }).unsubscribe()
+    return isPermit
   }
 
   goToEditBtn() {
-    this.getPermit()
-    this.router.navigate([`article`, this.articleNo, 'edit'])
+    if (this.getPermit()) {
+      this.router.navigate([`article`, this.articleNo, 'edit'])
+    } else {
+      alert('틀린비밀번호')
+    }
   }
 
   delArticleBtn() {
-    this.getPermit()
-    this.store.pipe(select(selectIsPermit)).subscribe(res => {
-      if (res) {
-        this.store.dispatch(BoardActions.deleteArticle({articleNo: this.articleNo}))
-      } else {
-        alert('틀린비밀번호')
+    if (this.getPermit()) {
+      if (confirm('정말 삭제합니까')) {
+        this.store.dispatch(BoardActions.deleteArticle({articleNo: this.articleNo, userEmail: this.detail?.userEmail}))
       }
-    }).unsubscribe()
+    } else {
+      alert('틀린비밀번호')
+    }
   }
 
   submitCommentBtn(textarea: any): void {
-    if (textarea.value.trim() !== '') {
-      this.newComment.contents = textarea.value
-      this.newComment = {...this.newComment, ...textarea.dataset}
-      this.store.dispatch(BoardActions.setComment({comment: this.newComment}))
-    }
+    // const result = this.dialog.openDialog({
+    //   title:'계정연동',
+    //   contents:'email로 가입된 회원정보가 존재합니다.',
+    //   btn:{
+    //     okBtnText:'연결합니다.',
+    //     noBtnText:'취소.',
+    //   },
+    // })
+    this.service.dialogActionForLink('d')
+    // console.log(this.likeCnt, this.detail)
+    // if (textarea.value.trim() !== '') {
+    //   this.newComment.contents = textarea.value
+    //   this.newComment = {...this.newComment, ...textarea.dataset}
+    //   this.store.dispatch(BoardActions.setComment({comment: this.newComment}))
+    // }
   }
 
   likeArticleBtn(): void {
     // this.store.dispatch(BoardActions.likeArticle({articleNo: this.articleNo}))
-    if (!this.likeTF && this.articleNo) {
+    if (!this.me) {
+      if (confirm('로그인 페이지로 이동')) {
+        this.router.navigate(['login'])
+      }
+    } else if (!this.isLike && this.articleNo) {
       this.boardService.addLikeArticle(Number(this.articleNo)).pipe(
         map((res) => {
-          this.likeTF = true
+          this.isLike = true
           this.likeCnt = res.likeCnt
           this.service.getUserInfo().subscribe(next => {
             if (next) {
@@ -147,12 +164,12 @@ export class BoardDetailComponent implements OnInit {
           })
         })
       ).subscribe()
-    } else if (this.likeTF && this.articleNo) {
+    } else if (this.isLike && this.articleNo) {
       this.boardService.cancelLikeArticle(Number(this.articleNo)).pipe(
         map((res) => {
-          this.likeTF = false
-          this.likeCnt = res.likeCnt
+          this.isLike = false
           this.service.getUserInfo().subscribe(next => {
+          this.likeCnt = res.likeCnt
             if (next) {
               localStorage.setItem('userInfo', JSON.stringify(next))
             }
@@ -164,7 +181,11 @@ export class BoardDetailComponent implements OnInit {
 
   likeCommentBtn(commentNo: any, isLike: boolean): void {
     // const isLike = this.likeComment?.includes(Number(commentNo))
-    if (isLike) {
+    if (!this.me) {
+      if (confirm('로그인 페이지로 이동')) {
+        this.router.navigate(['login'])
+      }
+    } else if (isLike) {
       this.boardService.cancelLikeComment(Number(this.articleNo), Number(commentNo)).pipe(
         map(() => {
           this.service.getUserInfo().subscribe(next => {
@@ -172,12 +193,10 @@ export class BoardDetailComponent implements OnInit {
               localStorage.setItem('userInfo', JSON.stringify(next))
             }
           })
-
         })
       ).subscribe(next => {
         this.store.dispatch(BoardActions.getComments({no: this.articleNo}))
         this.commentList$ = this.store.pipe(select(selectCommentList))
-
       })
     } else {
       this.boardService.addLikeComment(Number(this.articleNo), Number(commentNo)).pipe(
@@ -191,17 +210,18 @@ export class BoardDetailComponent implements OnInit {
       ).subscribe(next => {
         this.store.dispatch(BoardActions.getComments({no: this.articleNo}))
         this.commentList$ = this.store.pipe(select(selectCommentList))
-
       })
     }
   }
 
   delCommentBtn(commentNo: any): void {
-    this.boardService.deleteComment(this.articleNo, commentNo).subscribe(
-      () => {
-        location.reload()
-      }
-    )
+    if (confirm('정말 삭제함?')) {
+      this.boardService.deleteComment(this.articleNo, commentNo).subscribe(
+        () => {
+          location.reload()
+        }
+      )
+    }
   }
 
   showTextareaBtn(textarea: any): void {
@@ -213,18 +233,26 @@ export class BoardDetailComponent implements OnInit {
     this.focusedThread = num
   }
 
-  foldThread(no: any): void {
+  foldThread($event: any): void {
+    const no = $event.target.dataset.no
+
     let group: Comment[] | undefined = [];
     this.commentList$.subscribe({
       next(com) {
         group = com?.filter(c => {
-          return c.thread?.includes(no)
+          return c.thread?.includes(Number(no))
         })
       }
     })
     if (group !== undefined) {
       group.forEach((comment, i) => {
-        document.getElementById(`c-${comment.no}`)?.classList.add(i === 0 ? 'fold' : 'fold-tail')
+        const targetEl = document.getElementById(`c-${comment.no}`)
+        let word = (i === 0) ? 'fold' : 'fold-tail'
+        if (targetEl?.classList.contains(word)) {
+          targetEl?.classList.remove(word)
+        } else {
+          targetEl?.classList.add(word)
+        }
       })
     }
   }

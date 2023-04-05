@@ -160,8 +160,16 @@ export class BoardEffects {
   deleteArticle = createEffect(() =>
     this.actions$.pipe(
       ofType(BoardActions.deleteArticle),
-      map(action => action.articleNo),
-      mergeMap((articleNo) => {
+      mergeMap(({articleNo, userEmail}) => {
+        if(userEmail==='anonymous'){
+          return this.service.deleteAnnyArticle(articleNo).pipe(
+            map(() => {
+              return BoardActions.deleteSuccess()
+            }),
+            tap(() => this.router.navigate(['/board'])),
+            catchError(err => of(BoardActions.deleteFailed({error: err.message})))
+          )
+        }else {
           return this.service.deleteArticle(articleNo).pipe(
             map(() => {
               return BoardActions.deleteSuccess()
@@ -169,6 +177,7 @@ export class BoardEffects {
             tap(() => this.router.navigate(['/board'])),
             catchError(err => of(BoardActions.deleteFailed({error: err.message})))
           )
+          }
         }),
     )
   )

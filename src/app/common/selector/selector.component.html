@@ -1,0 +1,17 @@
+<div *ngIf="data">
+  <div class="my-select">
+    <div class="select-label" (click)="showOptions()">
+      <img src="../../../assets/svg/filter-svgrepo-com.svg"
+           alt="filter"
+           width="10px" height="10px">
+      <div class="label-text">{{data.title}}</div>
+      <div class="label-selected">{{keySelected}}</div>
+    </div>
+    <div class="select-options">
+      <option *ngFor="let option of data.options; let i = index"
+           class="select-option {{option.isSelected?'selected':''}}"
+           value="{{option.value}}"
+           (click)="selectOption(option)">{{option.key}}</option>
+    </div>
+  </div>
+</div>

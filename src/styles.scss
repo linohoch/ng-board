@@ -3,3 +3,90 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 p {margin: 0 !important;}
+textarea:focus {
+  outline: none;
+}
+input:focus {
+  outline: none;
+}
+a:link {text-decoration: none; color: black;}
+a:visited {text-decoration: none; color: #2a2a2a;}
+a:active {text-decoration: none; color: black;}
+a:hover {text-decoration: none; color: #017cdc;}
+
+.profile-image {
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 50%;
+  color: whitesmoke;
+  background-color: #1976d2;
+  width: 26px;
+  height: 26px;
+  margin: 2px;
+}
+.btn {
+  user-select: none;
+  border: none;
+  border-radius: 10rem;
+  width: 80px;
+  height: 30px;
+  margin-left: 10px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: #4d4d4d;
+  cursor: pointer;
+  &:disabled {
+    opacity: 30%;
+    background: none;
+    color: black;
+    &:hover {
+      background: none;
+      cursor: unset;
+    }
+  }
+  &:hover {
+    background-color: #e3f1ff;
+  }
+  &-icon {
+    width: 30px;
+    background: none;
+    margin: 0;
+    border-radius: inherit;
+  }
+
+  &-clear {
+    background-color: #cbcbcb;
+    color: #4d4d4d;
+  }
+  &-comment {
+    background-color: #464646;
+    color: white;
+  }
+  &-top {
+    border-radius: inherit;
+    margin: 0;
+    height: 100%;
+    background: #fafafa;
+  }
+  &-input {
+    border-radius: inherit;
+    width: fit-content;
+    height: 40px;
+    background: #fafafa;
+
+    textarea {
+      border: none;
+      resize: none;
+      padding: 5px;
+      margin-left: 5px;
+      width: 350px;
+      height: 20px;
+      background: white;
+
+    }
+  }
+}

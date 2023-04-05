@@ -1,19 +1,16 @@
-a:link {text-decoration: none; color: black;}
-a:visited {text-decoration: none; color: #9d9d9d;}
-a:active {text-decoration: none; color: black;}
-a:hover {text-decoration: none; color: #017cdc;}
-
 .container {
+  margin-top: 10px;
   display: grid;
   justify-content: center;
-  .top-btn-set {
+  .top {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10px;
   }
 }
 .card-wrapper {
-  width: 60vw;
-  min-width: 420px;
+  width: 500px;
+  min-width: 400px;
   text-align: center;
 
   mat-card {
@@ -29,4 +26,22 @@ a:hover {text-decoration: none; color: #017cdc;}
       }
     }
   }
+  .author {
+    align-items: center;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .profile-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 50%;
+    color: whitesmoke;
+    background-color: #1976d2;
+    width: 26px;
+    height: 26px;
+    margin: 2px;
+  }
 }
+

@@ -5,7 +5,8 @@ import {Location} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import * as BoardActions from "../core/board/board.actions";
 import {QuillEditorComponent} from "ngx-quill";
-import {Article, selectTemp} from "../core/board";
+import {Article, ArticleVO, selectTemp} from "../core/board";
+import {hasErrors} from "@angular/compiler-cli/ngcc/src/packages/transformer";
 
 @Component({
   selector: 'app-board-create',
@@ -14,14 +15,13 @@ import {Article, selectTemp} from "../core/board";
 })
 export class BoardCreateComponent implements OnInit{
   articleNo = this.activatedRoute.snapshot.paramMap.get('articleNo')
-  detail = {title:'',contents:''}
+  detail: Article = new ArticleVO()
   me: string | undefined;
   createForm = this.formBuilder.group({
-    title: new FormControl('', Validators.required),
+    title: new FormControl('', { validators:Validators.required, updateOn: 'blur', nonNullable:true}),
     contents: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
   })
-  changedText: string = ''
   @ViewChild('editor') editor: QuillEditorComponent | undefined;
 
   constructor(private store: Store,
@@ -40,26 +40,29 @@ export class BoardCreateComponent implements OnInit{
     }
   }
   changeContent(event: { editor: { getText: () => any; }; }){
-    this.changedText = event.editor.getText();
+    // this.preview = event.editor.getText();
   }
   submit(): void {
     const title = this.createForm.get('title')?.value
     const contents = this.createForm.get('contents')?.value
     const pw = this.createForm.get('password')?.value
-    if (title != null && contents !=null) {
+    if (!this.createForm.get('title')?.hasError('required') &&
+     !this.createForm.get('contents')?.hasError('required')) {
+    console.log(title, contents, pw)
       let data = {title: title, contents: contents, userEmail: this.me, pw: pw}
       this.store.dispatch(BoardActions.setArticle({detail: data}))
     }
   }
   save(){
-    let title = this.createForm.get('title')?.value
+    let title = this.createForm.get('title')?.value?.trim()
     let contents = this.createForm.get('contents')?.value
-    if (title != null && contents !=null) {
-      this.detail.title = title
-      this.detail.contents = contents
+    if (!this.createForm.get('contents')?.hasError('required')) {
+      this.detail= Object.assign({...this.detail}, {title:title})
+      this.detail= Object.assign({...this.detail}, {contents:contents})
+      }
       this.store.dispatch(BoardActions.setEditedArticle({temp: this.detail}))
     }
-  }
+
   getTemp() {
     this.store.pipe(select(selectTemp)).subscribe(next=> {
       if(next) {

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {select, Store} from "@ngrx/store";
-import {appLoaded, Article, selectDetail, selectIsPermit, selectTemp} from "../core/board";
+import {appLoaded, Article, ArticleVO, selectDetail, selectIsPermit, selectTemp} from "../core/board";
 import {Location} from "@angular/common";
 import {ActivatedRoute, NavigationEnd, Router, RoutesRecognized} from "@angular/router";
 import * as BoardActions from './../core/board/board.actions'
@@ -13,7 +13,7 @@ import {FormBuilder, FormControl, Validators} from "@angular/forms";
 })
 export class BoardEditComponent implements OnInit {
   articleNo = this.activatedRoute.snapshot.paramMap.get('articleNo')
-  detail: Article | undefined;
+  detail: { title: string, contents: string } = { title: '', contents: '' };
   me: string | undefined;
   editForm = this.formBuilder.group({
     title: new FormControl('', Validators.required),
@@ -43,14 +43,13 @@ export class BoardEditComponent implements OnInit {
       alert('잘못된 접근');
       window.history.back();
     } else if (!this.isPermit) {
-      alert('수정권한이 없음');
+      alert('권한없는 접근');
       window.history.back();
     }
 
     this.store.pipe(select(selectDetail))
       .subscribe(next => {
         if (next) {
-          console.log(next)
           this.detail = Object.assign({}, next)
           this.editForm.get('title')?.setValue(this.detail?.title)
           this.editForm.get('contents')?.setValue(this.detail?.contents)
@@ -70,9 +69,9 @@ export class BoardEditComponent implements OnInit {
   save() {
     let title = this.editForm.get('title')?.value
     let contents = this.editForm.get('contents')?.value
-    if (title != null && contents != null && this.detail !== undefined) {
-      this.detail.title = title
-      this.detail.contents = contents
+    if (!this.editForm.get('contents')?.hasError('required')) {
+      this.detail= Object.assign({...this.detail}, {title:title})
+      this.detail= Object.assign({...this.detail}, {contents:contents})
       this.store.dispatch(BoardActions.setEditedArticle({temp: this.detail}))
     }
   }

@@ -1,22 +1,28 @@
 <div class="container">
   <div class="">
     <div *ngIf="isLoading$ | async">Loading...</div>
-      <div>
-        <button id="back-btn"
-                mat-button
+    <div class="contents-wrapper" *ngIf="detail$ | async as article">
+      <div class="top">
+        <button class="btn btn-top"
                 type="button"
                 (click)="back()"
         >back</button>
+        <button class="btn btn-input"
+                [routerLink]="['/board/new']">
+          <div class="profile-image">
+            <div>{{article.userEmail?.charAt(0)}}</div>
+          </div>
+          <textarea
+            placeholder="Create new article"></textarea>
+        </button>
       </div>
-    <div class="contents-wrapper" *ngIf="detail$ | async as article">
       <div class="article-container">
-        <div class="title-area">
-          <div>{{article.no}}</div>
-          <div class="title">{{article.title}}</div>
-          <div>{{calDate(article.insDate)}}</div>
-        </div>
         <div class="sub-area">
-          <div>{{article.userEmail}}</div>
+          <div>{{article.no}} ∙ {{article.userEmail}} ∙ {{calDate(article.insDate)}} </div>
+          <div></div>
+        </div>
+        <div class="title-area">
+          <div class="title">{{article.title}}</div>
           <div>
             <img src="../../assets/svg/eye-open.svg" alt="view" width="20px" height="20px"/>
             {{article.hitCnt}}
@@ -35,44 +41,89 @@
             </div>
         </div>
         <div class="btn-set" *ngIf="article.userEmail!=='anonymous'">
-          <button class="like-btn"
+          <button class="btn btn-like"
                   (click)="likeArticleBtn()"
-                  [disabled]="article.userEmail===me || article.isDelete">{{likeCnt}} {{likeTF?'unlike':'like'}}</button>
-          <button (click)="goToEditBtn()"
-                  [disabled]="article.userEmail!==me || article.isDelete">edit</button>
-          <button (click)="delArticleBtn()"
-                  [disabled]="article.userEmail!==me || article.isDelete">{{article.isDelete?'deleted':'delete'}}</button>
+                  [disabled]="article.userEmail===me || article.isDelete">
+<!--            {{'$ '+  article.likeCnt}}-->
+<!--            {{'sub '+ detail?.likeCnt}}-->
+            {{likeCnt}}
+            <img src="../../assets/svg/{{isLike?'heart-fill-svgrepo-com.svg':'heart-svgrepo-com.svg'}}"
+                 alt="like"
+                 width="20px" height="20px">
+            {{isLike?'cancel':'like'}}</button>
+          <button class="btn btn-edit"
+                  (click)="goToEditBtn()"
+                  [disabled]="article.userEmail!==me || article.isDelete">
+            <img src="../../assets/svg/edit-3-svgrepo-com.svg"
+                 alt="edit"
+                 width="15px" height="15px"/>
+            edit</button>
+          <button class="btn btn-delete"
+                  (click)="delArticleBtn()"
+                  [disabled]="article.userEmail!==me || article.isDelete">
+            <img src="../../assets/svg/trash-alt-svgrepo-com.svg"
+                 alt="delete"
+                 width="15px" height="15px"/>
+            {{article.isDelete?'deleted':'delete'}}</button>
         </div>
         <div class="btn-set" *ngIf="article.userEmail==='anonymous'">
-          <button class="like-btn"
+          <button class="btn btn-like"
                   (click)="likeArticleBtn()"
-                  [disabled]="article.isDelete">{{likeCnt}} {{likeTF?'unlike':'like'}}</button>
-          <input  [(ngModel)]="pw"
-                  placeholder="password">
-          <button (click)="goToEditBtn()"
-                  [disabled]="article.isDelete">edit</button>
-          <button (click)="delArticleBtn()"
-                  [disabled]="article.isDelete">{{article.isDelete?'deleted':'delete'}}</button>
+                  [disabled]="article.isDelete">
+            {{likeCnt}}
+            <img src="../../assets/svg/{{isLike?'heart-fill-svgrepo-com.svg':'heart-svgrepo-com.svg'}}"
+                 alt="like"
+                 width="20px" height="20px">
+            {{isLike?'cancel':'like'}}</button>
+          <input  id="anny-pw"
+                  [(ngModel)]="pw"
+                  placeholder="password"
+                  [disabled]="article.isDelete">
+          <button class="btn btn-edit"
+                  (click)="goToEditBtn()"
+                  [disabled]="article.isDelete">
+            <img src="../../assets/svg/edit-3-svgrepo-com.svg"
+                 alt="edit"
+                 width="15px" height="15px"/>
+            edit</button>
+          <button class="btn btn-delete"
+                  (click)="delArticleBtn()"
+                  [disabled]="article.isDelete">
+            <img src="../../assets/svg/trash-alt-svgrepo-com.svg"
+                 alt="delete"
+                 width="15px" height="15px"/>
+            {{article.isDelete?'deleted':'delete'}}</button>
         </div>
 
 
 
         <div class="comment-area">
           <div class="comment-textarea-wrapper">
-              <textarea class="comment-textarea"
-                        placeholder="{{me?'':'댓글을 작성하려면 로그인하세요'}}"
-                        #commentText
-                        [attr.data-grp]="0"
-                        [attr.data-seq]="0"
-                        [attr.data-lv]="0"
-                        [attr.data-parent]="0"
-              ></textarea>
-            <button class="lv1-comment-btn"
-                    [disabled]="!me"
-                    (click)="submitCommentBtn(commentText)">comment</button>
+            <div class="comment-as">
+              {{me ? 'comment as '+ me : ''}}
+            </div>
+            <textarea class="comment-textarea"
+                      placeholder="{{me?'':'댓글을 작성하려면 로그인하세요'}}"
+                      #commentText
+                      [attr.data-grp]="0"
+                      [attr.data-seq]="0"
+                      [attr.data-lv]="0"
+                      [attr.data-parent]="0"
+            ></textarea>
+            <div class="comment-btn-wrapper">
+              <button class="btn btn-clear"
+                      (click)="commentText.value=''"
+                      >clear</button>
+              <button class="btn btn-comment"
+                      [disabled]="!me"
+                      (click)="submitCommentBtn(commentText)">comment
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+
 
       <div class="comment-container">
         <div>
@@ -90,9 +141,10 @@
                  *ngFor="let comment of commentList$ | async; let index = index">
               <div class="indent-wrapper">
                 <div class="line" *ngFor="let th of comment.thread; let i = index;"
+                     [attr.data-no]="th"
                      (mouseover)="focusThread(th)"
                      (mouseout)="focusThread(0)"
-                     (click)="foldThread(th)">
+                     (click)="foldThread($event)">
                   <i class="threadline{{focusedThread===th?'-hover':''}}"
                      [attr.data-no]="th"></i>
                 </div>
@@ -100,7 +152,11 @@
               <div class="comment-wrapper">
                 <div class="comment-left">
                   <div class="unfold-button">
-                    <button (click)="unfoldThread(comment.no)"> + </button>
+                    <button (click)="unfoldThread(comment.no)">
+                      <img src="../../assets/svg/maximize-svgrepo-com.svg"
+                           alt="expand"
+                           width="15px" height="15px">
+                    </button>
                   </div>
                   <div class="profile-image">
                     <div>{{comment.userEmail?.charAt(0)}}</div>
@@ -115,20 +171,38 @@
                   <div class="comment-content">{{comment.contents}}</div>
                   <div class="button-wrapper">
                     <button
-                            class="like-btn"
-                            [attr.data-no]="comment.no"
-                            [disabled]="!me || comment.userEmail===me || comment.isDelete"
-                            type="button"
-                            (click)="likeCommentBtn(comment.no, comment.likeYn)">{{comment.likeCnt}} {{comment.likeYn?'cancel':'like'}}</button>
-                    <button (click)="showTextareaBtn(inputComment)">comment</button>
-                    <button *ngIf="comment.userEmail===me"
-                            class="delete-btn"
+                      class="btn btn-icon btn-like"
+                      [attr.data-no]="comment.no"
+                      [disabled]="comment.userEmail===me || comment.isDelete"
+                      type="button"
+                      (click)="likeCommentBtn(comment.no, comment.likeYn)">
+                      {{comment.likeCnt}}
+                      <img
+                        src="../../assets/svg/{{comment.likeYn?'heart-fill-svgrepo-com.svg':'heart-svgrepo-com.svg'}}"
+                        alt="like"
+                        width="20" height="20"/>
+                    </button>
+                    <button class="btn btn-icon btn-textarea"
+                            (click)="showTextareaBtn(inputComment)">
+                      <img src="../../assets/svg/message-square-lines-svgrepo-com.svg"
+                           alt="comment"
+                           width="15px" height="15px"/>
+                    </button>
+                    <button *ngIf="comment.userEmail===me && !comment.isDelete"
+                            class="btn btn-icon btn-delete"
                             [attr.data-no]="comment.no"
                             [disabled]="comment.isDelete"
                             type="button"
-                            (click)="delCommentBtn(comment.no)">{{comment.isDelete?'deleted':'delete'}}</button>
+                            (click)="delCommentBtn(comment.no)">
+                      <img src="../../assets/svg/clear-svgrepo-com.svg"
+                           alt="delete"
+                           width="15px" height="15px"/>
+                    </button>
                   </div>
-                  <div class="comment-textarea-wrapper">
+                  <div class="comment-textarea-wrapper leaf">
+                  <div class="comment-as">
+                    {{me ? 'comment as '+ me : ''}}
+                  </div>
                   <textarea class="comment-textarea"
                             placeholder="{{me?'':'댓글을 작성하려면 로그인하세요'}}"
                             #inputComment
@@ -136,10 +210,16 @@
                             [attr.data-seq]="comment.seq"
                             [attr.data-lv]="comment.lv"
                             [attr.data-parent]="comment.no"></textarea>
-                    <button class="comment-btn"
+                    <div class="comment-btn-wrapper">
+                      <button class="btn btn-clear"
+                              type="button"
+                              (click)="inputComment.value=''"
+                              >clear</button>
+                    <button class="btn btn-comment"
                             [disabled]="!me"
                             type="button"
                             (click)="submitCommentBtn(inputComment)">comment</button>
+                    </div>
                   </div>
                 </div>
               </div>

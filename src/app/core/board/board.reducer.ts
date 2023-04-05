@@ -126,7 +126,7 @@ const BoardReducer = createReducer(
   })),
   on(BoardActions.matchFailed, (state, action)=>({
     ...state,
-    isLoading: true,
+    isLoading: false,
     isPermit: false,
   })),
 

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {HttpService} from "../services/http.service";
@@ -6,6 +6,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {TransferService} from "../services/transfer.service";
 import {Store} from "@ngrx/store";
 import * as UserActions from './../core/user/user.actions'
+import {DialogComponent, DialogControl} from "../dialog/dialog.component";
+import {Dialog} from "@angular/cdk/dialog";
+import {map} from "rxjs/operators";
 
 declare let google: any;
 
@@ -14,13 +17,14 @@ declare let google: any;
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss']
 })
-export class AuthComponent implements AfterViewInit{
+export class AuthComponent implements AfterViewInit, OnInit {
   constructor(private formBuilder: FormBuilder,
               private service: HttpService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private transfer: TransferService,
-              private store: Store) {
+              private store: Store,
+              private dial: Dialog) {
   }
 
   matcher = new MyErrorStateMatcher();
@@ -31,13 +35,19 @@ export class AuthComponent implements AfterViewInit{
       /(?=.*\d)[A-Za-z\d]{5,}/
     )])
   })
+  ngOnInit() {
+    const logUser = localStorage.getItem('user')
+    if(logUser){
+      //TODO url 히스토리로 진입했을 경우
+    }
+  }
 
   ngAfterViewInit(): void {
     const thisClass = this;
     google.accounts.id.initialize({
       client_id: "904288510274-tvtfor6hsjrktmp1anbq60cahoj8ohds.apps.googleusercontent.com",
       callback: (response: any) => {
-        thisClass.handleCredentialResponse(response)
+        this.handleCredentialResponse(response)
       }
     });
     google.accounts.id.renderButton(
@@ -51,25 +61,43 @@ export class AuthComponent implements AfterViewInit{
     const credential = response.credential
     const decodedCredential = this.decodeJwtResponse(credential)
     // console.log(decodedCredential);
-    this.service.signInWithGoogle(credential).subscribe(res => {
-      // console.log(res)
-      if (res.statusCode === 202) {
-        switch (res.message) {
-          case 'need signup first':
-            console.log('회원가입')
-            this.store.dispatch(UserActions.tempGoogleUser({userInfo: decodedCredential}))
-            this.router.navigate(['signup', {provider: 'google'}])
-            break
-          case 'need link':
-            console.log('계정연동')
-            this.service.dialogActionForLink(credential) //TODO
-            break
+    const subscription = this.service.signInWithGoogle(credential).pipe(
+      map((res)=>{
+        console.log(res)
+        if (res.statusCode === 202) {
+          switch (res.message) {
+            case 'need signup first':
+              console.log('회원가입')
+              this.store.dispatch(UserActions.tempGoogleUser({userInfo: decodedCredential}))
+              this.router.navigate(['signup', {provider: 'google'}])
+              break
+            case 'need link':
+              console.log('계정연동')
+              this.service.dialogActionForLink(credential)
+              break
+          }
+        } else {
+          const returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/';
+          this.router.navigateByUrl(returnUrl)
         }
-      } else {
-        const returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/';
-        this.router.navigateByUrl(returnUrl)
-      }
-    })
+      }),
+    ).subscribe()
+    // if (res.statusCode === 202) {
+    //   switch (res.message) {
+    //     case 'need signup first':
+    //       console.log('회원가입')
+    //       this.store.dispatch(UserActions.tempGoogleUser({userInfo: decodedCredential}))
+    //       this.router.navigate(['signup', {provider: 'google'}])
+    //       break
+    //     case 'need link':
+    //       console.log('계정연동')
+    //       this.service.dialogActionForLink(credential) //TODO
+    //       break
+    //   }
+    // } else {
+    //   const returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/';
+    //   this.router.navigateByUrl(returnUrl)
+    // }
   }
 
   public decodeJwtResponse(token: string) {
