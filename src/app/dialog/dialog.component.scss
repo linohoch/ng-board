@@ -1,11 +1,27 @@
 .dialog-wrapper {
+  position: absolute;
+  z-index: 1000;
   width: 300px;
+  min-height: 100px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  background: whitesmoke;
+  padding: 10px 0 10px 0;
 
-  h1 {
-    text-align: center;
-  }
   div {
+    width: inherit;
+    display: flex;
     justify-content: space-between;
+    align-items: center;
+    .dialog-title {
+     justify-content: center;
+    }
+  }
+  .dialog-action {
+    justify-content: space-evenly;
+  }
+  button {
   }
 }
 

@@ -51,7 +51,7 @@ export class BoardEffects {
             const userInfo = localStorage.getItem('userInfo')
             const likeComment = userInfo && JSON.parse(userInfo).likeComment
             const modifiedList = list.map(comment => {
-              if(comment && likeComment){
+              if (comment && likeComment) {
                 comment.likeYn = likeComment.includes(Number(comment.no))
               }
               return comment
@@ -80,7 +80,9 @@ export class BoardEffects {
           map((comment) => {
             return BoardActions.createCommentSuccess({comment: comment})
           }),
-          tap(() => { location.reload()}),
+          tap(() => {
+            location.reload()
+          }),
           // tap(() => this.router.navigate([this.router.url],{skipLocationChange: true})),
           catchError(err => of(BoardActions.createCommentFailed({error: err.message})))
         )
@@ -93,18 +95,15 @@ export class BoardEffects {
       map(action => action.detail),
       mergeMap((data) => {
         let detail = data
-        this.store.pipe(select(selectDetail)).subscribe(temp => {
-          if (temp !== null) {
-            detail = temp
-          }
-        })
+        // this.store.pipe(select(selectDetail)).subscribe(temp => {
+        //   if (temp !== null) {
+        //     detail = temp
+        //   }
+        // })
         return this.service.createArticle(detail).pipe(
           map((detail) => {
+            this.router.navigate([`article/${detail.no}`], {skipLocationChange: true})
             return BoardActions.createSuccess({detail: detail})
-          }),
-          tap(() => {
-
-            this.router.navigate(['/board'], { skipLocationChange: true })
           }),
           catchError(err => of(BoardActions.createFailed({error: err.message})))
         )
@@ -125,12 +124,34 @@ export class BoardEffects {
         if (detail.userEmail !== 'anonymous' && detail.userEmail === me) {
           isMatch = true
         }
-        console.log('isMatch',isMatch)
         if (isMatch) {
           return BoardActions.matchSuccess()
         } else {
           return BoardActions.matchFailed()
         }
+      })
+    )
+  )
+  editPhoto = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BoardActions.editPhoto),
+      map(action => action.detail),
+      mergeMap((data) => {
+        let detail = data
+        this.store.pipe(select(selectDetail)).subscribe(temp => {
+          if (temp !== null) {
+            detail = temp
+          }
+        })
+        return this.service.updateArticle(detail).pipe(
+          map((detail) => {
+            return BoardActions.createSuccess({detail: detail})
+          }),
+          tap(() => {
+            alert('저장됨')
+          }),
+          catchError(err => of(BoardActions.createFailed({error: err.message})))
+        )
       })
     )
   )
@@ -150,7 +171,7 @@ export class BoardEffects {
             return BoardActions.createSuccess({detail: detail})
           }),
           tap(() => {
-            this.router.navigateByUrl(this.router.url.replace('/edit',''))
+            this.router.navigateByUrl(this.router.url.replace('/edit', ''))
           }),
           catchError(err => of(BoardActions.createFailed({error: err.message})))
         )
@@ -161,7 +182,7 @@ export class BoardEffects {
     this.actions$.pipe(
       ofType(BoardActions.deleteArticle),
       mergeMap(({articleNo, userEmail}) => {
-        if(userEmail==='anonymous'){
+        if (userEmail === 'anonymous') {
           return this.service.deleteAnnyArticle(articleNo).pipe(
             map(() => {
               return BoardActions.deleteSuccess()
@@ -169,7 +190,7 @@ export class BoardEffects {
             tap(() => this.router.navigate(['/board'])),
             catchError(err => of(BoardActions.deleteFailed({error: err.message})))
           )
-        }else {
+        } else {
           return this.service.deleteArticle(articleNo).pipe(
             map(() => {
               return BoardActions.deleteSuccess()
@@ -177,8 +198,49 @@ export class BoardEffects {
             tap(() => this.router.navigate(['/board'])),
             catchError(err => of(BoardActions.deleteFailed({error: err.message})))
           )
-          }
-        }),
+        }
+      }),
+    )
+  )
+  getPhotos = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BoardActions.getPhotos),
+      map(action => action.no),
+      mergeMap((articleNo) => {
+        return this.service.getPhotos(articleNo).pipe(
+          map((photos) => BoardActions.getPhotosSuccess({photos: photos})),
+          catchError(err => of(BoardActions.getPhotosFailed({error: err.message})))
+        )
+      })
+    )
+  )
+  setPhoto = createEffect(()=>
+    this.actions$.pipe(
+      ofType(BoardActions.setPhoto),
+      mergeMap(({file, articleNo, ql})=>{
+        const formData = new FormData()
+              formData.append('image', file)
+        return this.service.setPhoto(formData, articleNo).pipe(
+          map((res)=> {
+            // const index = ql?.getSelection(true).index
+            // ql?.clipboard.dangerouslyPasteHTML(index ? index : 0,
+            //   `<img src="${res.photo.url}" alt="${res.photo.origin}" >`)
+            // ql?.setSelection(index ? index + 1 : 2, 1)
+            return BoardActions.setPhotoSuccess({photo: res.result})}),
+          catchError(err => of(BoardActions.setPhotoFailed({error: err.message})))
+        )
+      })
+    )
+  )
+  delPhoto = createEffect(()=>
+    this.actions$.pipe(
+      ofType(BoardActions.delPhoto),
+      mergeMap(({photoNo, articleNo})=> {
+        return this.service.deletePhoto(Number(photoNo), articleNo).pipe(
+          map(()=> BoardActions.delPhotoSuccess({photoNo: Number(photoNo)})),
+          catchError(err => of(BoardActions.delPhotoFailed({error: err.message})))
+        )
+      })
     )
   )
 }

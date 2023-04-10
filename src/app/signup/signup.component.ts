@@ -74,7 +74,6 @@ export class SignupComponent {
     const {confirmPassword, ...data} = this.signUpForm.value
     this.service.signUp(data).subscribe({
       next: (user) => {
-        console.log('next->',user)
         alert('welcome '+user.email)
         const returnUrl = this.activatedRouter.snapshot.queryParams['returnUrl'] || '/login';
         this.router.navigateByUrl(returnUrl).then(r =>{} )//???

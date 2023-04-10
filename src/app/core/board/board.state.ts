@@ -7,7 +7,9 @@ export interface BoardState {
   temp: Article | null
   comment: Comment | null
   commentList: Comment[] | null
-
+  photos: Photo[]
+  file: File | null
+  page: number
 }
 
 export const initialState: BoardState = {
@@ -18,7 +20,20 @@ export const initialState: BoardState = {
   detail: null,
   temp: null,
   comment: null,
-  commentList: []
+  commentList: [],
+  photos: [],
+  file: null,
+  page: 0
+}
+
+export interface Photo {
+  no: number | null;
+  articleNo: number | null;
+  origin: string;
+  upload: string;
+  url: string;
+  size: number;
+  insDate: Date | null;
 }
 
 export class ArticleVO implements Article {

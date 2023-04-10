@@ -1,27 +1,99 @@
+button:active {
+  opacity: 30%;
+}
+
 .container {
   width: 100%;
-  height: 100%;
+  height: fit-content;
+  min-height: 100%;
   background-color: #e7e7e7;
-  display: flex;
+  display: grid;
   justify-content: center;
+  padding-top: 10px;
+  padding-bottom: 50px;
+  .contents-wrapper {
+    width: 500px;
+  }
 
-  .top-area {
+  .top-area{
     display: flex;
     justify-content: space-between;
-    height: 50px;
-    margin-top: 20px;
-    button {
-      background-color: white;
+    align-items: center;
+    margin: 0 0 10px 0;
+    height: 40px;
+  }
+  .image-set {
+    padding: 20px 10px 10px 10px;
+    background: white;
+    overflow-x: scroll;
+    height: 100px;
+    display: flex;
+    position: relative;
+    .drag-message {
+      position: absolute;
+      top: 0;
+      font-size: smaller;
+      color: #464646;
+    }
+    img {
+      max-width: none;
+    }
+    .image-wrapper{
+      position: relative;
+      display: flex;
+      height: inherit;
+      &:hover {
+        img {
+          opacity: 50%;
+        }
+        .btn-remove-image{
+          display: block;
+        }
+      }
+      .btn-remove-image {
+        border: none;
+        background: none;
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        top: 0;
+        right: 5px;
+        z-index: 99;
+        display: none;
+        font-size: x-small;
+      }
+      .btn-remove-image:after {
+        content: attr(data-hover);
+        position: absolute;
+        visibility: hidden;
+        width: 120px;
+        background: #464646;
+        color: whitesmoke;
+        border-radius: 5px;
+        padding: 5px;
+      }
+      .btn-remove-image:hover:after {
+        visibility: visible;
+      }
+    }
+  }
+  .preview-area {
+    display: flex;
+    justify-content: center;
+    background: white;
+    width: 500px;
+    min-height: 100px;
+    div {
+      width: 100%;
+      margin: 20px;
     }
   }
   .form-wrapper {
     display: flex;
     justify-content: center;
-    //margin-top: 50px;
     background-color: white;
-    width: 70vw;
-    min-width: 400px;
-    min-height: 400px;
+    width: 500px;
+    min-height: 350px;
     .edit-form {
       align-content: baseline;
       justify-content: center;
@@ -29,33 +101,77 @@
       margin: 20px;
       width: 100%;
       .title-wrapper {
-        display: grid;
-        width: 400px;
+        display: flex;
+        justify-content: space-between;
         height: 40px;
         margin-bottom: 20px;
+        position: relative;
         textarea {
-          border-color: #cbcbcb;
+          width: 100%;
+          border: 1px solid #cbcbcb;
           resize: none;
           overflow-x: scroll;
-          padding: 10px
+          padding: 10px;
+        }
+        input {
+          width: 80px;
+          margin-left: 20px;
+          border: 1px solid #cbcbcb;
+          padding: 10px;
+          &.required {
+            border: 1px solid #FF4040FF;
+          }
+        }
+        .required-message {
+          font-size: smaller;
+          bottom: -1rem;
+          position: absolute;
+          color: #FF4040FF;
         }
       }
       .editor-wrapper {
         display: grid;
-        width: 400px;
+        width: 480px;
       }
       .button-wrapper{
+        z-index: 99;
         display: flex;
-        justify-content: end;
-        padding-right: 15px;
+        justify-content: flex-end;
+        padding: 5px 15px 5px 5px;
+        position: relative;
         button {
           margin-left: 5px;
           border-radius: 30px;
           width: 80px;
         }
+        #expand-btn {
+
+        }
+        #expand-btn:after {
+          content: attr(data-hover);
+          position: absolute;
+          visibility: hidden;
+          left: 0;
+          width: 200px;
+          opacity: 80%;
+          background: #464646;
+          color: whitesmoke;
+          border-radius: 5px;
+          padding: 5px;
+        }
+        #expand-btn:hover:after {
+          visibility: visible;
+        }
+        //#save-btn {
+        //z-index: 99;
+        //}
         #submit-btn {
-          background-color: #cbcbcb;
+          //z-index: 99;
+          background-color: #464646;
           color: white;
+          &:disabled {
+            background-color: #e1e1e1;
+          }
         }
       }
     }

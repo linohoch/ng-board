@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Store} from "@ngrx/store";
 import {appLoaded} from "./core/board";
 import {NavigationEnd, Router} from "@angular/router";
@@ -8,9 +8,8 @@ import {NavigationEnd, Router} from "@angular/router";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'ng-board';
-  //TODO 컴포넌트, 서비스 트리 정리
   constructor(private store: Store,
               private router: Router) {
   }

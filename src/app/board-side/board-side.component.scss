@@ -1,0 +1,33 @@
+@media (max-width: 1000px) {
+  .side-container {
+    display: none;
+  }
+}
+@media (min-width: 1000px) {
+  .side-container {
+    margin-left: 50px;
+    padding-top: 10px;
+    width: 300px;
+    height: 100%;
+    background: gray;
+
+    .side-panel-1{
+      width: 300px;
+      height: 200px;
+      border: 1px solid #e0e0e0;
+      background: whitesmoke;
+      margin-bottom: 10px;
+    }
+    .side-panel-2{
+      position: sticky;
+      position: -webkit-sticky;
+      top: 10px;
+      width: 300px;
+      height: 100px;
+      border: 1px solid #e0e0e0;
+      background: whitesmoke;
+      margin-bottom: 10px;
+    }
+
+  }
+}

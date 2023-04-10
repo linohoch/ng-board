@@ -57,7 +57,6 @@ export class BoardDetailComponent implements OnInit {
     this.commentList$ = this.store.pipe(select(selectCommentList))
     this.articleNo = this.activatedRoute.snapshot.paramMap.get('articleNo')
     this.detail$.subscribe(next => {
-      console.log(next)
       if(next){
         this.detail = next
       }
@@ -114,44 +113,48 @@ export class BoardDetailComponent implements OnInit {
     if (this.getPermit()) {
       this.router.navigate([`article`, this.articleNo, 'edit'])
     } else {
-      alert('틀린비밀번호')
+      this.dialog.openDialog({
+        title:'비밀번호가 다릅니다',
+      })
     }
   }
 
   delArticleBtn() {
     if (this.getPermit()) {
-      if (confirm('정말 삭제합니까')) {
-        this.store.dispatch(BoardActions.deleteArticle({articleNo: this.articleNo, userEmail: this.detail?.userEmail}))
-      }
+      this.dialog.openDialog({
+        title: '정말 삭제하시겠습니까',
+        btn: {no:'취소',ok:'삭제'}
+      }).closed.subscribe((answer: any) => {
+        if (answer) {
+          this.store.dispatch(BoardActions.deleteArticle({articleNo: this.articleNo, userEmail: this.detail?.userEmail}))
+        }
+      })
     } else {
-      alert('틀린비밀번호')
+      this.dialog.openDialog({
+        title:'비밀번호가 다릅니다',
+      })
     }
   }
 
   submitCommentBtn(textarea: any): void {
-    // const result = this.dialog.openDialog({
-    //   title:'계정연동',
-    //   contents:'email로 가입된 회원정보가 존재합니다.',
-    //   btn:{
-    //     okBtnText:'연결합니다.',
-    //     noBtnText:'취소.',
-    //   },
-    // })
-    this.service.dialogActionForLink('d')
-    // console.log(this.likeCnt, this.detail)
-    // if (textarea.value.trim() !== '') {
-    //   this.newComment.contents = textarea.value
-    //   this.newComment = {...this.newComment, ...textarea.dataset}
-    //   this.store.dispatch(BoardActions.setComment({comment: this.newComment}))
-    // }
+    if (textarea.value.trim() !== '') {
+      this.newComment.contents = textarea.value
+      this.newComment = {...this.newComment, ...textarea.dataset}
+      this.store.dispatch(BoardActions.setComment({comment: this.newComment}))
+    }
   }
 
   likeArticleBtn(): void {
     // this.store.dispatch(BoardActions.likeArticle({articleNo: this.articleNo}))
     if (!this.me) {
-      if (confirm('로그인 페이지로 이동')) {
-        this.router.navigate(['login'])
-      }
+      this.dialog.openDialog({
+        title: '로그인페이지로 이동합니다.',
+        btn: {no:'취소',ok:'이동'}
+      }).closed.subscribe((answer: any) => {
+        if (answer) {
+          this.router.navigate(['login'])
+        }
+      })
     } else if (!this.isLike && this.articleNo) {
       this.boardService.addLikeArticle(Number(this.articleNo)).pipe(
         map((res) => {
@@ -182,9 +185,14 @@ export class BoardDetailComponent implements OnInit {
   likeCommentBtn(commentNo: any, isLike: boolean): void {
     // const isLike = this.likeComment?.includes(Number(commentNo))
     if (!this.me) {
-      if (confirm('로그인 페이지로 이동')) {
-        this.router.navigate(['login'])
-      }
+      this.dialog.openDialog({
+        title: '로그인페이지로 이동합니다.',
+        btn: {no:'취소',ok:'이동'}
+      }).closed.subscribe((answer: any) => {
+        if (answer) {
+          this.router.navigate(['login'])
+        }
+      })
     } else if (isLike) {
       this.boardService.cancelLikeComment(Number(this.articleNo), Number(commentNo)).pipe(
         map(() => {
@@ -215,13 +223,16 @@ export class BoardDetailComponent implements OnInit {
   }
 
   delCommentBtn(commentNo: any): void {
-    if (confirm('정말 삭제함?')) {
-      this.boardService.deleteComment(this.articleNo, commentNo).subscribe(
-        () => {
-          location.reload()
-        }
-      )
-    }
+
+    this.dialog.openDialog({
+      title: '정말 삭제하시겠습니까.',
+      btn: {no:'취소',ok:'삭제'}
+    }).closed.subscribe((answer: any) => {
+      if (answer) {
+        this.boardService.deleteComment(this.articleNo, commentNo).subscribe(
+          () => {location.reload()})
+      }
+    })
   }
 
   showTextareaBtn(textarea: any): void {

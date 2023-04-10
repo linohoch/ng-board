@@ -11,7 +11,7 @@ export interface selectData {
   styleUrls: ['./selector.component.scss'],
   // encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class SelectorComponent implements AfterViewInit{
+export class SelectorComponent implements AfterViewInit, OnInit{
   @Input() data: selectData | undefined
   mySelectEl: HTMLElement | undefined
   optionsEl: HTMLElement | undefined
@@ -23,14 +23,17 @@ export class SelectorComponent implements AfterViewInit{
 
   constructor() {}
 
+  ngOnInit() {
+    this.keySelected = this.data?.options.filter(op => {
+      return op.isSelected===true
+    })[0].key
+  }
+
   ngAfterViewInit() {
     this.mySelectEl = document.querySelector<HTMLElement>('.my-select')!
     this.optionsEl = document.querySelector('.select-options') as HTMLElement
     this.optionEl = document.querySelector('.select-option') as HTMLElement
     this.labelEl = document.querySelector('.label-selected') as HTMLElement
-    this.keySelected = this.data?.options.filter(op => {
-      return op.isSelected===true
-    })[0].key
   }
 
   showOptions(){

@@ -1,15 +1,22 @@
 
 <div class="dialog-wrapper" *ngIf="data">
 
-  <h1 mat-dialog-title>Hi {{data.title}}</h1>
-  <div mat-dialog-content>
+  <div >
+    <div class="dialog-title">
+      {{data.title}}
+    </div>
+  </div>
+  <div class="dialog-content" *ngIf="data.contents">
     <p>{{data.contents}}</p>
   </div>
-  <div mat-dialog-actions>
-    <button mat-button
-            (click)="onClick(false)">{{data.btn ? data.btn.noBtnText : "cancel"}}</button>
-    <button mat-button
-            (click)="onClick(true)">{{data.btn ? data.btn.okBtnText : "approve"}}</button>
+  <div class="dialog-action" *ngIf="data.btn">
+    <button class="btn" (click)="dialogRef.close(false)">{{data.btn ? data.btn.no : "cancel"}}</button>
+    <button class="btn" (click)="dialogRef.close(true)">{{data.btn ? data.btn.ok: "approve"}}</button>
   </div>
+  <div class="dialog-action" *ngIf="!data.btn">
+    <button class="btn" (click)="dialogRef.close()">ok</button>
+  </div>
+
+
 
 </div>

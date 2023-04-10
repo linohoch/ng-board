@@ -35,6 +35,18 @@ import {MatDividerModule} from "@angular/material/divider";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {QuillModule} from "ngx-quill";
 import { SelectorComponent } from './common/selector/selector.component';
+import {DialogModule, DialogRef} from "@angular/cdk/dialog";
+import { BoardSideComponent } from './board-side/board-side.component';
+import * as QuillNamespace from 'quill';
+let Quill: any = QuillNamespace;
+// import {ImageResize} from 'node_modules/quill-image-resize-module-ts/dist/ImageResize.js';
+// Quill.register('modules/imageResize', ImageResize);
+class PreserveWhiteSpace {
+  constructor(private quill: any, private options: {}) {
+    quill.container.style.whiteSpace = "pre-line";
+  }
+}
+Quill.register('modules/preserveWhiteSpace', PreserveWhiteSpace);
 
 @NgModule({
   declarations: [
@@ -49,17 +61,20 @@ import { SelectorComponent } from './common/selector/selector.component';
     BoardEditComponent,
     BoardCreateComponent,
     SelectorComponent,
+    BoardSideComponent,
   ],
   imports: [
     QuillModule.forRoot({
       modules: {
         syntax:false,
+        preserveWhiteSpace: true,
         toolbar: [
           [{ 'header': [1, 2, 3, false] }],
           ['bold', 'italic', 'underline', 'strike'],
-          // ['blockquote', 'code-block'],
-          ['clean'],
+          ['code-block'],
+          ['clean'],['image'],
         ],
+        // imageResize: {}
       }
     }),
     EffectsModule.forRoot([BoardEffects]),
@@ -86,6 +101,7 @@ import { SelectorComponent } from './common/selector/selector.component';
     MatDialogModule,
     MatDividerModule,
     MatPaginatorModule,
+    DialogModule,
   ],
   exports: [
     BrowserModule,
@@ -101,7 +117,7 @@ import { SelectorComponent } from './common/selector/selector.component';
       multi: true,
     },
     {
-      provide: MatDialogRef,
+      provide: DialogRef,
       useValue: {}
     },
     {

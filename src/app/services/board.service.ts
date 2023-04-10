@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Article, Comment, selectComment} from "../core/board";
+import {Article, Comment, Photo, selectComment} from "../core/board";
 import {select, Store} from "@ngrx/store";
 
 @Injectable({
@@ -22,8 +22,17 @@ export class BoardService {
     return this.http.get<Comment[]>(`${this.baseUrl}/article/${no}/comment`)
   }
 
+  getPhotos(no: number) {
+    return this.http.get<Photo[]>(`${this.baseUrl}/article/${no}/photo`)
+  }
+  setPhoto(form: FormData, no: number) {
+    return this.http.post<any>(`${this.baseUrl}/article/${no}/photo`,form)
+  }
+  deletePhoto(photoNo:number, articleNo:number) {
+    return this.http.delete(`${this.baseUrl}/article/${articleNo}/photo/${photoNo}`)
+  }
+
   createComment(comment: Comment){
-    // console.log('param: ',comment)
     this.store.pipe(select(selectComment)).subscribe()
     return this.http.post<any>(`${this.baseUrl}/article/${comment.articleNo}/comment`,comment)
   }
@@ -64,6 +73,9 @@ export class BoardService {
     return this.http.delete<any>(`${this.baseUrl}/article/anny/${no}`)
   }
 
+  uploadImage(data: FormData) {
+    return this.http.post(`${this.baseUrl}/upload`, data)
+  }
 
 }
 export function setReadArray(no: number) {

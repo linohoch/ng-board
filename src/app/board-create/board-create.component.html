@@ -1,62 +1,88 @@
 <div class="container">
-<div>
+  <div class="contents-wrapper">
 
-  <div class="top-area">
-    <button class="btn btn-top"
-            id="cancel-btn"
-            type="button"
-            (click)="cancel()"
-    >cancel</button>
-    <button class="btn btn-top"
-            id="temp-btn"
-            type="button"
-            (click)="getTemp()"
-    >load saved</button>
-  </div>
-  <div class="form-wrapper">
-    <form [formGroup]="createForm" class="edit-form" (ngSubmit)="submit()">
-      <div class="title-wrapper">
+    <div class="top-area">
+      <button class="btn btn-top"
+              id="cancel-btn"
+              type="button"
+              (click)="cancel()"
+      >cancel
+      </button>
+      <button class="btn btn-top"
+              id="temp-btn"
+              type="button"
+              (click)="getTemp()"
+      >load saved
+      </button>
+    </div>
+    <div class="form-wrapper">
+      <form [formGroup]="createForm" class="edit-form" (ngSubmit)="submit()">
+        <div class="title-wrapper">
         <textarea
-                  placeholder="title"
-                  maxlength="300"
-                  id="title"
-                  formControlName="title">
+          placeholder="title"
+          maxlength="300"
+          id="title"
+          formControlName="title">
 
         </textarea>
-        <input  *ngIf="me==='anonymous'"
-                class="{{createForm.get('password')?.hasError('required')?'required':''}}"
-                placeholder="password"
-                id="password"
-                type="password"
-                formControlName="password">
-        <div class="required-message" *ngIf="createForm.get('title')?.hasError('required')">title is required</div>
+          <input *ngIf="me==='anonymous'"
+                 class="{{createForm.get('password')?.hasError('required')?'required':''}}"
+                 placeholder="password"
+                 id="password"
+                 type="password"
+                 formControlName="password">
+          <div class="required-message" *ngIf="createForm.get('title')?.hasError('required')">title is required</div>
+        </div>
+        <div class="editor-wrapper">
+          <quill-editor #editor
+                        (onEditorCreated)="getEditorInstance($event)"
+                        [sanitize]="false"
+                        formControlName="contents"
+                        [styles]="{ 'min-height': '10rem' }"
+                        (onEditorChanged)="changeContent($event)">
+          </quill-editor>
+          <input type="file" accept="image/*" style="display: none" id="fileInputField"/>
+        </div>
+        <div class="button-wrapper">
+          <button class="btn"
+                  id="expand-btn"
+                  type="button"
+                  (click)="expand()"
+                  data-hover="modify size of editor window"
+          >{{expanded ? 'reduce' : 'expand'}}</button>
+          <button class="btn"
+                  id="save-btn"
+                  type="button"
+                  (click)="save()"
+          >save
+          </button>
+          <button class="btn"
+                  id="submit-btn"
+                  type="submit"
+                  [disabled]="me==='anonymous'?createForm.invalid:0"
+          >submit
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="image-set">
+      <div class="drag-message">
+        본문에 삽입하려면 드래그 하세요.
       </div>
-      <div class="editor-wrapper">
-        <quill-editor #editor
-                      [sanitize]="true"
-                      formControlName="contents"
-                      [styles]="{ 'min-height': '10rem' }"
-                      (onEditorChanged)="changeContent($event)">
-        </quill-editor>
+      <div class="image-wrapper"
+           data-id="{{file.id}}"
+           *ngFor="let file of tempFileList; let i = index;">
+        <img class="i-{{i}}"
+             src="{{file.src}}"
+             alt="{{file.id}}">
+        <button class="btn-remove-image"
+                (click)="removeImage($event)"
+                data-hover="첨부파일을 삭제하면 본문에 삽인된 사진도 함께 지워집니다.">
+          <img src="../../assets/svg/clear-svgrepo-com.svg"
+               alt="remove"
+               width="30px" height="30px">
+        </button>
       </div>
-      <div class="button-wrapper">
-        <button class="btn"
-                id="save-btn"
-                type="button"
-                (click)="save()"
-                >save</button>
-        <button class="btn"
-                id="submit-btn"
-                type="submit"
-                [disabled]="me==='anonymous'?createForm.invalid:0"
-                >submit</button>
-      </div>
-    </form>
-  </div>
-  <div class="preview-area">
-    <div [innerHtml]="createForm.get('contents')?.value">
     </div>
   </div>
-
-</div>
 </div>

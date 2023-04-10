@@ -95,6 +95,7 @@ export class HttpService {
       catchError(async (err) => this.errorHandler(err.error)))
   }
   dialogActionForLink (credential:any) {
+
       if(confirm('email로 가입된 회원정보가 존재합니다. 연동하고 계속하려면 확인')){
         this.linkWithGoogle(credential).subscribe(()=>{
           this.router.navigateByUrl('/')

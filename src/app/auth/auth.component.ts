@@ -60,7 +60,6 @@ export class AuthComponent implements AfterViewInit, OnInit {
   public handleCredentialResponse(response: any) {
     const credential = response.credential
     const decodedCredential = this.decodeJwtResponse(credential)
-    // console.log(decodedCredential);
     const subscription = this.service.signInWithGoogle(credential).pipe(
       map((res)=>{
         console.log(res)

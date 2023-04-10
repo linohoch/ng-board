@@ -14,6 +14,17 @@ a:visited {text-decoration: none; color: #2a2a2a;}
 a:active {text-decoration: none; color: black;}
 a:hover {text-decoration: none; color: #017cdc;}
 
+img {
+  max-width: 100%
+}
+.ql-editor {
+  max-height: 400px;
+}
+.ql-syntax {
+  background: black;
+  color: whitesmoke;
+}
+
 .profile-image {
   user-select: none;
   display: flex;

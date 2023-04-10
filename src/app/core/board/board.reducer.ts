@@ -129,6 +129,57 @@ const BoardReducer = createReducer(
     isLoading: false,
     isPermit: false,
   })),
+  /**
+   * edit page photos
+   */
+  on(BoardActions.setPhoto, (state, action)=>({
+    ...state,
+    file: action.file,
+    isLoading: true
+  })),
+  on(BoardActions.setPhotoSuccess, (state, action)=>({
+    ...state,
+    photos: [...state.photos, {...action.photo}],
+    isLoading: false
+  })),
+  on(BoardActions.setPhotoFailed, (state,action)=>({
+    ...state,
+    error: action.error,
+    isLoading: true
+  })),
+  on(BoardActions.getPhotos, (state, action)=>({
+    ...state,
+    isLoading: true,
+  })),
+  on(BoardActions.getPhotosSuccess, (state, action)=>({
+    ...state,
+    photos: action.photos,
+    isLoading: false,
+  })),
+  on(BoardActions.getPhotosFailed, (state, action)=>({
+    ...state,
+    isLoading: true,
+    error: action.error
+  })),
+  on(BoardActions.delPhoto, (state, action)=>({
+    ...state,
+    isLoading: true,
+  })),
+  on(BoardActions.delPhotoSuccess, (state, action)=>({
+    ...state,
+    photos: state.photos.filter((photo)=>{return photo.no!==Number(action.photoNo)}),
+    isLoading: false,
+  })),
+  on(BoardActions.delPhotoFailed, (state, action)=>({
+    ...state,
+    isLoading: true,
+    error: action.error
+  })),
+  on(BoardActions.setPage, (state, action)=>({
+    ...state,
+    page: action.no
+  }))
+  //
 
 
 

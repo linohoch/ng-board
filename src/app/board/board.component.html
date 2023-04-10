@@ -1,4 +1,5 @@
 <div *ngIf="isLoading$ | async">Loading...</div>
+<div class="wrapper">
 <div class="container" *ngIf="articles$">
     <div class="top">
       <button class="btn btn-input"
@@ -59,6 +60,8 @@
 <!--      <mat-card-actions></mat-card-actions>-->
     </mat-card>
   </div>
+</div>
+<app-board-side></app-board-side>
 </div>
 
 

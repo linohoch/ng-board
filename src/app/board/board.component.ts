@@ -8,7 +8,7 @@ import {
   selectArticles,
   selectArticlesExceptDeleted,
   selectError,
-  selectIsLoading
+  selectIsLoading, selectPage, selectPhotos
 } from "../core/board";
 import {ActivatedRoute} from "@angular/router";
 import {MatPaginatorIntl} from "@angular/material/paginator";
@@ -32,16 +32,16 @@ export class BoardComponent implements OnInit {
 
   isDeleteFilter:string = 'all'
 
-  now: any
-  me: string | null | undefined
-
   selectData = {
     title:'글 필터링',
     options: [
-      { key:'all articles', value:'all',isSelected: true },
+      { key:'all articles', value:'all', isSelected: true },
       { key:'except deleted', value:'except', isSelected: false}
     ]
   }
+
+  now: any
+  me: string | null | undefined
 
 
   constructor(private service: HttpService,
@@ -58,7 +58,6 @@ export class BoardComponent implements OnInit {
   }
 
   receiveSelected(option: any) {
-    console.log(option)
     this.isDeleteFilter=option.value
     this.exceptDeleted()
   }
@@ -69,6 +68,9 @@ export class BoardComponent implements OnInit {
     }
     this.store.dispatch(BoardActions.getArticles())
     this.now = new Date
+    this.store.pipe(select(selectPage)).subscribe(next=>{
+      this.pageIndex=next
+    })
   }
   getDate(d:any) {
     return this.common.calDate(d)
@@ -76,9 +78,9 @@ export class BoardComponent implements OnInit {
   getPageEvent(e: { pageIndex: any; pageSize: any}){
     this.pageIndex=e.pageIndex
     this.pageSize=e.pageSize
+    this.store.dispatch(BoardActions.setPage({no:Number(e.pageIndex)}))
   }
   exceptDeleted(){
-    console.log(this.isDeleteFilter)
     if(this.isDeleteFilter==='except'){
       this.articles$ = this.store.pipe(select(selectArticlesExceptDeleted))
     }
