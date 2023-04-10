@@ -62,18 +62,18 @@ export class BoardDetailComponent implements OnInit {
       }
       this.likeCnt = this.detail?.likeCnt
     })
-  }
-
-  ngOnInit(): void {
-    this.store.dispatch(BoardActions.getDetail({no: this.articleNo, isRead: this.readYn}))
-    this.store.dispatch(BoardActions.getComments({no: this.articleNo}))
-
     if (this.articleNo !== null) {
       this.readYn = isRead(Number(this.articleNo))
       this.isLike = this.likeArticle && this.likeArticle.includes(Number(this.articleNo))
     }
     this.userInfo = localStorage.getItem('userInfo')
     this.likeArticle = this.userInfo && JSON.parse(this.userInfo).likeArticle
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(BoardActions.getDetail({no: this.articleNo, isRead: this.readYn}))
+    this.store.dispatch(BoardActions.getComments({no: this.articleNo}))
+
     const logUser = localStorage.getItem('user')
     this.me = logUser && JSON.parse(logUser).username
     this.newComment.userEmail = this.me

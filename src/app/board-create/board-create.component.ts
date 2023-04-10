@@ -166,7 +166,7 @@ export class BoardCreateComponent implements OnInit {
       if (this.me === 'anonymous' && pw) {
         formData.append('pw', pw)
       }
-      if (this.me && title && contents) {
+      if (this.me && title) {
         formData.append('userEmail', this.me)
         formData.append('title', title)
         formData.append('contents', contents)

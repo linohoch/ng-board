@@ -97,6 +97,7 @@ export class BoardEditComponent implements OnInit{
   attachImage(file: File, num?:any){
     const index = this.quillEditorRef?.getSelection(true).index
     const filename = (num)? file.name.replace('.','('+num+').'):file.name
+    //TODO 파일명에 .이 들어간 경우, 스크린샷
     let photo: Photo;
     const form = new FormData()
     form.append('image', file, filename)
@@ -169,10 +170,10 @@ export class BoardEditComponent implements OnInit{
     if (title != null && contents != null) {
       if(auto) {
         this.store.dispatch(BoardActions.editPhoto(
-          {detail: {no: this.articleNo, title: title, contents: contents}}))
+          {detail: {userEmail: this.me, no: this.articleNo, title: title, contents: contents}}))
       } else {
         this.store.dispatch(BoardActions.editArticle(
-          {detail: {no: this.articleNo, title: title, contents: contents}}))
+          {detail: {userEmail: this.me, no: this.articleNo, title: title, contents: contents}}))
       }
     }
   }

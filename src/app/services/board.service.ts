@@ -40,7 +40,11 @@ export class BoardService {
     return this.http.delete<any>(`${this.baseUrl}/article/${articleNo}/comment/${commentNo}`)
   }
   updateArticle(editedArticle: Article) {
-    return this.http.put<any>(`${this.baseUrl}/article/${editedArticle.no}`,editedArticle)
+    if(editedArticle.userEmail==='anonymous'){
+      return this.http.put<any>(`${this.baseUrl}/article/anny/${editedArticle.no}`,editedArticle)
+    } else {
+      return this.http.put<any>(`${this.baseUrl}/article/${editedArticle.no}`,editedArticle)
+    }
   }
 
   createArticle(detail: Article) {
