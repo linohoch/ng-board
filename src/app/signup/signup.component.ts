@@ -1,4 +1,4 @@
-import {Component, Injectable} from '@angular/core';
+import {Component, Injectable, OnInit} from '@angular/core';
 import {
   AbstractControl,
   AsyncValidator,
@@ -21,7 +21,7 @@ import {Google, selectTemp} from "../core/user";
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit{
   constructor(private formBuilder: FormBuilder,
               private service: HttpService,
               private uniqueEmailValidator: UniqueEmailValidator,
@@ -48,8 +48,7 @@ export class SignupComponent {
     provider: 'credential'
   })
   ngOnInit(){
-    this.tempUser=this.store.pipe(select(selectTemp))
-    this.tempUser.subscribe(r=>{
+    this.store.pipe(select(selectTemp)).subscribe(r=>{
       if(r){
         this.signUpForm.get('email')?.setValue(r.email);
         this.signUpForm.get('firstName')?.setValue(r.given_name);

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, NgZone, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {HttpService} from "../services/http.service";
@@ -24,7 +24,8 @@ export class AuthComponent implements AfterViewInit, OnInit {
               private activatedRoute: ActivatedRoute,
               private transfer: TransferService,
               private store: Store,
-              private dial: Dialog) {
+              private dial: Dialog,
+              private zone: NgZone) {
   }
 
   matcher = new MyErrorStateMatcher();
@@ -68,7 +69,9 @@ export class AuthComponent implements AfterViewInit, OnInit {
             case 'need signup first':
               console.log('회원가입')
               this.store.dispatch(UserActions.tempGoogleUser({userInfo: decodedCredential}))
-              this.router.navigate(['signup', {provider: 'google'}])
+              this.zone.run(()=>{
+                this.router.navigateByUrl('signup?provider=google')
+              })
               break
             case 'need link':
               console.log('계정연동')
