@@ -21,7 +21,7 @@ import {Observable} from "rxjs";
   templateUrl: './board-edit.component.html',
   styleUrls: ['./board-edit.component.scss']
 })
-export class BoardEditComponent implements OnInit{
+export class BoardEditComponent implements OnInit {
   articleNo = this.activatedRoute.snapshot.paramMap.get('articleNo')
   detail: { title: string, contents: string } = {title: '', contents: ''};
   isPermit: boolean = false;
@@ -94,10 +94,13 @@ export class BoardEditComponent implements OnInit{
       this.contentsChanged = event.html
     }
   }
-  attachImage(file: File, num?:any){
+
+  attachImage(file: File, num?: number) {
     const index = this.quillEditorRef?.getSelection(true).index
-    const filename = (num)? file.name.replace('.','('+num+').'):file.name
-    //TODO 파일명에 .이 들어간 경우, 스크린샷
+    let filename = encodeURIComponent(file.name)
+    if (num !== undefined && num > 0) {
+      filename = filename.substring(0, filename.lastIndexOf('.')) + '(' + num + ')' + filename.substring(filename.lastIndexOf('.'))
+    }
     let photo: Photo;
     const form = new FormData()
     form.append('image', file, filename)
@@ -168,7 +171,7 @@ export class BoardEditComponent implements OnInit{
     const title = this.editForm.get('title')?.value
     const contents = this.contentsChanged
     if (title != null && contents != null) {
-      if(auto) {
+      if (auto) {
         this.store.dispatch(BoardActions.editPhoto(
           {detail: {userEmail: this.me, no: this.articleNo, title: title, contents: contents}}))
       } else {

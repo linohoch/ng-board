@@ -106,7 +106,10 @@ export class BoardCreateComponent implements OnInit {
     const reader = new FileReader()
     reader.onload = () => {
       const index = this.quillEditorRef?.getSelection(true).index
-      const filename = (num)? file.name.replace('.','('+num+').'):file.name
+      let filename = encodeURIComponent(file.name)
+      if (num !== undefined && num > 0) {
+        filename = filename.substring(0, filename.lastIndexOf('.')) + '(' + num + ')' + filename.substring(filename.lastIndexOf('.'))
+      }
       const id = uuid() + '-' + filename
       const src = reader.result;
       this.tempFileList?.push({id:id, file: file, name: filename, src: src})

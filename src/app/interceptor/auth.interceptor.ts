@@ -5,9 +5,8 @@ import {
   HttpEvent,
   HttpInterceptor, HttpErrorResponse
 } from '@angular/common/http';
-import {catchError, EMPTY, Observable, of, switchMap} from 'rxjs';
+import {catchError, Observable, switchMap} from 'rxjs';
 import {HttpService} from "../services/http.service";
-import {map} from "rxjs/operators";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -15,36 +14,22 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private service: HttpService) {
   }
 
-  addAuthHeader(request: HttpRequest<any>){
+  addAuthHeader(request: HttpRequest<any>) {
     const user = localStorage.getItem('user');
     if (user) {
-    console.log('addHeader')
+      console.log('addHeader')
       return request.clone(
         {
           setHeaders: {
             "Access-Control-Allow-Origin": 'http://localhost:3000',
             "Access-Control-Allow-Credentials": 'true',
-            "Authorization": `Bearer ${JSON.parse(user).access_token}`,},
+            "Authorization": `Bearer ${JSON.parse(user).access_token}`,
+          },
           withCredentials: true,
         })
     }
     return request
   }
-
-  // errorHandler(err:any, request: HttpRequest<unknown>, next: HttpHandler){
-  //   if (err.status === 401 && err.error.message === 'jwt expired') {
-  //     return this.service.refreshToken()
-  //       .pipe(switchMap(() => {
-  //         const req = this.addAuthHeader(request)
-  //         return next.handle(req)}
-  //       ),
-  //     )
-  //   }
-  //   if(err.status === 403 ){
-  //     this.service.signOut()
-  //   }
-  //   return new Error(err.error)
-  // }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
@@ -63,8 +48,8 @@ export class AuthInterceptor implements HttpInterceptor {
                 }
               ),
             )
-        }else {
-          alert('['+err.status+'] '+err.error.message)
+        } else {
+          alert('[' + err.status + '] ' + err.error.message)
         }
         throw new Error(err.error)
       })
