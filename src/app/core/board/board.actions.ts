@@ -212,3 +212,17 @@ export const setPage = createAction(
   "[Board] set page",
   props<{no: number}>()
 )
+
+
+export const getHistory = createAction(
+  "[User-detail page] get user article history",
+  props<{user: string, options:{page?:number, limit?:number, orderBy?:"date"|"like", order?:"desc"|"asc"}}>()
+)
+export const getHistorySuccess = createAction(
+  "[Api] Success fetch user article history",
+  props<{articles: any}>()
+)
+export const getHistoryFailed = createAction(
+  "[Api] failed fetch user article history",
+  props<{error: any}>()
+)

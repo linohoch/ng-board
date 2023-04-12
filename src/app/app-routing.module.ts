@@ -7,6 +7,7 @@ import {AuthComponent} from "./auth/auth.component";
 import {SignupComponent} from "./signup/signup.component";
 import {BoardEditComponent} from "./board-edit/board-edit.component";
 import {BoardCreateComponent} from "./board-create/board-create.component";
+import {UserDetailComponent} from "./user-detail/user-detail.component";
 
 const routes: Routes = [
   {
@@ -48,6 +49,11 @@ const routes: Routes = [
     path: 'signup',
     title: '회원가입',
     component: SignupComponent,
+  },
+  {
+    path: 'user/:user',
+    title: 'user-detail',
+    component: UserDetailComponent
   }
 ];
 

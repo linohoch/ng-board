@@ -38,6 +38,7 @@ import { SelectorComponent } from './common/selector/selector.component';
 import {DialogModule, DialogRef} from "@angular/cdk/dialog";
 import { BoardSideComponent } from './board-side/board-side.component';
 import * as QuillNamespace from 'quill';
+import { UserDetailComponent } from './user-detail/user-detail.component';
 let Quill: any = QuillNamespace;
 // import {ImageResize} from 'node_modules/quill-image-resize-module-ts/dist/ImageResize.js';
 // Quill.register('modules/imageResize', ImageResize);
@@ -62,6 +63,7 @@ Quill.register('modules/preserveWhiteSpace', PreserveWhiteSpace);
     BoardCreateComponent,
     SelectorComponent,
     BoardSideComponent,
+    UserDetailComponent,
   ],
   imports: [
     QuillModule.forRoot({

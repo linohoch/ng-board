@@ -1,0 +1,79 @@
+<div class="container">
+    <div class="contents-wrapper" *ngIf="history$ | async as hist">
+      <div class="filter-bar">
+        <button class="btn">
+
+        </button>
+      </div>
+<!--      <div class="posts-wrapper" >-->
+<!--        <div class="post-wrapper" *ngFor="let i of [0,1,2,3,4,5]">-->
+<!--          <div class="post article">-->
+
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+      <div>
+        <div class="posts-wrapper">
+          <div class="post-wrapper i-{{i}}" *ngFor="let article of hist; let i = index;">
+            <div class="post article">
+              <div>
+                {{article.articleNo}}
+                {{article.userEmail}}
+                {{article.title}}
+                {{article.likeCnt}}
+                {{article.hitCnt}}
+                {{article.insDate}}
+                {{article.upDate}}
+                {{article.isDeleted}}
+              </div>
+              <div  class="contents"
+                    [innerHTML]="article.contents">
+              </div>
+            </div>
+            <div class="relation comment" *ngIf="article.commentNo">
+                {{article.commentNo}}
+                {{article.cUserEmail}}
+                {{article.cContents}}
+                {{article.cLikeCnt}}
+                {{article.cInsDate}}
+                {{article.cUpDate}}
+            </div>
+          </div>
+        </div>
+<!--        <div class="posts-wrapper">-->
+<!--          <div class="post-wrapper" *ngFor="let comment of hist.commentRelation;">-->
+<!--            <div class="relation article" *ngIf="comment.articleNo">-->
+<!--              {{comment.articleNo}}-->
+<!--              {{comment.aUserEmail}}-->
+<!--              {{comment.aTitle}}-->
+<!--              {{comment.aHitCnt}}-->
+<!--              {{comment.aInsDate}}-->
+<!--              {{comment.aUpDate}}-->
+<!--              {{comment.aIsDeleted}}-->
+<!--              <div  class="contents"-->
+<!--                    [innerHTML]="comment.aContents">-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="ralation comment" *ngIf="comment.pCommentNo">-->
+<!--              {{comment.pCommentNo}}-->
+<!--              {{comment.pUserEmail}}-->
+<!--              {{comment.pContents}}-->
+<!--              {{comment.pHitCnt}}-->
+<!--              {{comment.pInsDate}}-->
+<!--              {{comment.pUpDate}}-->
+<!--              {{comment.pIsDeleted}}-->
+<!--            </div>-->
+<!--            <div class="post comment">-->
+<!--              {{comment.no}}-->
+<!--              {{comment.userEmail}}-->
+<!--              {{comment.contents}}-->
+<!--              {{comment.likeCnt}}-->
+<!--              {{comment.isDeleted}}-->
+<!--              {{comment.insDate}}-->
+<!--              {{comment.upDate}}-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
+    </div>
+</div>

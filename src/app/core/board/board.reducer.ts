@@ -1,8 +1,6 @@
 import {Action, createReducer, on} from "@ngrx/store";
 import * as BoardActions from './board.actions'
 import {BoardState, initialState} from "./board.state";
-import {state} from "@angular/animations";
-import {act} from "@ngrx/effects";
 import {isRead, setReadArray} from "../../services/board.service";
 
 export function reducer(state: BoardState | undefined, action: Action) {
@@ -53,7 +51,7 @@ const BoardReducer = createReducer(
     ...state,
     comment: action.comment
   })),
-  on(BoardActions.createComment, (state, action)=>({
+  on(BoardActions.createComment, (state)=>({
     ...state,
     isLoading: true,
   })),
@@ -114,17 +112,17 @@ const BoardReducer = createReducer(
     isLoading: true,
     error: action.error
   })),
-  on(BoardActions.getPermissionToEdit, (state, action)=>({
+  on(BoardActions.getPermissionToEdit, (state)=>({
     ...state,
     isLoading: true,
     isPermit: false
   })),
-  on(BoardActions.matchSuccess, (state, action)=>({
+  on(BoardActions.matchSuccess, (state)=>({
     ...state,
     isLoading: false,
     isPermit: true,
   })),
-  on(BoardActions.matchFailed, (state, action)=>({
+  on(BoardActions.matchFailed, (state)=>({
     ...state,
     isLoading: false,
     isPermit: false,
@@ -147,7 +145,7 @@ const BoardReducer = createReducer(
     error: action.error,
     isLoading: true
   })),
-  on(BoardActions.getPhotos, (state, action)=>({
+  on(BoardActions.getPhotos, (state)=>({
     ...state,
     isLoading: true,
   })),
@@ -161,7 +159,7 @@ const BoardReducer = createReducer(
     isLoading: true,
     error: action.error
   })),
-  on(BoardActions.delPhoto, (state, action)=>({
+  on(BoardActions.delPhoto, (state)=>({
     ...state,
     isLoading: true,
   })),
@@ -178,8 +176,26 @@ const BoardReducer = createReducer(
   on(BoardActions.setPage, (state, action)=>({
     ...state,
     page: action.no
-  }))
-  //
+  })),
+
+  on(BoardActions.getHistory, (state)=> ({
+    ...state,
+    isLoading: true
+  })),
+  on(BoardActions.getHistorySuccess, (state, action)=> {
+    const isEnd = (JSON.parse(JSON.stringify(action.articles)).length<10)
+    return ({
+      ...state,
+      history: [...state.history, ...action.articles],
+      isLoading: isEnd
+    })
+  }),
+  on(BoardActions.getHistoryFailed, (state, action)=>({
+    ...state,
+    error: action.error,
+    isLoading: true
+  })),
+
 
 
 

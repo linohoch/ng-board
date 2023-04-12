@@ -1,6 +1,5 @@
 import {createFeatureSelector, createSelector} from "@ngrx/store";
 import {BoardState} from "./board.state";
-import {createComment} from "./board.actions";
 
 export const selectBoard = createFeatureSelector<BoardState>('board')
 
@@ -50,6 +49,11 @@ export const selectPhotos = createSelector(
 export const selectPage = createSelector(
   selectBoard,
   (state: BoardState) => state.page
+)
+
+export const selectHistory = createSelector(
+  selectBoard,
+  (state: BoardState) => state.history
 )
 // export const selectDetailFromStore =(no:number)=> { createSelector(
 //     selectBoard,

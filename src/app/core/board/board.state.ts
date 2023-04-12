@@ -10,6 +10,7 @@ export interface BoardState {
   photos: Photo[]
   file: File | null
   page: number
+  history: any[],
 }
 
 export const initialState: BoardState = {
@@ -23,7 +24,9 @@ export const initialState: BoardState = {
   commentList: [],
   photos: [],
   file: null,
-  page: 0
+  page: 0,
+  history: [],
+
 }
 
 export interface Photo {

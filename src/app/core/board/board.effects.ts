@@ -2,15 +2,17 @@ import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import * as BoardActions from './board.actions'
 import {catchError, map, mergeMap, of, tap} from "rxjs";
-import {BoardService, isRead} from "../../services/board.service";
+import {BoardService} from "../../services/board.service";
 import {select, Store} from "@ngrx/store";
-import {selectComment, selectDetail, selectIsPermit} from "./board.selector";
+import {selectComment, selectDetail} from "./board.selector";
 import {ActivatedRoute, Router} from "@angular/router";
+import {HttpService} from "../../services/http.service";
 
 @Injectable()
 export class BoardEffects {
   constructor(private actions$: Actions,
               private service: BoardService,
+              private httpService: HttpService,
               private store: Store,
               private router: Router,
               private activatedRoute: ActivatedRoute) {
@@ -241,6 +243,19 @@ export class BoardEffects {
           catchError(err => of(BoardActions.delPhotoFailed({error: err.message})))
         )
       })
+    )
+  )
+  getHistory = createEffect(()=>
+    this.actions$.pipe(
+      ofType(BoardActions.getHistory),
+      mergeMap(({user, options})=>{
+        return this.httpService.getUserArticleHist(user, options).pipe(
+          map((res)=> {
+            console.log('/////',JSON.parse(JSON.stringify(res)).length)
+            return BoardActions.getHistorySuccess({articles: res})
+          }),
+          catchError(err=> of(BoardActions.getHistoryFailed({error: err.message})))
+      )})
     )
   )
 }

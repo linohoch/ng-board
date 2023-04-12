@@ -41,6 +41,25 @@ export class HttpService {
   }
 
 //user-service
+  getUserInfoAndPosts(user: any) {
+    return this.http.get(`${this.baseUrl}/api/v1/user/${user}`)
+  }
+  getUserPostHist(user: any, options?:{ orderBy:'date'|'like', order:'desc'|'asc', page:number, limit:number}){
+    return this.http.get(`${this.baseUrl}/api/v1/user/${user}/history`)
+  }
+  getUserArticleHist(user: any, options:{ page?:number, limit?:number, orderBy?:'date'|'like', order?:'desc'|'asc'}){
+    console.log('in servie page: ',options.page)
+    let query=''
+    query += options.page?`page=${options.page}`:'page=1'
+    + options.page?`&limit=${options.limit}`:''
+    + options.page?`&orderBy=${options.orderBy}`:''
+    + options.page?`&order=${options.order}`:''
+
+    console.log('query',query)
+    return this.http.get(`${this.baseUrl}/api/v1/user/${user}/article?${query}`)
+  }
+
+
   getUserInfo() {
     return this.http.get(`${this.baseUrl}/api/v1/user/me`)
   }
