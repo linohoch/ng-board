@@ -12,14 +12,10 @@
           인기순
         </button>
       </div>
-<!--      <div class="posts-wrapper" >-->
-<!--        <div class="post-wrapper" *ngFor="let i of [0,1,2,3,4,5]">-->
-<!--          <div class="post article">-->
-
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
       <div>
+
+        <div *ngIf="hist.length===0">아직 작성한 글이 없습니다.</div>
+
         <div class="posts-wrapper">
           <div class="post-wrapper i-{{i}}" *ngFor="let article of hist; let i = index;">
             <div class="post article {{article.isDeleted?'isDeleted':''}}">

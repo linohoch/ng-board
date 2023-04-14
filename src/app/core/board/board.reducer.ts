@@ -1,7 +1,7 @@
 import {Action, createReducer, on} from "@ngrx/store";
 import * as BoardActions from './board.actions'
 import {BoardState, initialState} from "./board.state";
-import {isRead, setReadArray} from "../../services/board.service";
+import {setReadArray} from "../../services/board.service";
 
 
 
@@ -188,7 +188,6 @@ const BoardReducer = createReducer(
   on(BoardActions.getHistorySuccess, (state, action)=> {
     const isEnd = (JSON.parse(JSON.stringify(action.articles)).length<10)
     const nextPage = state.sort.nextPage?state.sort.nextPage+1:1
-    console.log(nextPage)
     return ({
       ...state,
       history: [...state.history, ...action.articles],

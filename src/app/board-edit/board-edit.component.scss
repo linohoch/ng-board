@@ -12,7 +12,7 @@ button:active {
   padding-top: 10px;
   padding-bottom: 50px;
   .contents-wrapper {
-    width: 500px;
+    //width: 500px;
   }
 
   .top-area{
@@ -92,7 +92,7 @@ button:active {
     display: flex;
     justify-content: center;
     background-color: white;
-    width: 500px;
+    //width: 500px;
     min-height: 350px;
     .edit-form {
       align-content: baseline;
@@ -131,7 +131,7 @@ button:active {
       }
       .editor-wrapper {
         display: grid;
-        width: 480px;
+        //width: 480px;
       }
       .button-wrapper{
         z-index: 99;

@@ -1,13 +1,4 @@
 <mat-toolbar class="mat-toolbar" color="primary">
-<!--  <button class="mat-icon-button mat-button-base" aria-label="menu icon">-->
-<!--    <span class="mat-button-wrapper">-->
-<!--     <mat-icon>menu</mat-icon>-->
-<!--    </span>-->
-<!--  </button>-->
-  <a href="/" class="nav-link">
-    <img class="logo" alt="Home"
-         src="../../assets/svg/shield-large.svg">
-  </a>
   <a href="/board" class="board">
     Board
   </a>
@@ -22,7 +13,7 @@
     <mat-icon
       (click)="searchEl.value=''"
     >close</mat-icon>
-    <div class="search-result" #resultEl>
+    <div class="search-result" #resultEl style="display: none">
         <div *ngFor="let article of result">
           <a [routerLink]="['/article',article.no]"
               (click)="toggleDropdown(resultEl)">
@@ -40,8 +31,9 @@
       </span>
     </a>
   </button>
-  <div class="user-id-wrapper" *ngIf="me">
+  <div class="user-id-wrapper">
     <button class="user-id-button"
+            *ngIf="myInfo()"
             (click)="toggleDropdown(dropdown)">
     {{me}}
     </button>
@@ -64,12 +56,6 @@
         </div>
       </a>
     </div>
-  <button class="mat-icon-button" *ngIf="isSignedIn()"
-          (click)="signOut()">
-      <span class="mat-button-wrapper">
-          <mat-icon>logout</mat-icon>
-      </span>
-  </button>
   </div>
 <!--  <button class="mat-icon-button">-->
 <!--    <span class="mat-button-wrapper">-->

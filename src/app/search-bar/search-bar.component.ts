@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../services/http.service";
-import {User} from "../core/user";
 import {Router} from "@angular/router";
 import {select, Store} from "@ngrx/store";
 import {Article, selectArticles} from "../core/board";
@@ -18,30 +17,32 @@ export class SearchBarComponent implements OnInit{
   constructor(private service: HttpService,
               private router: Router,
               private store: Store) {
-    const localUser = localStorage.getItem('user')
-    if (localUser) {
-      this.me = JSON.parse(localUser).username
-    }
     this.store.pipe(select(selectArticles)).subscribe(next=>
       this.articles=next
     )
   }
   ngOnInit(): void {
-
   }
   search(resultEl: any){
     console.log(this.keyword)
-    if(this.articles){
+    if(this.articles && this.keyword){
       this.result = this.articles.filter((article: any)=>{
-        // const index = article.contents.search(String(this.keyword))
-        // if(index>-1){
-        //   article.result= '...' + article.contents.slice( index, (this.keyword!==undefined)?this.keyword.length+5:0 )
-        // }
-        return article.title.search(String(this.keyword))>-1 ||
-          article.contents.search(String(this.keyword))>-1
+        return article.title.search(String(this.keyword?.trim()))>-1 ||
+          article.contents.search(String(this.keyword?.trim()))>-1
       })
+      resultEl.style.display='block'
     }
-    resultEl.style.display='block'
+    if(this.keyword?.trim().length===0){
+      resultEl.style.display='none'
+    }
+  }
+  myInfo() {
+    const localUser = localStorage.getItem('user')
+    if (localUser) {
+      this.me = JSON.parse(localUser).username
+      return true
+    }
+    return false
   }
   isSignedIn() {
     return this.service.isSignedIn()

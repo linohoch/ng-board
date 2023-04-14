@@ -16,7 +16,7 @@
 .contents-wrapper {
   margin-top: 10px;
   display: grid;
-  width: 90vw;
+  width: 100%;
   max-width: 500px;
 
   .article-container {
@@ -139,7 +139,7 @@
         }
       }
     }
-    .comment-wrapper { display: flex}
+    .comment-wrapper { display: flex; width: 100%}
     .comment{ padding-top: 10px; display: flex; position: relative;
 
       &.fold {
@@ -176,7 +176,8 @@
     .lv {
       padding-left: calc(15px * var(--lv));
       .comment-contents {
-        width: calc(500px - (15px * var(--lv)));
+        width: 100%;
+        //width: calc(500px - (15px * var(--lv)));
         display: grid;
         &.deleted {
           color: #9d9d9d;
