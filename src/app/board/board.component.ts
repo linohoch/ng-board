@@ -69,7 +69,7 @@ export class BoardComponent implements OnInit {
     this.store.dispatch(BoardActions.getArticles())
     this.now = new Date
     this.store.pipe(select(selectPage)).subscribe(next=>{
-      this.pageIndex=next
+      this.pageIndex=next??0
     })
   }
   getDate(d:any) {

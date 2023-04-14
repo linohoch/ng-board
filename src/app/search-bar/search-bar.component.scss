@@ -5,6 +5,41 @@
     width: 0;
   }
 }
+.user-id-wrapper {
+  position: relative;
+  .user-id-button {
+
+    background: none;
+    border: none;
+    color: white;
+    height: 30px;
+    cursor: pointer;
+  }
+  .user-id-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 60px;
+    width: 200px;
+    background-color: #464646;
+    z-index: 99;
+    border-radius: 0.2rem;
+    border: 1px solid #e0e0e0;
+    display: grid;
+    .btn-dropdown {
+      height: 30px;
+      padding: 10px;
+      background-color: white;
+      cursor: pointer;
+      color: #464646;
+      &:hover {
+        background-color: #eaeaea;
+      }
+    }
+
+  }
+
+}
+
 .mat-toolbar {
   padding: 0;
 }
@@ -37,6 +72,19 @@
     height: 100%;
     margin-right: 16px;
     position: relative;
+    .search-result {
+      position: absolute;
+      top:50px;
+      right: 20px;
+      background-color: white;
+      color: #464646;
+      font-size: small;
+      width: 200px;
+      max-height: 200px;
+      z-index: 99;
+      overflow: scroll;
+    }
+
     .mat-icon {
       position: absolute;
       color: #1976d2;

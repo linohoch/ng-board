@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  justify-content: center;
+}
+.contents-wrapper {
+  width: 500px;
+  margin-top: 30px;
+  margin-bottom: 100px;
+
+  .tab-list {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    height: 30px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .unregister-form {
+    display: grid;
+    width: 200px;
+    margin-top: 10px;
+
+  }
+}

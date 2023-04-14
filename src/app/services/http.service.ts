@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {catchError, map, Observable, of} from "rxjs";
 import {Router} from "@angular/router";
 import {DialogComponent, DialogControl} from "../dialog/dialog.component";
-import {Article} from "../core/board";
+import {Article, Order, OrderBy, Sort} from "../core/board";
 import {MatDialog} from "@angular/material/dialog";
 
 @Injectable({
@@ -13,19 +13,21 @@ export class HttpService {
   baseUrl = `http://localhost:3000`
   httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type':  'application/json',
+      'Content-Type': 'application/json',
     }),
     withCredentials: true
   };
+
   constructor(private http: HttpClient,
               private router: Router,
-              private dial: MatDialog,
               private dialog: DialogControl,) {
   }
-  errorHandler(e:any){
+
+  errorHandler(e: any) {
     alert(e.error.message)
     return of([])
   }
+
   // setHeaders(){
   //  const user = localStorage.getItem('user');
   //   if(user){
@@ -33,10 +35,11 @@ export class HttpService {
   //   }
   // }
 //board-service
-  getArticleList(){
+  getArticleList() {
     return this.http.get<Article[]>(`${this.baseUrl}/api/v1/board?page=1`)
   }
-  getArticleDetail(no: number){
+
+  getArticleDetail(no: number) {
     return this.http.get<Article>(`${this.baseUrl}/api/v1/board/${no}`)
   }
 
@@ -44,30 +47,43 @@ export class HttpService {
   getUserInfoAndPosts(user: any) {
     return this.http.get(`${this.baseUrl}/api/v1/user/${user}`)
   }
-  getUserPostHist(user: any, options?:{ orderBy:'date'|'like', order:'desc'|'asc', page:number, limit:number}){
+
+  getUserPostHist(user: any, options?: { orderBy: OrderBy, order: Order, page: number, limit: number }) {
     return this.http.get(`${this.baseUrl}/api/v1/user/${user}/history`)
   }
-  getUserArticleHist(user: any, options:{ page?:number, limit?:number, orderBy?:'date'|'like', order?:'desc'|'asc'}){
-    console.log('in servie page: ',options.page)
-    let query=''
-    query += options.page?`page=${options.page}`:'page=1'
-    + options.page?`&limit=${options.limit}`:''
-    + options.page?`&orderBy=${options.orderBy}`:''
-    + options.page?`&order=${options.order}`:''
 
-    console.log('query',query)
-    return this.http.get(`${this.baseUrl}/api/v1/user/${user}/article?${query}`)
+  getUserArticleHist(user: any, options: Sort) {
+    console.log('in servie page: ', options.nextPage)
+    // let query=''
+    // query += options.page?`page=${options.page}`:'page=1'
+    // + options.page?`&limit=${options.limit}`:''
+    // + options.page?`&orderBy=${options.orderBy}`:''
+    // + options.page?`&order=${options.order}`:''
+    let params = new HttpParams()
+    params = params.append('page', options.nextPage)
+    params = params.append('limit', options.limit)
+    params = params.append('orderBy', options.orderBy)
+    params = params.append('order', options.order)
+    return this.http.get(`${this.baseUrl}/api/v1/user/${user}/article`, {params: params})
   }
 
+  deleteAccount(password: string){
+    return this.http.post(`${this.baseUrl}/api/v1/auth/unregister`,{password:password}, this.httpOptions).pipe(res => {
+      localStorage.removeItem('user')
+      localStorage.removeItem('userInfo')
+      return res
+    })
+  }
 
   getUserInfo() {
     return this.http.get(`${this.baseUrl}/api/v1/user/me`)
   }
 
-  isSignedIn(){
+  isSignedIn() {
     return !!localStorage.getItem('user')
   }
-  signOut(){
+
+  signOut() {
     localStorage.removeItem('user')
     localStorage.removeItem('userInfo')
     window.location.reload()
@@ -77,15 +93,16 @@ export class HttpService {
       })
     )
   }
+
   signIn(data: Partial<{ email: string | null; password: string | null; }>)
     : Observable<any> {
     return this.http.post(`${this.baseUrl}/api/v1/auth/login`, data, this.httpOptions).pipe(
       map((user: any) => {
         if (user && user.access_token) {
           localStorage.setItem('user', JSON.stringify(user))
-          this.getUserInfo().subscribe(next=> {
-            if(next){
-              localStorage.setItem('userInfo', JSON.stringify(next) )
+          this.getUserInfo().subscribe(next => {
+            if (next) {
+              localStorage.setItem('userInfo', JSON.stringify(next))
             }
           })
         } else {
@@ -96,14 +113,14 @@ export class HttpService {
       catchError(async (err) => this.errorHandler(err.error)))
   }
 
-  linkWithGoogle(credential: any){
-    return this.http.post(`${this.baseUrl}/api/v1/auth/google/link`,{'credential':credential}, this.httpOptions).pipe(
-      map((res:any)=> {
+  linkWithGoogle(credential: any) {
+    return this.http.post(`${this.baseUrl}/api/v1/auth/google/link`, {'credential': credential}, this.httpOptions).pipe(
+      map((res: any) => {
         if (res && res.access_token) {
           localStorage.setItem('user', JSON.stringify(res))
-          this.getUserInfo().subscribe(next=> {
-            if(next){
-              localStorage.setItem('userInfo', JSON.stringify(next) )
+          this.getUserInfo().subscribe(next => {
+            if (next) {
+              localStorage.setItem('userInfo', JSON.stringify(next))
             }
           })
         } else {
@@ -113,17 +130,18 @@ export class HttpService {
       }),
       catchError(async (err) => this.errorHandler(err.error)))
   }
-  dialogActionForLink (credential:any) {
 
-      if(confirm('email로 가입된 회원정보가 존재합니다. 연동하고 계속하려면 확인')){
-        this.linkWithGoogle(credential).subscribe(()=>{
-          this.router.navigateByUrl('/')
-        })
-      }else {
-        this.router.navigate(['login'])
-      }
+  dialogActionForLink(credential: any) {
 
-      //TODO 구글 로그인 콜백에서 문제
+    if (confirm('email로 가입된 회원정보가 존재합니다. 연동하고 계속하려면 확인')) {
+      this.linkWithGoogle(credential).subscribe(() => {
+        this.router.navigateByUrl('/')
+      })
+    } else {
+      this.router.navigate(['login'])
+    }
+
+    //TODO 구글 로그인 콜백에서 문제
     // const result = this.dialog.openDialog({
     //   title:'계정연동',
     //   contents:'email로 가입된 회원정보가 존재합니다.',
@@ -143,16 +161,17 @@ export class HttpService {
     //   }
     //
     // })
- }
+  }
+
   signInWithGoogle(credential: any) {
-    return this.http.post(`${this.baseUrl}/api/v1/auth/google/callback2`, {'credential':credential}, this.httpOptions).pipe(
+    return this.http.post(`${this.baseUrl}/api/v1/auth/google/callback2`, {'credential': credential}, this.httpOptions).pipe(
       map((res: any) => {
         if (res && res.access_token) {
           console.log('로그인완료')
           localStorage.setItem('user', JSON.stringify(res))
-          this.getUserInfo().subscribe(next=> {
-            if(next){
-              localStorage.setItem('userInfo', JSON.stringify(next) )
+          this.getUserInfo().subscribe(next => {
+            if (next) {
+              localStorage.setItem('userInfo', JSON.stringify(next))
             }
           })
         }
@@ -163,23 +182,25 @@ export class HttpService {
       }),
     )
   }
+
   /**
    *
    * @param email
    * @return if already exist return true else false
    */
-  checkIsEmail(email:string) {
-    return this.http.post(`${this.baseUrl}/api/v1/user/check`, { email : email }, this.httpOptions).pipe(
-      map((res)=>{
+  checkIsEmail(email: string) {
+    return this.http.post(`${this.baseUrl}/api/v1/user/check`, {email: email}, this.httpOptions).pipe(
+      map((res) => {
         return res
       }),
-      catchError(()=>of(null))
+      catchError(() => of(null))
     )
   }
-  signUp(data:any){
-    return this.http.post(`${this.baseUrl}/api/v1/user/signup`,data,this.httpOptions).pipe(
-      map((user:any)=>{
-        if(user){
+
+  signUp(data: any) {
+    return this.http.post(`${this.baseUrl}/api/v1/user/signup`, data, this.httpOptions).pipe(
+      map((user: any) => {
+        if (user) {
           return user
         }
         //next->undefined
@@ -191,7 +212,8 @@ export class HttpService {
       })
     )
   }
-  refreshToken(){
+
+  refreshToken() {
     return this.http.get(`${this.baseUrl}/api/v1/auth/refresh`).pipe(
       map((res: any) => {
         if (res && res.access_token) {
@@ -200,7 +222,7 @@ export class HttpService {
         }
         return res
       }),
-      catchError((err)=>{
+      catchError((err) => {
         return this.errorHandler(err.error);
       })
     )

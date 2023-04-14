@@ -15,9 +15,23 @@
     <input
       class="search-input"
       name="search"
-      ngModel
+      [(ngModel)]="keyword"
+      (keyup)="search(resultEl)"
+      #searchEl
       placeholder="search"/>
-    <mat-icon>close</mat-icon>
+    <mat-icon
+      (click)="searchEl.value=''"
+    >close</mat-icon>
+    <div class="search-result" #resultEl>
+        <div *ngFor="let article of result">
+          <a [routerLink]="['/article',article.no]"
+              (click)="toggleDropdown(resultEl)">
+            <div>
+          {{article.no}} ∙ {{article.title}}
+            </div>
+          </a>
+        </div>
+    </div>
   </div>
   <button class="mat-icon-button" *ngIf="!isSignedIn()">
     <a class="mat-icon-button" href="/login">
@@ -26,12 +40,37 @@
       </span>
     </a>
   </button>
+  <div class="user-id-wrapper" *ngIf="me">
+    <button class="user-id-button"
+            (click)="toggleDropdown(dropdown)">
+    {{me}}
+    </button>
+    <div class="user-id-dropdown" #dropdown style="display: none">
+      <a [routerLink]="['/user',me]"
+         (click)="toggleDropdown(dropdown)">
+        <div class="btn-dropdown">
+          my posts
+        </div>
+      </a>
+      <a [routerLink]="['/user']"
+         (click)="toggleDropdown(dropdown)">
+        <div class="btn-dropdown">
+          account
+        </div>
+      </a>
+      <a (click)="signOut()">
+        <div class="btn-dropdown">
+          sign out
+        </div>
+      </a>
+    </div>
   <button class="mat-icon-button" *ngIf="isSignedIn()"
           (click)="signOut()">
       <span class="mat-button-wrapper">
           <mat-icon>logout</mat-icon>
       </span>
   </button>
+  </div>
 <!--  <button class="mat-icon-button">-->
 <!--    <span class="mat-button-wrapper">-->
 <!--      <mat-icon>dark_mode</mat-icon>-->

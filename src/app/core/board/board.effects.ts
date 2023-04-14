@@ -1,12 +1,13 @@
 import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import * as BoardActions from './board.actions'
-import {catchError, map, mergeMap, of, tap} from "rxjs";
+import {catchError, map, mergeMap, of, tap, withLatestFrom} from "rxjs";
 import {BoardService} from "../../services/board.service";
 import {select, Store} from "@ngrx/store";
-import {selectComment, selectDetail} from "./board.selector";
+import {selectComment, selectDetail, selectPage, selectSort} from "./board.selector";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpService} from "../../services/http.service";
+import { Sort } from "./board.state";
 
 @Injectable()
 export class BoardEffects {
@@ -216,46 +217,57 @@ export class BoardEffects {
       })
     )
   )
-  setPhoto = createEffect(()=>
+  setPhoto = createEffect(() =>
     this.actions$.pipe(
       ofType(BoardActions.setPhoto),
-      mergeMap(({file, articleNo, ql})=>{
+      mergeMap(({file, articleNo, ql}) => {
         const formData = new FormData()
-              formData.append('image', file)
+        formData.append('image', file)
         return this.service.setPhoto(formData, articleNo).pipe(
-          map((res)=> {
+          map((res) => {
             // const index = ql?.getSelection(true).index
             // ql?.clipboard.dangerouslyPasteHTML(index ? index : 0,
             //   `<img src="${res.photo.url}" alt="${res.photo.origin}" >`)
             // ql?.setSelection(index ? index + 1 : 2, 1)
-            return BoardActions.setPhotoSuccess({photo: res.result})}),
+            return BoardActions.setPhotoSuccess({photo: res.result})
+          }),
           catchError(err => of(BoardActions.setPhotoFailed({error: err.message})))
         )
       })
     )
   )
-  delPhoto = createEffect(()=>
+
+  delPhoto = createEffect(() =>
     this.actions$.pipe(
       ofType(BoardActions.delPhoto),
-      mergeMap(({photoNo, articleNo})=> {
+      mergeMap(({photoNo, articleNo}) => {
         return this.service.deletePhoto(Number(photoNo), articleNo).pipe(
-          map(()=> BoardActions.delPhotoSuccess({photoNo: Number(photoNo)})),
+          map(() => BoardActions.delPhotoSuccess({photoNo: Number(photoNo)})),
           catchError(err => of(BoardActions.delPhotoFailed({error: err.message})))
         )
       })
     )
   )
-  getHistory = createEffect(()=>
+
+  getHistory = createEffect(() =>
     this.actions$.pipe(
       ofType(BoardActions.getHistory),
-      mergeMap(({user, options})=>{
-        return this.httpService.getUserArticleHist(user, options).pipe(
-          map((res)=> {
-            console.log('/////',JSON.parse(JSON.stringify(res)).length)
+      withLatestFrom(this.store.pipe(select(selectSort))),
+      mergeMap(([action, select]) => {
+        const options = {
+          nextPage: action.options?.nextPage || select.nextPage,
+          limit: action.options?.limit || select.limit,
+          orderBy: action.options?.orderBy || select.orderBy,
+          order: action.options?.order || select.order
+        }
+        return this.httpService.getUserArticleHist(action.user, options).pipe(
+          map((res) => {
             return BoardActions.getHistorySuccess({articles: res})
           }),
-          catchError(err=> of(BoardActions.getHistoryFailed({error: err.message})))
+          catchError(err => of(BoardActions.getHistoryFailed({error: err.message})))
       )})
     )
   )
+
+
 }

@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="contents-wrapper">
+    <div class="tab-list">
+      <a></a>
+    </div>
+    <div class="setting">
+      <div>
+        Email address
+        <div>{{userInfo.email}}</div>
+      </div>
+      <div>
+        name
+        <div>{{userInfo.firstName}} {{userInfo.lastName}}</div>
+      </div>
+<!--      <div>-->
+<!--        about me-->
+<!--        <div>-->
+<!--          <textarea></textarea>-->
+<!--        </div>-->
+<!--      </div>-->
+      <div class="unregister">
+      <button type="button"
+              (click)="deleteAccount(formElement)">delete account</button>
+        <form [formGroup]="unregisterForm" class="unregister-form" #formElement (submit)="onSubmit()" style="display: none">
+          <p>게시물 내용은 삭제되지 않습니다.</p>
+          <mat-form-field>
+            <mat-label>password</mat-label>
+            <input id="password"
+                   matInput
+                   formControlName="pw"
+                   [errorStateMatcher]="matcher"
+                   type="password"
+                   placeholder="password">
+            <mat-error *ngIf="unregisterForm.get('pw')?.hasError('required')">
+              Password is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>confirmPassword</mat-label>
+            <input id="confirmPassword"
+                   matInput
+                   formControlName="confirmPassword"
+                   [errorStateMatcher]="matcher"
+                   type="password"
+                   placeholder="confirmPassword">
+            <mat-error *ngIf="unregisterForm.get('confirmPassword')?.hasError('mismatch')">
+              Please check again
+            </mat-error>
+          </mat-form-field>
+          <button type="submit"
+                  [disabled]="unregisterForm.invalid">탈퇴</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

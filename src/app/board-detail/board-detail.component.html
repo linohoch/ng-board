@@ -18,7 +18,9 @@
       </div>
       <div class="article-container">
         <div class="sub-area">
+          <a [routerLink]="['/user',article.userEmail]">
           <div>{{article.no}} ∙ {{article.userEmail}} ∙ {{calDate(article.insDate)}} </div>
+          </a>
           <div></div>
         </div>
         <div class="title-area">

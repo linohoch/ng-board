@@ -7,11 +7,19 @@
   margin-top: 30px;
   margin-bottom: 100px;
   .filter-bar {
+    display: flex;
     background-color: white;
     border: 1px solid #e0e0e0;
     height: 30px;
     padding: 10px;
     margin-bottom: 10px;
+    .selected {
+      background-color: #cbcbcb;
+    }
+    button:active {
+      opacity: 30%;
+    }
+
   }
   .posts-wrapper {
 
@@ -28,6 +36,9 @@
         &.relation {
 
         }
+        &.isDeleted {
+          color: #9d9d9d;
+        }
       }
       .relation {
         background-color: white;
@@ -35,7 +46,7 @@
         height: 50px;
         padding: 10px;
         &.comment {
-          margin-left: 15px;
+          margin-left: 30px;
         }
         &.article {
 
@@ -43,6 +54,15 @@
       }
       .article {
          height: fit-content;
+      }
+
+      .author {
+        color: #464646;
+        font-size: small;
+      }
+
+      .view {
+        display: flex;
       }
     }
   }

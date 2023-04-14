@@ -1,6 +1,9 @@
 <div class="side-container">
   <div class="side-panel-1">
-
+    <div *ngIf="data | async as userData">
+      {{userData.no}}
+      {{userData.email}}
+    </div>
   </div>
   <div class="side-panel-2">
 

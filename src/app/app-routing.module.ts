@@ -8,6 +8,7 @@ import {SignupComponent} from "./signup/signup.component";
 import {BoardEditComponent} from "./board-edit/board-edit.component";
 import {BoardCreateComponent} from "./board-create/board-create.component";
 import {UserDetailComponent} from "./user-detail/user-detail.component";
+import {UserAccountComponent} from "./user-account/user-account.component";
 
 const routes: Routes = [
   {
@@ -52,9 +53,18 @@ const routes: Routes = [
   },
   {
     path: 'user/:user',
-    title: 'user-detail',
-    component: UserDetailComponent
+    title: '히스토리',
+    component: UserDetailComponent,
+    data: {
+      reuseComponent: false
+    }
+  },
+  {
+    path: 'user',
+    title: '회원계정',
+    component: UserAccountComponent
   }
+
 ];
 
 @NgModule({

@@ -1,3 +1,14 @@
+export const OrderBy = {
+  date:'date',
+  like:'like'
+} as const
+export type OrderBy = typeof OrderBy[keyof typeof OrderBy]
+export const Order = {
+  desc:'desc',
+  asc:'asc'
+} as const
+export type Order = typeof Order[keyof typeof Order]
+
 export interface BoardState {
   isLoading: boolean
   isPermit: boolean
@@ -11,8 +22,8 @@ export interface BoardState {
   file: File | null
   page: number
   history: any[],
+  sort: Sort
 }
-
 export const initialState: BoardState = {
   isLoading: false,
   isPermit: false,
@@ -26,7 +37,14 @@ export const initialState: BoardState = {
   file: null,
   page: 0,
   history: [],
+  sort: { nextPage: 1, limit: 10, orderBy: OrderBy['date'], order: Order.desc}
 
+}
+export interface Sort {
+  nextPage: number,
+  limit: number,
+  orderBy: OrderBy,
+  order: Order
 }
 
 export interface Photo {

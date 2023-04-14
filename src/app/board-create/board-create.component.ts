@@ -1,14 +1,14 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, Validators} from "@angular/forms";
-import {select, Store} from "@ngrx/store";
+import {Store} from "@ngrx/store";
 import {Location} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import * as BoardActions from "../core/board/board.actions";
 import {QuillEditorComponent} from "ngx-quill";
-import {Article, ArticleVO, selectTemp} from "../core/board";
+import {Article, ArticleVO} from "../core/board";
 import Quill from 'quill';
 import {BoardService} from "../services/board.service";
-import {DialogComponent, DialogControl, DialogControl_2} from "../dialog/dialog.component";
+import {DialogControl} from "../dialog/dialog.component";
 import {v4 as uuid} from 'uuid';
 import {Dialog, DialogRef} from "@angular/cdk/dialog";
 // import * as QuillNamespace from 'quill';
@@ -102,6 +102,7 @@ export class BoardCreateComponent implements OnInit {
       }
     }
   }
+
   attachImageAddTempList(file: File, num?: any) {
     const reader = new FileReader()
     reader.onload = () => {
@@ -112,7 +113,7 @@ export class BoardCreateComponent implements OnInit {
       }
       const id = uuid() + '-' + filename
       const src = reader.result;
-      this.tempFileList?.push({id:id, file: file, name: filename, src: src})
+      this.tempFileList?.push({id: id, file: file, name: filename, src: src})
       this.quillEditorRef?.clipboard.dangerouslyPasteHTML(index ? index : 0,
         `<img src="${src}" alt="${id}" >`)
       this.quillEditorRef?.setSelection(index ? index + 1 : 2, 1)
@@ -145,8 +146,8 @@ export class BoardCreateComponent implements OnInit {
             delete insert.image;
             insert.image = alt;
             delete op.attributes['alt']
-            this.tempFileList?.forEach((temp)=>{
-              if(temp.id===alt && op.attributes) op.attributes['alt']=temp.name
+            this.tempFileList?.forEach((temp) => {
+              if (temp.id === alt && op.attributes) op.attributes['alt'] = temp.name
             })
           }
         }
@@ -162,9 +163,16 @@ export class BoardCreateComponent implements OnInit {
       this.save()
       this.getTemp()
 
-      const title = this.createForm.get('title')?.value
-      const contents = this.contentsChanged
+      let title = this.createForm.get('title')?.value
+      let contents = this.contentsChanged
       const pw = this.createForm.get('password')?.value
+      // TODO
+
+      // let title = this.replaceTag(this.createForm.get('title')?.value)
+      // let contents = this.replaceTag(this.contentsChanged)
+      // const pw = this.replaceTag(this.createForm.get('password')?.value)
+
+
       const formData = new FormData()
       if (this.me === 'anonymous' && pw) {
         formData.append('pw', pw)
@@ -231,4 +239,15 @@ export class BoardCreateComponent implements OnInit {
   //   }
   //
   // }
+  replaceTag(txt: string | undefined | null) {
+    if (txt !== undefined && txt !== null) {
+      let result;
+      result = txt?.replaceAll('<', '&lt;')
+      result = result?.replaceAll('>', '&gt;')
+
+      return result
+    }
+    return ''
+  }
+
 }

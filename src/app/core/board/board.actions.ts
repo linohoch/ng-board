@@ -1,5 +1,5 @@
 import {createAction, props} from "@ngrx/store";
-import {Article, Comment, Photo} from "./board.state";
+import {Article, Comment, Order, OrderBy, Photo, Sort} from "./board.state";
 import Quill from "quill";
 
 export const appLoaded = createAction("[APP] App Loaded")
@@ -137,7 +137,7 @@ export const setPhoto = createAction(
 )
 export const setPhotoSuccess = createAction(
   "[Board API] Success add Article Photo",
-  props<{ photo: any, ql?:Quill }>()
+  props<{ photo: any, ql?: Quill }>()
 )
 export const setPhotoFailed = createAction(
   "[Board API] Failed add Article Photo",
@@ -145,7 +145,7 @@ export const setPhotoFailed = createAction(
 )
 export const delPhoto = createAction(
   "[Board-edit Page] delete Article Photo",
-  props<{ photoNo: any, articleNo: any}>()
+  props<{ photoNo: any, articleNo: any }>()
 )
 export const delPhotoSuccess = createAction(
   "[Board API] Success delete Article Photo",
@@ -210,19 +210,24 @@ export const matchFailed = createAction(
 
 export const setPage = createAction(
   "[Board] set page",
-  props<{no: number}>()
+  props<{ no: number }>()
+)
+export const setSort = createAction(
+  "[Board] set Sort",
+  props<{ nextPage?: number, limit?: number, orderBy?: OrderBy, order?: Order }>()
 )
 
 
 export const getHistory = createAction(
   "[User-detail page] get user article history",
-  props<{user: string, options:{page?:number, limit?:number, orderBy?:"date"|"like", order?:"desc"|"asc"}}>()
+  props<{ user: string, options?: { nextPage?: number, limit?: number, orderBy?: OrderBy, order?: Order } }>()
 )
 export const getHistorySuccess = createAction(
   "[Api] Success fetch user article history",
-  props<{articles: any}>()
+  props<{ articles: any }>()
 )
 export const getHistoryFailed = createAction(
   "[Api] failed fetch user article history",
-  props<{error: any}>()
+  props<{ error: any }>()
 )
+

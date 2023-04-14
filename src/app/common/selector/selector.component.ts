@@ -4,6 +4,13 @@ export interface selectData {
   title: string,
   options: Array<{ key:string, value:string ,isSelected: boolean }>
 }
+// sample = {
+//   title:'글 필터링',
+//   options: [
+//     { key:'all articles', value:'all', isSelected: true },
+//     { key:'except deleted', value:'except', isSelected: false}
+//   ]
+// }
 
 @Component({
   selector: 'app-selector',

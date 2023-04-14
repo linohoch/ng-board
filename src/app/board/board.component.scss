@@ -6,6 +6,8 @@
   margin-top: 10px;
   display: grid;
   justify-content: center;
+  max-width: 500px;
+  min-width: 350px;
   .top {
     display: flex;
     justify-content: space-between;
@@ -13,8 +15,8 @@
   }
 }
 .card-wrapper {
-  width: 500px;
-  min-width: 400px;
+  //width: 500px;
+  min-width: 350px;
   text-align: center;
 
   mat-card {

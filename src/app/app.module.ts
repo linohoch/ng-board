@@ -39,6 +39,9 @@ import {DialogModule, DialogRef} from "@angular/cdk/dialog";
 import { BoardSideComponent } from './board-side/board-side.component';
 import * as QuillNamespace from 'quill';
 import { UserDetailComponent } from './user-detail/user-detail.component';
+import { UserAccountComponent } from './user-account/user-account.component';
+import {RouteReuseStrategy} from "@angular/router";
+import {CustomRouteReuseStrategy} from "./route-strategy";
 let Quill: any = QuillNamespace;
 // import {ImageResize} from 'node_modules/quill-image-resize-module-ts/dist/ImageResize.js';
 // Quill.register('modules/imageResize', ImageResize);
@@ -64,6 +67,7 @@ Quill.register('modules/preserveWhiteSpace', PreserveWhiteSpace);
     SelectorComponent,
     BoardSideComponent,
     UserDetailComponent,
+    UserAccountComponent,
   ],
   imports: [
     QuillModule.forRoot({
@@ -126,6 +130,10 @@ Quill.register('modules/preserveWhiteSpace', PreserveWhiteSpace);
       provide: MAT_DIALOG_DATA,
       useValue: {}
     },
+    {
+      provide: RouteReuseStrategy,
+      useClass: CustomRouteReuseStrategy
+    }
   ],
   bootstrap: [AppComponent,]
 })

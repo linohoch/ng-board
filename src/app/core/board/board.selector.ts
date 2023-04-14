@@ -46,9 +46,14 @@ export const selectPhotos = createSelector(
   selectBoard,
   (state: BoardState) => state.photos
 )
+
 export const selectPage = createSelector(
   selectBoard,
   (state: BoardState) => state.page
+)
+export const selectSort = createSelector(
+  selectBoard,
+  (state: BoardState) => state.sort
 )
 
 export const selectHistory = createSelector(

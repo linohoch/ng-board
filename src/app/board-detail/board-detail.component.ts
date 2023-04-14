@@ -98,7 +98,7 @@ export class BoardDetailComponent implements OnInit {
 
   getPermit() {
     this.detail && this.store.dispatch(BoardActions.getPermissionToEdit({
-      detail: this.detail, //userEmail, pw
+      detail: this.detail, //userEmail, pw 담아가는 용도
       me: this.me ? this.me : 'anonymous',
       pw: this.pw
     }))

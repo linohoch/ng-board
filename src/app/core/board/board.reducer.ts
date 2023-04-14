@@ -3,6 +3,8 @@ import * as BoardActions from './board.actions'
 import {BoardState, initialState} from "./board.state";
 import {isRead, setReadArray} from "../../services/board.service";
 
+
+
 export function reducer(state: BoardState | undefined, action: Action) {
   return BoardReducer(state, action)
 }
@@ -176,6 +178,7 @@ const BoardReducer = createReducer(
   on(BoardActions.setPage, (state, action)=>({
     ...state,
     page: action.no
+    // sort:{...state.sort, nextPage:action.no}
   })),
 
   on(BoardActions.getHistory, (state)=> ({
@@ -184,9 +187,12 @@ const BoardReducer = createReducer(
   })),
   on(BoardActions.getHistorySuccess, (state, action)=> {
     const isEnd = (JSON.parse(JSON.stringify(action.articles)).length<10)
+    const nextPage = state.sort.nextPage?state.sort.nextPage+1:1
+    console.log(nextPage)
     return ({
       ...state,
       history: [...state.history, ...action.articles],
+      sort: {...state.sort, nextPage: nextPage},
       isLoading: isEnd
     })
   }),
@@ -196,6 +202,16 @@ const BoardReducer = createReducer(
     isLoading: true
   })),
 
+  on(BoardActions.setSort, (state, action) => ({
+    ...state,
+    sort: {
+      nextPage: action.nextPage || state.sort.nextPage,
+      limit: action.limit || state.sort.limit,
+      orderBy: action.orderBy || state.sort.orderBy,
+      order: action.order || state.sort.order
+    },
+    history: []
+  }))
 
 
 

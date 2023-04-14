@@ -1,8 +1,15 @@
 <div class="container">
     <div class="contents-wrapper" *ngIf="history$ | async as hist">
       <div class="filter-bar">
-        <button class="btn">
-
+        <button class="btn {{ sort && sort.orderBy==='date'?'selected':''}}"
+                value="date"
+                (click)="sortPage($event)">
+          최신순
+        </button>
+        <button class="btn {{sort && sort.orderBy==='like'?'selected':''}}"
+                value="like"
+                (click)="sortPage($event)">
+          인기순
         </button>
       </div>
 <!--      <div class="posts-wrapper" >-->
@@ -15,28 +22,42 @@
       <div>
         <div class="posts-wrapper">
           <div class="post-wrapper i-{{i}}" *ngFor="let article of hist; let i = index;">
-            <div class="post article">
+            <div class="post article {{article.isDeleted?'isDeleted':''}}">
+              <a [routerLink]="['/article/',article.articleNo]">
+                <div class="author">
+                  [{{article.articleNo}}]
+                  {{article.userEmail}}
+<!--              {{article.insDate | date:'yyyy-MM-dd HH:mm' : '+900'}}-->
+                  update {{article.upDate  | date:'yyyy-MM-dd HH:mm' : '+900'}}
+<!--              {{article.isDeleted}}-->
+                </div>
+                <div class="view">
+                  <img src="../../assets/svg/heart-svgrepo-com.svg" alt="view" width="20px" height="20px"/>
+                  {{article.likeCnt}}
+                  <img src="../../assets/svg/eye-open.svg" alt="view" width="20px" height="20px"/>
+                  {{article.hitCnt}}
+                </div>
+              </a>
               <div>
-                {{article.articleNo}}
-                {{article.userEmail}}
                 {{article.title}}
-                {{article.likeCnt}}
-                {{article.hitCnt}}
-                {{article.insDate}}
-                {{article.upDate}}
-                {{article.isDeleted}}
               </div>
               <div  class="contents"
                     [innerHTML]="article.contents">
               </div>
             </div>
             <div class="relation comment" *ngIf="article.commentNo">
+              <div class="author" >
                 {{article.commentNo}}
                 {{article.cUserEmail}}
-                {{article.cContents}}
+<!--                {{article.cInsDate}}-->
+                {{article.cUpDate | date:'yyyy-MM-dd HH:mm' : '+900'}}
+              </div>
+              <div class="view">
+                <img src="../../assets/svg/{{isLike(article.commentNo, 'comment')?'heart-fill-svgrepo-com.svg':'heart-svgrepo-com.svg'}}"
+                     alt="view" width="20px" height="20px"/>
                 {{article.cLikeCnt}}
-                {{article.cInsDate}}
-                {{article.cUpDate}}
+              </div>
+                {{article.cContents}}
             </div>
           </div>
         </div>
@@ -76,4 +97,5 @@
 <!--        </div>-->
       </div>
     </div>
+  <app-board-side [data]="userDetail$"></app-board-side>
 </div>
